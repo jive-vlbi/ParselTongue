@@ -17,6 +17,10 @@ class AIPSData:
                                    True, False, self.err)
 
     def exists(self, desc):
+        """Check whether the date set exists.
+        
+        Return True if the data set exists, False otherwise."""
+
         try:
             self._init(desc)
         except:
@@ -24,6 +28,8 @@ class AIPSData:
         return True
 
     def verify(self, desc):
+        """Verify whether this date set can be accesed."""
+
         self._init(desc)
         return True                # Return something other than None.
 
