@@ -14,22 +14,6 @@ from Proxy.Task import Task
 # Generic Python stuff.
 import glob, os, pickle, struct
 
-# FIXME: Get rid of this.
-class Range:
-    min = 0
-    max = 0
-
-    def __init__(self, min, max):
-        self.min = min
-        self.max = max
-
-    def __getitem__(self, key):
-        return self.__dict__[key]
-
-    def __repr__(self):
-        return "Range(%s, %s)" % (str(self.min), str(self.max))
-
-
 class _AIPSTaskParams:
     def __parse(self, name):
         """Determine the proper attributes for the AIPS task NAME by
@@ -110,14 +94,18 @@ class _AIPSTaskParams:
                 self.output_list.append(adverb)
             if adverb in popsdat.strlen_dict:
                 self.strlen_dict[adverb] = popsdat.strlen_dict[adverb]
-            if min != None and max != None:
-                self.range_dict[adverb] = Range(min, max)
+            if min != None:
+                self.min_dict[adverb] = min
+            if max != None:
+                self.max_dict[adverb] = max
+
 
     def __init__(self, name, version):
         self.adverb_dict = {}
         self.input_list = []
         self.output_list = []
-        self.range_dict = {}
+        self.min_dict = {}
+        self.max_dict = {}
         self.strlen_dict = {}
 
         self.name = name
@@ -134,8 +122,10 @@ class _AIPSTaskParams:
             self.adverb_dict = unpickler.load()
             self.input_list = unpickler.load()
             self.output_list = unpickler.load()
-            self.range_dict = unpickler.load()
+            self.min_dict = unpickler.load()
+            self.max_dict = unpickler.load()
             self.strlen_dict = unpickler.load()
+            self.help_dict = unpickler.load()
         except (IOError, EOFError):
             self.__parse(name)
 
@@ -147,7 +137,8 @@ class _AIPSTaskParams:
             pickler.dump(self.adverb_dict)
             pickler.dump(self.input_list)
             pickler.dump(self.output_list)
-            pickler.dump(self.range_dict)
+            pickler.dump(self.min_dict)
+            pickler.dump(self.max_dict)
             pickler.dump(self.strlen_dict)
 
     # Provide a dictionary-like interface to deal with the

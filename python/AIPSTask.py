@@ -42,7 +42,7 @@ UVDATA
 from AIPS import AIPS
 
 # Generic Task implementation.
-from Task import Task, Range, List
+from Task import Task, List
 
 # Generic Python stuff.
 import glob, os, pickle, sys
@@ -107,12 +107,9 @@ class AIPSTask(Task):
         self._adverb_dict = params['adverb_dict']
         self._input_list = params['input_list']
         self._output_list = params['output_list']
-        self._range_dict = params['range_dict']
+        self._min_dict = params['min_dict']
+        self._max_dict = params['max_dict']
         self._strlen_dict = params['strlen_dict']
-        for adverb in self._range_dict:
-            range = self._range_dict[adverb]
-            range = Range(range['min'], range['max'])
-            self._range_dict[adverb] = range
         for adverb in self._adverb_dict:
             if type(self._adverb_dict[adverb]) == list:
                 value = self._adverb_dict[adverb]

@@ -51,21 +51,6 @@ from Proxy.Task import Task
 # Generic Python stuff.
 import fcntl, glob, os, pickle, select, struct, string, pty
 
-# FIXME: Get rid of this.
-class Range:
-    min = 0
-    max = 0
-
-    def __init__(self, min, max):
-        self.min = min
-        self.max = max
-
-    def __getitem__(self, key):
-        return self.__dict__[key]
-
-    def __repr__(self):
-        return "Range(%s, %s)" % (str(self.min), str(self.max))
-
 
 class _ObitTaskParams:
     def __parse(self, name):
@@ -166,15 +151,18 @@ class _ObitTaskParams:
                     self.output_list.append(adverb)
                 if strlen:
                     self.strlen_dict[adverb] = strlen
-                if min != None and max != None:
-                    self.range_dict[adverb] = Task.Range(min, max)
+                if min != None:
+                    self.min_dict[adverb] = min
+                if max != None:
+                    self.max_dict[adverb] = max
 
 
     def __init__(self, name, version):
         self.adverb_dict = {}
         self.input_list = []
         self.output_list = []
-        self.range_dict = {}
+        self.min_dict = {}
+        self.max_dict = {}
         self.strlen_dict = {}
         self.dim_dict = {}
 
@@ -192,7 +180,8 @@ class _ObitTaskParams:
             self.adverb_dict = unpickler.load()
             self.input_list = unpickler.load()
             self.output_list = unpickler.load()
-            self.range_dict = unpickler.load()
+            self.min_dict = unpickler.load()
+            self.max_dict = unpickler.load()
             self.strlen_dict = unpickler.load()
             self.dim_dict = unpickler.load()
         except (IOError, EOFError):
@@ -206,7 +195,8 @@ class _ObitTaskParams:
             pickler.dump(self.adverb_dict)
             pickler.dump(self.input_list)
             pickler.dump(self.output_list)
-            pickler.dump(self.range_dict)
+            pickler.dump(self.min_dict)
+            pickler.dump(self.max_dict)
             pickler.dump(self.strlen_dict)
             pickler.dump(self.dim_dict)
 

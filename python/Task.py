@@ -10,7 +10,8 @@ attributes:
 ...     aparms = 10*[0.0]
 ...     def __init__(self):
 ...         Task.__init__(self)
-...         self._range_dict = {'indisk': Range(0, 4), 'aparms': Range(0, 10)}
+...         self._min_dict = {'indisk': 0, 'aparms': 0}
+...         self._max_dict = {'indisk': 4, 'aparms': 10}
 ...         self._strlen_dict = {'infile': 14}
 ...
 >>> my_task = MyTask()
@@ -87,21 +88,6 @@ TypeError: slice '3:6' changes the array size of attribute 'aparms'
 
 from MinimalMatch import MinimalMatch
 
-class Range:
-    min = 0
-    max = 0
-
-    def __init__(self, min, max):
-        self.min = min
-        self.max = max
-
-    def __getitem__(self, key):
-        return self.__dict__[key]
-
-    def __repr__(self):
-        return "Range(%s, %s)" % (str(self.min), str(self.max))
-
-
 class List(list):
     def __init__(self, task, attr, value):
         self._task = task
@@ -123,7 +109,8 @@ class List(list):
 
 class Task(MinimalMatch):
     def __init__(self):
-        self._range_dict = {}
+        self._min_dict = {}
+        self._max_dict = {}
         self._strlen_dict = {}
 
     def _validateattr(self, attr, value, default):
@@ -154,9 +141,15 @@ class Task(MinimalMatch):
             raise TypeError, msg
 
         # Check range.
-        if attr in self._range_dict:
-            range = self._range_dict[attr]
-            if not range.min <= value <= range.max:
+        if attr in self._min_dict:
+            min = self._min_dict[attr]
+            if not min <= value:
+                msg = "value '%s' is out of range for attribute '%s'" \
+                      % (value, attr)
+                raise ValueError, msg
+        if attr in self._max_dict:
+            max = self._max_dict[attr]
+            if not value <= max:
                 msg = "value '%s' is out of range for attribute '%s'" \
                       % (value, attr)
                 raise ValueError, msg
