@@ -81,8 +81,6 @@ class AIPSTask(Task):
         # Optional arguments.
         if 'version' in kwds:
             self.version = kwds['version']
-        if 'userno' in kwds:
-            self.userno = kwds['userno']
 
         # Update default user number.
         if self.__class__.userno == 0:
