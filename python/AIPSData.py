@@ -9,6 +9,9 @@ from classic AIPS.
 # Global AIPS defaults.
 from AIPS import AIPS
 
+# Generic Python stuff.
+import sys
+
 # This code is way to clever.  Instead of implementing each and every
 # function call provided by a proxy, class _Method implements a
 # callable object that invokes a named method of a proxy, passing a
@@ -19,6 +22,11 @@ from AIPS import AIPS
 # automatically makes it callable as a method of both AIPSImage and
 # AIPSUVData.
 
+def _whoami():
+    """Return the name of the function that called us."""
+    return sys._getframe(1).f_code.co_name
+
+
 class _AIPSDataMethod:
 
     """This class implements dispatching function calls to a proxy."""
@@ -28,8 +36,7 @@ class _AIPSDataMethod:
         self.name = name
 
     def __call__(self, *args):
-        inst = getattr(self.inst.proxy, self.inst.__class__.__name__)
-        func = getattr(inst, self.name)
+        func = self.inst._method(self.name)
         return func(self.inst.desc, *args)
 
 
@@ -68,6 +75,62 @@ class _AIPSData:
     def table(self, type, version):
         return _AIPSTable(self, type, version)
 
+    def _method(self, name):
+        return getattr(getattr(self.proxy, self.__class__.__name__), name)
+
+    def exists(self):
+        """Check whether this image or data set exists.
+
+        Return True if the image or data set exists, False otherwise."""
+        return self._method(_whoami())(self.desc)
+
+    def verify(self):
+        """Verify whether this image or data set can be accesed."""
+        return self._method(_whoami())(self.desc)
+
+    def header(self):
+        """Get the header for this image or data set.
+
+        Returns the header as a dictionary."""
+        return self._method(_whoami())(self.desc)
+
+    def tables(self):
+        """Get the list of extension tables."""
+        return self._method(_whoami())(self.desc)
+
+    def table_highver(self, type):
+        """Get the highest version of an extension table.
+
+        Returns the highst available version number of the extension
+        table TYPE."""
+        return self._method(_whoami())(self.desc, type)
+
+    def zap(self):
+        """Destroy this image or data set."""
+        return self._method(_whoami())(self.desc)
+
+    def header_table(self, type, version):
+        """Get the header of an extension table.
+
+        Returns the header of version VERSION of the extension table
+        TYPE."""
+        return self._method(_whoami())(self.desc, type, version)
+
+    def getrow_table(self, type, version, rowno):
+        """Get a row from an extension table.
+
+        Returns row ROWNO from version VERSION of extension table TYPE
+        as a dictionary."""
+        return self._method(_whoami())(self.desc, type, version, rowno)
+
+    def zap_table(self, type, version):
+        """Destroy an extension table.
+
+        Deletes version VERSION of the extension table TYPE.  If
+        VERSION is 0, delete the highest version of table TYPE.  If
+        VERSION is -1, delete all versions of table TYPE."""
+        return self._method(_whoami())(self.desc, type, version)
+
 
 class AIPSImage(_AIPSData):
 
@@ -90,8 +153,7 @@ class _AIPSTableMethod(_AIPSDataMethod):
         _AIPSDataMethod.__init__(self, inst, name)
 
     def __call__(self, *args):
-        inst = getattr(self.inst.data.proxy, self.inst.data.__class__.__name__)
-        func = getattr(inst, self.name + '_table')
+        func = self.inst.data._method(self.name + '_table')
         return func(self.inst.data.desc,
                     self.inst.name, self.inst.version, *args)
 
