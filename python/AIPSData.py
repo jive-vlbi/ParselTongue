@@ -66,6 +66,27 @@ class _AIPSData:
         self.desc = _AIPSDataDesc(name, klass, AIPS.disks[disk].disk, seq)
         self.proxy = AIPS.disks[disk].proxy()
         self.disk = disk
+        return
+
+    name = property(lambda self: self.desc.name,
+                    doc='Name of this data set.')
+    klass = property(lambda self: self.desc.klass,
+                     doc='Class of this data set.')
+    disk = property(lambda self: self.desc.disk,
+                    doc='Disk where this data set is stored.')
+    seq = property(lambda self: self.desc.seq,
+                   doc='Sequence number of this data set.')
+    userno = property(lambda self: self.desc.userno,
+                      doc='User number used to access this data set.')
+
+    def __repr__(self):
+        repr = "%s('%s', '%s', %d, %d)" % \
+               (self.__class__.__name__,
+                self.name, self.klass, self.disk, self.seq)
+        return repr
+
+    def __str__(self):
+        return self.__repr__()
 
     def __getattr__(self, name):
         if name in self.desc.__dict__:
