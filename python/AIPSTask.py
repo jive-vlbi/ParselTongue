@@ -95,10 +95,8 @@ class AIPSTask(Task):
             try:
                 inst = getattr(proxy, self.__class__.__name__)
                 params = inst.params(name, self.version)
-            finally:
-                pass
-#            except:
-#                continue
+            except:
+                continue
             break
         if not params:
             msg = "%s task '%s' is not available" % (self._package, name)
