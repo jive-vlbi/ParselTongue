@@ -1,0 +1,10 @@
+#! /bin/sh
+
+bindir=`dirname "$0"`
+if test -x $bindir/ParselTongue; then
+    parseltongue=$bindir/ParselTongue
+else
+    parseltongue=ParselTongue
+fi
+
+exec $parseltongue @datadir@/python/XMLRPCServer.py
