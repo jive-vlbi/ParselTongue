@@ -14,9 +14,6 @@ fi
 . $AIPS_VERSION/SYSTEM/UNIX/DADEVS.SH
 . $AIPS_VERSION/SYSTEM/UNIX/PRDEVS.SH
 
-# Make sure the directory for ParselTongue preserves exists.
-test -d $HOME/.ParselTongue || mkdir $HOME/.ParselTongue
-
 # Make sure Python can find the ParselTongue modules.
 if test -z "$PYTHONPATH"; then
     PYTHONPATH=@datadir@/python
