@@ -218,6 +218,9 @@ class AIPSTask(Task):
             if adverb in input_dict:
                 assert(ord(area) <= ord('z'))
                 dirname = os.path.dirname(input_dict[adverb])
+                if not os.path.isdir(dirname):
+                    msg = "Direcory '%s' does not exist" % dirname
+                    raise RuntimeError, msg
                 if dirname:
                     env[area] = dirname
                     input_dict[adverb] = area + ':' + \
