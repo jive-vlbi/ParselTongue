@@ -12,12 +12,15 @@ class Task:
     def __init__(self):
         self._pid = {}
 
-    def spawn(self, path, arglist):
+    def spawn(self, path, args, env=None):
         """Start the task."""
 
         (pid, tid) = pty.fork()
         if pid == 0:
-            os.execv(path, arglist)
+            if env:
+                os.execve(path, args, env)
+            else:
+                os.execv(path, args)
         else:
             fcntl.fcntl(tid, fcntl.F_SETFL, os.O_NONBLOCK)
             self._pid[tid] = pid

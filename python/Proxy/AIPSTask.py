@@ -207,6 +207,18 @@ class AIPSTask(Task):
         popsno = _allocate_popsno()
         index = popsno - 1
 
+        # Construct the environment for the task.  For the 'infile'
+        # and 'outfile' adverbs, we split off the directory component
+        # of the pathname and use that as the FITS and PLOTFILE area.
+        env = os.environ.copy()
+        for adverb in ['infile', 'outfile']:
+            if adverb in input_dict:
+                dirname = os.path.dirname(input_dict[adverb])
+                if dirname:
+                    env['FITS'] = dirname
+                    env['PLOTTER'] = dirname
+                    input_dict[adverb] = os.path.basename(input_dict[adverb])
+
         td_name = os.environ['DA00'] + '/TDD000004;'
         td_file = open(td_name, mode='r+b')
 
@@ -232,7 +244,7 @@ class AIPSTask(Task):
 
         path = os.environ['AIPS_ROOT'] + '/' + params.version + '/' \
                + os.environ['ARCH'] + '/LOAD/' + name.upper() + ".EXE"
-        tid = Task.spawn(self, path, [name.upper() + str(popsno)])
+        tid = Task.spawn(self, path, [name.upper() + str(popsno)], env)
         self._params[tid] = params
         self._popsno[tid] = popsno
         return tid

@@ -71,12 +71,18 @@ class AIPSTask(Task):
     # Default to batch mode.
     isbatch = 32000
 
-    def __init__(self, name):
+    def __init__(self, name, **kwds):
         Task.__init__(self)
         self._name = name
         self._adverb_dict = {}
         self._input_list = []
         self._output_list = []
+
+        # Optional arguments.
+        if 'version' in kwds:
+            self.version = kwds['version']
+        if 'userno' in kwds:
+            self.userno = kwds['userno']
 
         # Update default user number.
         if self.__class__.userno == 0:
@@ -218,7 +224,21 @@ class AIPSTask(Task):
             Task.__setattr__(self, prefix + 'disk', value.disk)
             Task.__setattr__(self, prefix + 'seq', value.seq)
         else:
-            Task.__setattr__(self, name, value)
+            # We treat 'infile' and 'outfile' special.  Instead of
+            # checking the length of the complete string, we only
+            # check the length of the final component of the pathname.
+            # The backend will split of the direcrory component and
+            # use that as an "area".
+            (attr, dict) = self._findattr(name)
+            file_adverbs = ['infile', 'outfile']
+            if attr in file_adverbs and type(value) == str:
+                if len(os.path.basename(value)) > self._strlen_dict[attr]:
+                    msg = "string '%s' is too long for attribute '%s'" \
+                          % (value, attr)
+                    raise ValueError, msg
+                self.__dict__[attr] = value
+            else:
+                Task.__setattr__(self, name, value)
 
 
 # Tests.
