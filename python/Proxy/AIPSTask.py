@@ -211,13 +211,16 @@ class AIPSTask(Task):
         # and 'outfile' adverbs, we split off the directory component
         # of the pathname and use that as the FITS and PLOTFILE area.
         env = os.environ.copy()
+        area = 'a'
         for adverb in ['infile', 'outfile']:
             if adverb in input_dict:
+                assert(ord(area) <= ord('z'))
                 dirname = os.path.dirname(input_dict[adverb])
                 if dirname:
-                    env['FITS'] = dirname
-                    env['PLOTTER'] = dirname
-                    input_dict[adverb] = os.path.basename(input_dict[adverb])
+                    env[area] = dirname
+                    input_dict[adverb] = area + ':' + \
+                                         os.path.basename(input_dict[adverb])
+                    area = chr(ord(area) + 1)
 
         td_name = os.environ['DA00'] + '/TDD000004;'
         td_file = open(td_name, mode='r+b')

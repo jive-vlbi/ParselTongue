@@ -231,8 +231,9 @@ class AIPSTask(Task):
             # use that as an "area".
             (attr, dict) = self._findattr(name)
             file_adverbs = ['infile', 'outfile']
-            if attr in file_adverbs and type(value) == str:
-                if len(os.path.basename(value)) > self._strlen_dict[attr]:
+            if attr in file_adverbs and type(value) == str and \
+                   os.path.dirname(value):
+                if len(os.path.basename(value)) > self._strlen_dict[attr] - 2:
                     msg = "string '%s' is too long for attribute '%s'" \
                           % (value, attr)
                     raise ValueError, msg
