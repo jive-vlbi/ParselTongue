@@ -1,5 +1,18 @@
+"""
+
+This module provides the AIPSDisk and AIPS classes.  Together they
+provide some basic infrastructure used by the AIPSTask and AIPSData
+modules.
+
+"""
+
+# Generic Python stuff.
+import os
+
+# Available proxies.
 import LocalProxy
 from xmlrpclib import ServerProxy
+
 
 class AIPSDisk:
     
@@ -20,6 +33,7 @@ class AIPSDisk:
         else:
             return LocalProxy
 
+
 class AIPS:
     
     """Container for several AIPS-related default values."""
@@ -27,12 +41,16 @@ class AIPS:
     # Default AIPS user ID.
     userno = 0
 
-    # AIPS disk mapping. 
-    disks = [ None,                      # Disk numbers are one-based.
-              AIPSDisk(None, 1),
-              AIPSDisk(None, 2),
-              AIPSDisk('http://localhost:8000', 1),
-              AIPSDisk('http://localhost:8000', 2) ]
-
     # List of available proxies.
-    proxies = [ LocalProxy, ServerProxy('http://localhost:8000') ]
+    proxies = [ LocalProxy ]
+
+    # AIPS disk mapping. 
+    disks = [ None ]                    # Disk numbers are one-based.
+
+    # Who will ever need more than 9 AIPS disks?    
+    for disk in xrange(1, 10):
+        area = 'DA%02d' % disk
+        if not area in os.environ:
+            break
+        disks.append(AIPSDisk(None, 1))
+        continue
