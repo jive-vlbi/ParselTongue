@@ -178,14 +178,21 @@ class AIPSTask(Task):
         return (proxy, tid)
 
     def finished(self, proxy, tid):
+        """Determine whether the task specified by PROXY and TID has
+        finished."""
         inst = getattr(proxy, self.__class__.__name__)
         return inst.finished(tid)
 
     def messages(self, proxy, tid):
+        """Return messages for the task specified by PROXY and TID to
+        finish."""
+
         inst = getattr(proxy, self.__class__.__name__)
         return inst.messages(tid)
 
     def wait(self, proxy, tid):
+        """Wait for the task specified by PROXY and TID to finish."""
+
         while not self.finished(proxy, tid):
             self.messages(proxy, tid)
         inst = getattr(proxy, self.__class__.__name__)
