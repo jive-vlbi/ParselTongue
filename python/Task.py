@@ -5,13 +5,14 @@ attributes:
 
 >>> class MyTask(Task):
 ...     indisk = 0
+...     inseq  = 0
 ...     infile = ''
 ...     pixavg = 1.0
 ...     aparms = 10*[0.0]
 ...     def __init__(self):
 ...         Task.__init__(self)
-...         self._min_dict = {'indisk': 0, 'aparms': 0}
-...         self._max_dict = {'indisk': 4, 'aparms': 10}
+...         self._min_dict = {'inseq': 0, 'aparms': 0}
+...         self._max_dict = {'inseq': 4, 'aparms': 10}
 ...         self._strlen_dict = {'infile': 14}
 ...         self.__dict__['bparms'] = List(self, 'bparms', [None, 1, 2, 3])
 ...
@@ -28,10 +29,10 @@ It still has the property that attribute names can be abbreviated:
 But an exception will be thrown if you try to assign a value that is
 out of range:
 
->>> my_task.ind = 5
+>>> my_task.ins = 5
 Traceback (most recent call last):
   ...
-ValueError: value '5' is out of range for attribute 'indisk'
+ValueError: value '5' is out of range for attribute 'inseq'
 
 Or if you try to assign a value that has the wrong type, such
 assigning a string to an integer attribute:
@@ -180,13 +181,13 @@ class Task(MinimalMatch):
             raise TypeError, msg
 
         # Check range.
-        if default and attr in self._min_dict:
+        if attr in self._min_dict:
             min = self._min_dict[attr]
             if not min <= value:
                 msg = "value '%s' is out of range for attribute '%s'" \
                       % (value, attr)
                 raise ValueError, msg
-        if default and attr in self._max_dict:
+        if attr in self._max_dict:
             max = self._max_dict[attr]
             if not value <= max:
                 msg = "value '%s' is out of range for attribute '%s'" \
@@ -194,7 +195,7 @@ class Task(MinimalMatch):
                 raise ValueError, msg
 
         # Check string length.
-        if default and attr in self._strlen_dict:
+        if attr in self._strlen_dict:
             if len(value) > self._strlen_dict[attr]:
                 msg = "string '%s' is too long for attribute '%s'" \
                       % (value, attr)
