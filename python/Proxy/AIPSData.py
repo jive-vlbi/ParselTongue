@@ -16,6 +16,17 @@ class AIPSData:
         self.sys = OSystem.OSystem("ParselTongue", 1, 1, -1, [], -1, [],
                                    True, False, self.err)
 
+    def exists(self, desc):
+        try:
+            self._init(desc)
+        except:
+            return False
+        return True
+
+    def verify(self, desc):
+        self._init(desc)
+        return True                # Return something other than None.
+
     def header(self, desc):
         data = self._init(desc)
         return data.Desc.Dict
