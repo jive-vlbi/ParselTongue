@@ -214,7 +214,7 @@ class AIPSTask(Task):
             if msg:
                 messages.append(msg)
                 sys.stdout.write(msg)
-            else:
+            elif sys.stdout.isatty():
                 sys.stdout.write(rotator[count % 4])
                 sys.stdout.flush()
                 pass
