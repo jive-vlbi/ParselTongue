@@ -81,11 +81,11 @@ class _AIPSData:
     def exists(self):
         """Check whether this image or data set exists.
 
-        Return True if the image or data set exists, False otherwise."""
+        Returns True if the image or data set exists, False otherwise."""
         return self._method(_whoami())(self.desc)
 
     def verify(self):
-        """Verify whether this image or data set can be accesed."""
+        """Verify whether this image or data set can be accessed."""
         return self._method(_whoami())(self.desc)
 
     def header(self):
@@ -101,7 +101,7 @@ class _AIPSData:
     def table_highver(self, type):
         """Get the highest version of an extension table.
 
-        Returns the highst available version number of the extension
+        Returns the highest available version number of the extension
         table TYPE."""
         return self._method(_whoami())(self.desc, type)
 
