@@ -230,13 +230,13 @@ class AIPSTask(Task):
             Task.__setattr__(self, prefix + 'disk', value.disk)
             Task.__setattr__(self, prefix + 'seq', value.seq)
         else:
-            # We treat 'infile' and 'outfile' special.  Instead of
-            # checking the length of the complete string, we only
-            # check the length of the final component of the pathname.
-            # The backend will split of the direcrory component and
-            # use that as an "area".
+            # We treat 'infile', 'outfile' and 'outprint' special.
+            # Instead of checking the length of the complete string,
+            # we only check the length of the final component of the
+            # pathname.  The backend will split of the direcrory
+            # component and use that as an "area".
             (attr, dict) = self._findattr(name)
-            file_adverbs = ['infile', 'outfile']
+            file_adverbs = ['infile', 'outfile', 'outprint']
             if attr in file_adverbs and type(value) == str and \
                    os.path.dirname(value):
                 if len(os.path.basename(value)) > self._strlen_dict[attr] - 2:

@@ -209,12 +209,12 @@ class AIPSTask(Task):
         popsno = _allocate_popsno()
         index = popsno - 1
 
-        # Construct the environment for the task.  For the 'infile'
-        # and 'outfile' adverbs, we split off the directory component
-        # of the pathname and use that as the FITS and PLOTFILE area.
+        # Construct the environment for the task.  For the 'infile',
+        # 'outfile' and 'outprint' adverbs, we split off the directory
+        # component of the pathname and use that as the area.
         env = os.environ.copy()
         area = 'a'
-        for adverb in ['infile', 'outfile']:
+        for adverb in ['infile', 'outfile', 'outprint']:
             if adverb in input_dict:
                 assert(ord(area) <= ord('z'))
                 dirname = os.path.dirname(input_dict[adverb])
