@@ -169,6 +169,9 @@ class AIPSTask(Task):
                     raise RuntimeError, \
                           "AIPS disks are not on the same machine"
                 input_dict[adverb] = float(AIPS.disks[disk].disk)
+        if not proxy:
+            rainse RuntimeError, \
+                   "Unable to determine where to execute task"
 
         inst = getattr(proxy, self.__class__.__name__)
         tid = inst.spawn(self._name, self.version, self.userno,
