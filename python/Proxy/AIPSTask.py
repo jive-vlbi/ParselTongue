@@ -28,6 +28,8 @@ class _AIPSTaskParams:
         path = os.environ['AIPS_ROOT'] + '/' + self.version + '/HELP/' \
                + name.upper() + '.HLP'
         input = open(path)
+
+        # Parse INPUTS section.
         for line in input:
             # A line of dashes terminates the parameter definitions.
             if line.startswith('--------'):
@@ -99,6 +101,13 @@ class _AIPSTaskParams:
             if max != None:
                 self.max_dict[adverb] = max
 
+        # Parse HELP section.
+        for line in input:
+            # A line of dashes terminates the help message.
+            if line.startswith('--------'):
+                break;
+
+            self.help_string = self.help_string + line
 
     def __init__(self, name, version):
         self.adverb_dict = {}
@@ -107,6 +116,7 @@ class _AIPSTaskParams:
         self.min_dict = {}
         self.max_dict = {}
         self.strlen_dict = {}
+        self.help_string = ''
 
         self.name = name
         if version in ['OLD', 'NEW', 'TST']:
@@ -125,7 +135,7 @@ class _AIPSTaskParams:
             self.min_dict = unpickler.load()
             self.max_dict = unpickler.load()
             self.strlen_dict = unpickler.load()
-            self.help_dict = unpickler.load()
+            self.help_string = unpickler.load()
         except (IOError, EOFError):
             self.__parse(name)
 
@@ -140,6 +150,7 @@ class _AIPSTaskParams:
             pickler.dump(self.min_dict)
             pickler.dump(self.max_dict)
             pickler.dump(self.strlen_dict)
+            pickler.dump(self.help_string)
 
     # Provide a dictionary-like interface to deal with the
     # idiosyncrasies of XML-RPC.

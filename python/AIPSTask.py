@@ -110,6 +110,7 @@ class AIPSTask(Task):
         self._min_dict = params['min_dict']
         self._max_dict = params['max_dict']
         self._strlen_dict = params['strlen_dict']
+        self._help_string = params['help_string']
         for adverb in self._adverb_dict:
             if type(self._adverb_dict[adverb]) == list:
                 value = self._adverb_dict[adverb]

@@ -88,6 +88,9 @@ TypeError: slice '3:6' changes the array size of attribute 'aparms'
 
 from MinimalMatch import MinimalMatch
 
+# Generic Python stuff
+import pydoc
+
 class List(list):
     def __init__(self, task, attr, value):
         self._task = task
@@ -112,6 +115,13 @@ class Task(MinimalMatch):
         self._min_dict = {}
         self._max_dict = {}
         self._strlen_dict = {}
+        self._help_string = ''
+
+    def help(self):
+        """Display help for this task."""
+
+        if self._help_string:
+            pydoc.pager(self._help_string)
 
     def _validateattr(self, attr, value, default):
         """Check whether VALUE is a valid valid for attribute ATTR."""
