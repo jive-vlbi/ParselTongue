@@ -14,7 +14,8 @@ CLEANFILES = $(bin_SCRIPTS)
 
 edit = sed \
 	-e 's,@datadir\@,$(pkgdatadir),g' \
-	-e 's,@PYTHON\@,$(PYTHON),g'
+	-e 's,@PYTHON\@,$(PYTHON),g' \
+	-e 's,@OBIT_PYTHONPATH\@,$(OBIT_PYTHONPATH),g'
 
 ## All the files below depend on Makefile so that they are rebuilt
 ## when prefix etc. changes.
