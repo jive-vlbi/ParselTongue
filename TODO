@@ -1,7 +1,8 @@
 * Implement functionality for interactive use:
 
-  help()
   tput()
   tget()
 
 * Alternative POPSDAT.HLP.
+
+* Revive Obit support.
