@@ -88,7 +88,7 @@ class _AIPSTaskParams:
                             match_key = key
             if not match_key:
                 match_key = key
-            self.adverb_dict[adverb] = popsdat.default_dict[match_key]
+            self.default_dict[adverb] = popsdat.default_dict[match_key]
 
             if code in ' *&$':
                 self.input_list.append(adverb)
@@ -110,7 +110,7 @@ class _AIPSTaskParams:
             self.help_string = self.help_string + line
 
     def __init__(self, name, version):
-        self.adverb_dict = {}
+        self.default_dict = {}
         self.input_list = []
         self.output_list = []
         self.min_dict = {}
@@ -129,7 +129,7 @@ class _AIPSTaskParams:
 
         try:
             unpickler = pickle.Unpickler(open(path))
-            self.adverb_dict = unpickler.load()
+            self.default_dict = unpickler.load()
             self.input_list = unpickler.load()
             self.output_list = unpickler.load()
             self.min_dict = unpickler.load()
@@ -144,7 +144,7 @@ class _AIPSTaskParams:
                 os.makedirs(os.path.dirname(path))
 
             pickler = pickle.Pickler(open(path, mode='w'))
-            pickler.dump(self.adverb_dict)
+            pickler.dump(self.default_dict)
             pickler.dump(self.input_list)
             pickler.dump(self.output_list)
             pickler.dump(self.min_dict)
@@ -180,7 +180,7 @@ class AIPSTask(Task):
             fmt = "%ds" % strlen
             file.write(struct.pack(fmt, value.ljust(strlen)))
         elif type(value) == list:
-            for subvalue in value:
+            for subvalue in value[1:]:
                 self.__write_adverb(params, file, adverb, subvalue)
         else:
             raise AssertionError, type(value)
@@ -190,7 +190,7 @@ class AIPSTask(Task):
 
         assert(adverb in params.output_list)
 
-        value = params.adverb_dict[adverb]
+        value = params.default_dict[adverb]
         if type(value) == float:
             (value,) = struct.unpack('f', file.read(4))
         elif type(value) == str:

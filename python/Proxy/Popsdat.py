@@ -39,11 +39,12 @@ class Popsdat:
                 dimensions = int(split_line[3])
                 if dimensions == 1:     # Vector of floats.
                     length = int(float(split_line[4]))
-                    self.default_dict[name] = length * [0.0]
+                    self.default_dict[name] = [None] + length * [0.0]
                 elif dimensions == 2:   # Matrix of floats.
                     dimy = int(float(split_line[4]))
                     dimx = int(float(split_line[5]))
-                    self.default_dict[name] = dimx * [ dimy * [0.0]]
+                    self.default_dict[name] = [None] \
+                                              + dimx * [[None] + dimy * [0.0]]
                 else:
                     raise AssertionError
             elif type == 4:             # Verb
@@ -57,7 +58,7 @@ class Popsdat:
                     self.default_dict[name] = ''
                 elif dimensions == 2:   # Vector of strings.
                     length = int(float(split_line[5]))
-                    self.default_dict[name] = length * ['']
+                    self.default_dict[name] = [None] + length * ['']
                 else:
                     raise AssertionError
             else:

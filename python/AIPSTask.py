@@ -32,9 +32,13 @@ ValueError: value '10.0' is out of range for attribute 'indisk'
 >>> print imean.inclass
 UVDATA
 
->>> imean.blc[0:2] = [128, 128]
+>>> imean.blc[1:] = [128, 128]
 >>> print imean.blc
-[128.0, 128.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+[None, 128.0, 128.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+>>> imean.blc = AIPSList([256, 256])
+>>> print imean.blc
+[None, 256.0, 256.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
 """
 
@@ -74,7 +78,6 @@ class AIPSTask(Task):
     def __init__(self, name, **kwds):
         Task.__init__(self)
         self._name = name
-        self._adverb_dict = {}
         self._input_list = []
         self._output_list = []
 
@@ -102,24 +105,24 @@ class AIPSTask(Task):
 
         # The XML-RPC proxy will return the details as a dictionary,
         # not a class.
-        self._adverb_dict = params['adverb_dict']
+        self._default_dict = params['default_dict']
         self._input_list = params['input_list']
         self._output_list = params['output_list']
         self._min_dict = params['min_dict']
         self._max_dict = params['max_dict']
         self._strlen_dict = params['strlen_dict']
         self._help_string = params['help_string']
-        for adverb in self._adverb_dict:
-            if type(self._adverb_dict[adverb]) == list:
-                value = self._adverb_dict[adverb]
-                self._adverb_dict[adverb] = List(self, adverb, value)
+        for adverb in self._default_dict:
+            if type(self._default_dict[adverb]) == list:
+                value = self._default_dict[adverb]
+                self._default_dict[adverb] = List(self, adverb, value)
 
         # Initialize all adverbs to their default values.
-        self.__dict__.update(self._adverb_dict)
+        self.__dict__.update(self._default_dict)
 
     def defaults(self):
         """Set adverbs to their defaults."""
-        self.__dict__.update(self._adverb_dict)
+        self.__dict__.update(self._default_dict)
 
     def __display_adverbs(self, adverbs):
         """Display ADVERBS."""
@@ -244,6 +247,17 @@ class AIPSTask(Task):
                 self.__dict__[attr] = value
             else:
                 Task.__setattr__(self, name, value)
+
+
+def AIPSList(list):
+    """Transform a Python array into an AIPS array.
+
+    Returns a list suitable for using 1-based indices.
+    """
+
+    _list = [None]
+    _list.extend(list)
+    return _list
 
 
 # Tests.

@@ -13,6 +13,7 @@ attributes:
 ...         self._min_dict = {'indisk': 0, 'aparms': 0}
 ...         self._max_dict = {'indisk': 4, 'aparms': 10}
 ...         self._strlen_dict = {'infile': 14}
+...         self.__dict__['bparms'] = List(self, 'bparms', [None, 1, 2, 3])
 ...
 >>> my_task = MyTask()
 
@@ -84,34 +85,57 @@ Traceback (most recent call last):
   ...
 TypeError: slice '3:6' changes the array size of attribute 'aparms'
 
+To provide 1-based indexing used by several packages, you can set the
+element at index zero of an array to 'None'.  This prevents setting that
+element to anything other than 'None'
+
+>>> my_task.bparms[0] = 0
+Traceback (most recent call last):
+  ...
+ValueError: setting element '0' is prohibited
+
 """
 
 from MinimalMatch import MinimalMatch
 
 # Generic Python stuff
-import pydoc
+import pydoc, sys
 
 class List(list):
     def __init__(self, task, attr, value):
         self._task = task
         self._attr = attr
         list.extend(self, value)
+        return
 
     def __setitem__(self, key, item):
+        if item != None and self[key] == None:
+            msg = "setting element '%d' is prohibited" % key
+            raise ValueError, msg
         item = self._task._validateattr(self._attr, item, self[key])
         list.__setitem__(self, key, item)
+        return
 
     def __setslice__(self, low, high, seq):
-        if not high - low == len(seq):
+        high = min (high, len(self))
+        if len(seq) > high - low or \
+               (len(seq) < high - low and high < len(self)):
             msg = "slice '%d:%d' changes the array size of" \
                   " attribute '%s'" % (low, high, self._attr)
             raise TypeError, msg
         for key in xrange(low, high):
-            self[key] = seq[key - low]
+            if key - low < len(seq):
+                self[key] = seq[key - low]
+            else:
+                self[key] = self._task._default_dict[self._attr][key]
+                pass
+            continue
+        return
 
 
 class Task(MinimalMatch):
     def __init__(self):
+        self._default_dict = {}
         self._min_dict = {}
         self._max_dict = {}
         self._strlen_dict = {}
@@ -130,15 +154,20 @@ class Task(MinimalMatch):
         if attr.startswith('_'):
             return value
 
+        # Short circuit.
+        if value == None and default == None:
+            return value
+
         # Handle lists recursively.
         if isinstance(value, list) and isinstance(default, list):
-            if len(value) != len(default):
-                msg = "value '%s' does not match array size of" \
-                      " attribute '%s'" % (value, attr)
+            if len(value) > len(default):
+                msg = "array '%s' is too big for attribute '%s'" \
+                      % (value, attr)
                 raise TypeError, msg
+            validated_value = List(self, attr, default)
             for key in xrange(len(value)):
-                value[key] = self._validateattr(attr, value[key], default[key])
-            return List(self, attr, value)
+                validated_value[key] = value[key]
+            return validated_value
 
         # Convert integers into floating point numbers if necessary.
         if type(value) == int and type(default) == float:
@@ -151,13 +180,13 @@ class Task(MinimalMatch):
             raise TypeError, msg
 
         # Check range.
-        if attr in self._min_dict:
+        if default and attr in self._min_dict:
             min = self._min_dict[attr]
             if not min <= value:
                 msg = "value '%s' is out of range for attribute '%s'" \
                       % (value, attr)
                 raise ValueError, msg
-        if attr in self._max_dict:
+        if default and attr in self._max_dict:
             max = self._max_dict[attr]
             if not value <= max:
                 msg = "value '%s' is out of range for attribute '%s'" \
@@ -165,7 +194,7 @@ class Task(MinimalMatch):
                 raise ValueError, msg
 
         # Check string length.
-        if attr in self._strlen_dict:
+        if default and attr in self._strlen_dict:
             if len(value) > self._strlen_dict[attr]:
                 msg = "string '%s' is too long for attribute '%s'" \
                       % (value, attr)
