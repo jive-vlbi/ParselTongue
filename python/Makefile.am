@@ -1,0 +1,11 @@
+## Process this file with automake to create Makefile.in.
+
+SUBDIRS = Proxy
+
+pythonlibdir = $(pkgdatadir)/python
+dist_pythonlib_PYTHON = \
+	MinimalMatch.py Task.py \
+	AIPS.py AIPSTask.py AIPSData.py \
+	ObitTask.py \
+	LocalProxy.py XMLRPCServer.py \
+	ParselTongue.py ptcompleter.py

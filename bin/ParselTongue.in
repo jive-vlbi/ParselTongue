@@ -1,0 +1,31 @@
+#! /bin/sh
+
+# Check whether AIPS is available.
+if test -z "$AIPS_ROOT"; then
+    echo "$0: cannot proceed, AIPS_ROOT not defined"
+    exit 1
+fi
+
+# Make AIPS data disks and printers available.
+if test -z "$DADEVS_QUIET"; then
+    DADEVS_QUIET=YES
+    export DADEVS_QUIET
+fi
+. $AIPS_VERSION/SYSTEM/UNIX/DADEVS.SH
+. $AIPS_VERSION/SYSTEM/UNIX/PRDEVS.SH
+
+# Make sure the directory for ParselTongue preserves exists.
+test -d $HOME/.ParselTongue || mkdir $HOME/.ParselTongue
+
+# Make sure python can find the ParselTongue modules.
+if test -z "$PYTHONPATH"; then
+    PYTHONPATH=@datadir@/python
+else
+    PYTHONPATH=$PYTHONPATH:@datadir@/python
+fi
+
+# Run Parseltongue.py for interactive sessions
+PYTHONSTARTUP=@datadir@/python/ParselTongue.py
+export PYTHONPATH PYTHONSTARTUP
+
+exec @PYTHON@ "$@"
