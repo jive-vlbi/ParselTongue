@@ -206,20 +206,25 @@ class AIPSTask(Task):
         """Run the task."""
 
         (proxy, tid) = self.spawn()
+        messages = []
         count = 0
         rotator = ['|\b', '/\b', '-\b', '\\\b']
         while not self.finished(proxy, tid):
             msg = self.messages(proxy, tid)
             if msg:
+                messages.append(msg)
                 sys.stdout.write(msg)
             else:
                 sys.stdout.write(rotator[count % 4])
                 sys.stdout.flush()
+                pass
             count += 1
-        return self.wait(proxy, tid)
+            continue
+        self.wait(proxy, tid)
+        return messages
 
     def __call__(self):
-        self.go()
+        return self.go()
 
     def __setattr__(self, name, value):
         data_adverbs = ['indata', 'outdata',
