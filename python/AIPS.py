@@ -41,6 +41,9 @@ class AIPS:
     # Default AIPS user ID.
     userno = 0
 
+    # Default AIPS systen format revision.
+    revision = 'D'
+
     # List of available proxies.
     proxies = [ LocalProxy ]
 
