@@ -5,6 +5,9 @@ proxy object.
 
 """
 
+# Global AIPS defaults.
+from AIPS import AIPS
+
 # The results from parsing POPSDAT.HLP.
 from Proxy.Popsdat import Popsdat
 
@@ -227,7 +230,7 @@ class AIPSTask(Task):
                                          os.path.basename(input_dict[adverb])
                     area = chr(ord(area) + 1)
 
-        td_name = os.environ['DA00'] + '/TDD000004;'
+        td_name = os.environ['DA00'] + '/TD' + AIPS.revision + '000004;'
         td_file = open(td_name, mode='r+b')
 
         td_file.seek(index * 20)
