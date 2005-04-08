@@ -6,7 +6,7 @@ proxy object.
 """
 
 # Global AIPS defaults.
-from AIPS import AIPS
+from Proxy.AIPS import AIPS
 
 # The results from parsing POPSDAT.HLP.
 from Proxy.Popsdat import Popsdat
