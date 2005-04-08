@@ -6,7 +6,7 @@ proxy object.
 """
 
 # Global AIPS defaults.
-from Proxy.AIPS import AIPS
+from Proxy.AIPS import AIPS, ehex
 
 # The results from parsing POPSDAT.HLP.
 from Proxy.Popsdat import Popsdat
@@ -166,6 +166,9 @@ class AIPSTask(Task):
         Task.__init__(self)
         self._params = {}
         self._popsno = {}
+        self._userno = {}
+        self._msgno = {}
+        self._msgkill = {}
 
     def params(self, name, version):
         """Return parameter set for version VERSION of task NAME."""
@@ -253,12 +256,62 @@ class AIPSTask(Task):
 
         td_file.close()
 
+        user = ehex(userno, 3, 0)
+        ms_name = os.environ['DA01'] + '/MS' + AIPS.revision \
+                  + user + '000.' + user + ';'
+        ms_file = open(ms_name, mode='r')
+        (msgno,) = struct.unpack('i', ms_file.read(4))
+        ms_file.close()
+
         path = os.environ['AIPS_ROOT'] + '/' + params.version + '/' \
                + os.environ['ARCH'] + '/LOAD/' + name.upper() + ".EXE"
         tid = Task.spawn(self, path, [name.upper() + str(popsno)], env)
         self._params[tid] = params
         self._popsno[tid] = popsno
+        self._userno[tid] = userno
+        self._msgkill[tid] = msgkill
+        self._msgno[tid] = msgno
         return tid
+
+    def __read_message(self, file, msgno):
+        file.seek((msgno / 10) * 1024 + 8 + (msgno % 10) * 100)
+        (tmp, task, message) = struct.unpack('i8x5s3x80s', file.read(100))
+        (popsno, priority) = (tmp / 16, tmp % 16)
+        task = task.rstrip()
+        message = message.rstrip()
+        return (task, popsno, priority, message)
+
+    def messages(self, tid):
+        """Return task's messages."""
+
+        # Make sure we read the messages, even if we throw them away
+        # later to prevent the task from blocking.
+        messages = Task.messages(self, tid)
+
+        if self._msgkill != 0:
+            messages = ''
+
+            user = ehex(self._userno[tid], 3, 0)
+            ms_name = os.environ['DA01'] + '/MS' + AIPS.revision \
+                      + user + '000.' + user + ';'
+            ms_file = open(ms_name, mode='r')
+
+            (msgno,) = struct.unpack('i', ms_file.read(4))
+            while self._msgno[tid] < msgno:
+                (task, popsno, priority, message) = \
+                       self.__read_message(ms_file, self._msgno[tid])
+                # Filter
+                if popsno == self._popsno[tid] \
+                       and priority > abs(self._msgkill[tid]):
+                    messages += '%s%d: %s\n' % (task, popsno, message)
+                    pass
+                self._msgno[tid] += 1
+                continue
+
+            ms_file.close()
+            pass
+
+        return messages
 
     def wait(self, tid):
         """Wait for the task to finish."""
@@ -289,6 +342,8 @@ class AIPSTask(Task):
 
         del self._params[tid]
         del self._popsno[tid]
+        del self._userno[tid]
+        del self._msgno[tid]
         Task.wait(self, tid)
 
         return output_dict
