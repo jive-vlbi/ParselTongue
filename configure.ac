@@ -36,5 +36,5 @@ AC_SUBST(OBIT_PYTHONPATH)
 ## Conclusion.  ##
 ## ------------ ##
 
-AC_CONFIG_FILES(Makefile)
+AC_CONFIG_FILES([Makefile doc/Makefile])
 AC_OUTPUT
