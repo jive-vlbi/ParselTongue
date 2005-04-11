@@ -124,6 +124,7 @@ determine what tasks and adverbs are available.
 <section>
 <title>Scripting</title>
 
+<para>
 The <command>ParselTongue</command> can also be used to start scripts
 directly from the command line
 <screen>
@@ -150,6 +151,7 @@ your &aips; number so you have to set it in your script
 <programlisting>
 AIPS.userno = 666
 </programlisting>
+</para>
 
 </section>
 
@@ -253,6 +255,10 @@ Traceback (most recent call last):
   ...
 ValueError: string 'THIS_STRING_IS_TOO_LONG' is too long for attribute 'inname'
 </screen>
+
+This makes sure you learn about your mistakes as early as possible and
+not when some task falls over with a possibly misterious error
+message.
 </para>
 
 <section>
@@ -312,12 +318,13 @@ length
 <prompt>&gt;&gt;&gt;</prompt> <command>print imean.trc</command>
 [None, 512.0, 512.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 </screen>
-
 </para>
+
 </section>
 
 <section>
 <title>Special attributes</title>
+
 <para>
 It is good to know that some attributes get special treatment
 
@@ -339,18 +346,18 @@ not require more than 46 characters.  This works with all versions of
 &aips;, even with versions older than <literal>31DEC02</literal>.
 
 <tip>
-<para>
 
+<para>
 If you don't specify an area or directory for the
 <varname>outfile</varname> and <varname>outprint</varname> attributes,
 &aips; will place the output file in seemingly random locations.  If
 you want these files to end up in the directory from where you run
 your script, you can prepend <filename>./</filename> to the filename.
-
 </para>
+
 </tip>
-
 </para>
+
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -360,16 +367,16 @@ your script, you can prepend <filename>./</filename> to the filename.
 <varname>in4data</varname>, <varname>out2data</varname>
 </term>
 <listitem>
-<para>
 
+<para>
 Having to specify all four of name, class, disk and sequence number to
 refer to a work file can be a bit of a pain.  To make life a we bit
 easier, &pt; provides these data attributes.  If you have a
 &pt;<markup> </markup> &aips; data object (see <xref linkend="data"/>)
 you can use it to set these attributes, which set name, class, disk
 and sequence number in one go.
-
 </para>
+
 </listitem>
 </varlistentry>
 </variablelist>
@@ -454,7 +461,6 @@ SL'</literal>) can also be deleted.  So the following lines
 </screen>
 
 can be used to throw away all previously made plots.
-
 </para>
 
 </chapter>
