@@ -293,7 +293,7 @@ class AIPSTask(Task):
         start = self._params[tid].name.upper() + str(self._popsno[tid])
         messages = [msg for msg in messages if not msg.startswith(start)]
 
-        messages = [(-1, msg) for msg in messages]
+        messages = [(1, msg) for msg in messages]
 
         user = ehex(self._userno[tid], 3, 0)
         ms_name = os.environ['DA01'] + '/MS' + AIPS.revision \
