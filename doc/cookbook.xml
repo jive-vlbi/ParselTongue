@@ -379,6 +379,30 @@ and sequence number in one go.
 
 </listitem>
 </varlistentry>
+<varlistentry>
+<term>
+<varname>msgkill</varname>
+</term>
+<listitem>
+
+<para>
+&aips; can be quite chatty, and in long running scripts it may be
+desirable that only messages about serious problems are displayed.
+&aips; itself provides the <command>MSGKILL</command> pseudoverb and
+&pt; gives you the opportunity to set it, either on per-task basis or
+globally as an attribute of the <classname>AIPSTask</classname>.
+Unfortunately, setting <command>MSGKILL</command> has the drawback
+that suppressed messages are forever lost and &aips; discourages you
+from using it.  However, in &pt; you can set the
+<varname>msgkill</varname> attribute to a negative value.  This will
+prevent messages from being displayed on the terminal, as if you set
+<command>MSGKILL</command> to the absolute value of the attribute, but
+the suppressed messages will still go to the &aips; message file.
+This way you can always inspect them later if the need arises.
+</para>
+
+</listitem>
+</varlistentry>
 </variablelist>
 </para>
 
