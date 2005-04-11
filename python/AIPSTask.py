@@ -226,6 +226,9 @@ class AIPSTask(Task):
             count += 1
             continue
         self.wait(proxy, tid)
+        if AIPS.log:
+            for message in log:
+                AIPS.log.write('%s\n' % message)
         return log
 
     def __call__(self):

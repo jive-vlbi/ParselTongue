@@ -54,3 +54,6 @@ class AIPS:
             break
         disks.append(AIPSDisk(None, 1))
         continue
+
+    # Message log.
+    log = None
