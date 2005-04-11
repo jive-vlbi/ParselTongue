@@ -1,6 +1,6 @@
 ## Process this file with automake to create Makefile.in.
 
-SUBDIRS = Proxy
+SUBDIRS = Proxy Wizardry
 
 pythonlibdir = $(pkgdatadir)/python
 dist_pythonlib_PYTHON = \
