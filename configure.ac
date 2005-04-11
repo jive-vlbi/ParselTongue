@@ -17,7 +17,8 @@ AC_CONFIG_FILES(bin/Makefile)
 ## -------- ##
 
 AM_PATH_PYTHON(2.2)
-AC_CONFIG_FILES([python/Makefile python/Proxy/Makefile test/Makefile])
+AC_CONFIG_FILES([python/Makefile python/Proxy/Makefile
+                 python/Wizardry/Makefile test/Makefile])
 
 ## ----- ##
 ## Obit. ##
