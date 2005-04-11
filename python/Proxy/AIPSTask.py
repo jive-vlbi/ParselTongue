@@ -286,31 +286,32 @@ class AIPSTask(Task):
 
         # Make sure we read the messages, even if we throw them away
         # later to prevent the task from blocking.
-        messages = Task.messages(self, tid)
+        messages = Task.messages(self, tid).split('\r\n')
+        messages = [msg for msg in messages if msg]
 
-        if self._msgkill != 0:
-            messages = ''
+        # Strip out all formal messages.
+        start = self._params[tid].name.upper() + str(self._popsno[tid])
+        messages = [msg for msg in messages if not msg.startswith(start)]
 
-            user = ehex(self._userno[tid], 3, 0)
-            ms_name = os.environ['DA01'] + '/MS' + AIPS.revision \
-                      + user + '000.' + user + ';'
-            ms_file = open(ms_name, mode='r')
+        messages = [(-1, msg) for msg in messages]
 
-            (msgno,) = struct.unpack('i', ms_file.read(4))
-            while self._msgno[tid] < msgno:
-                (task, popsno, priority, message) = \
-                       self.__read_message(ms_file, self._msgno[tid])
-                # Filter
-                if popsno == self._popsno[tid] \
-                       and priority > abs(self._msgkill[tid]):
-                    messages += '%s%d: %s\n' % (task, popsno, message)
-                    pass
-                self._msgno[tid] += 1
-                continue
+        user = ehex(self._userno[tid], 3, 0)
+        ms_name = os.environ['DA01'] + '/MS' + AIPS.revision \
+                  + user + '000.' + user + ';'
+        ms_file = open(ms_name, mode='r')
 
-            ms_file.close()
-            pass
+        (msgno,) = struct.unpack('i', ms_file.read(4))
+        while self._msgno[tid] < msgno:
+            (task, popsno, priority, msg) = \
+                   self.__read_message(ms_file, self._msgno[tid])
+            # Filter
+            if popsno == self._popsno[tid]:
+                messages.append((priority, '%s%d: %s' % (task, popsno, msg)))
+                pass
+            self._msgno[tid] += 1
+            continue
 
+        ms_file.close()
         return messages
 
     def wait(self, tid):
