@@ -41,7 +41,7 @@ except:
 else:
     print "found"
 _ACEOF
-PYTHONPATH=$PYTHONPATH:$OBIT_PYTHON_PATH; export PYTHONPATH
+PYTHONPATH=$PYTHONPATH:$OBIT_PYTHONPATH; export PYTHONPATH
 ac_cv_obit=`$PYTHON conftest.py 2>/dev/null`
 ])
 if test "$ac_cv_obit" != found; then
