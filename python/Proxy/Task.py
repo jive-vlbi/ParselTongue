@@ -41,9 +41,10 @@ class Task:
                 # If reading failed, it's (probably) because the child
                 # process died.
                 (pid, status) = os.waitpid(self._pid[tid], os.WNOHANG)
-                assert(pid == self._pid[tid])
-                if os.WIFEXITED(status) or os.WIFSIGNALLED(status):
-                    self._pid[tid] = 0
+                if pid:
+                    assert(pid == self._pid[tid])
+                    if os.WIFEXITED(status) or os.WIFSIGNALLED(status):
+                        self._pid[tid] = 0
         return ""
 
     def wait(self, tid):
