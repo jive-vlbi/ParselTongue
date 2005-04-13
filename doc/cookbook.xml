@@ -451,8 +451,9 @@ imean.go()
 The <classname>AIPSImage</classname> and
 <classname>AIPSUVData</classname> classes also provide an interface to
 provide access to &aips; data and manipulate it.
+</para>
 
-
+<para>
 Manipulation is pretty much limited to deleting extension tables from
 a data set and deleting the data itself.  The latter is a matter of
 calling the method <function>zap()</function> while the former has a
@@ -485,6 +486,10 @@ SL'</literal>) can also be deleted.  So the following lines
 </screen>
 
 can be used to throw away all previously made plots.
+</para>
+
+<para>
+The interface to access data is much richer though.
 </para>
 
 </chapter>
