@@ -39,9 +39,7 @@ class AIPSData:
 
     def header(self, desc):
         data = self._verify(desc)
-        header = data.Desc.Dict
-        data.Close(self.err)
-        return header
+        return data.Desc.Dict
 
     def tables(self, desc):
         data = self._verify(desc)
@@ -49,7 +47,7 @@ class AIPSData:
 
     def table_highver(self, desc, type):
         data = self._verify(desc)
-        return  TableList.PGetHigh(data.TableList, type)
+        return TableList.PGetHigh(data.TableList, type)
 
     def zap(self, desc):
         data = self._verify(desc)
