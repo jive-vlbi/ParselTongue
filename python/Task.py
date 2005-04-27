@@ -220,12 +220,11 @@ class Task(MinimalMatch):
         return value
 
     def __setattr__(self, name, value):
-        (attr, dict) = self._findattr(name)
+        attr = self._findattr(name)
 
-        if attr in dict:
-            # Validate based on the value already present.
-            value = self._validateattr(attr, value, dict[attr])
-
+        # Validate based on the value already present.
+        if hasattr(self, attr):
+            value = self._validateattr(attr, value, getattr(self, attr))
         self.__dict__[attr] = value
 
 

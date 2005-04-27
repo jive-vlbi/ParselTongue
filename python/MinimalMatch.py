@@ -71,13 +71,11 @@ class MinimalMatch:
     def _findattr(self, name):
         # Disregard private attributes.
         if name.startswith('_'):
-            return (name, self.__dict__)
+            return name
 
         match_attr = None
-        match_dict = None
         if name in self.__dict__:
             match_attr = name
-            match_dict = self.__dict__
         else:
             for dict in self.__dict__, self.__class__.__dict__:
                 for attr in dict:
@@ -88,22 +86,20 @@ class MinimalMatch:
                             raise AttributeError, msg
                         else:
                             match_attr = attr
-                            if not match_dict:
-                                match_dict = dict
 
         if not match_attr:
             msg = "%s instance has no attribute '%s'" \
                   % (self.__class__.__name__, name)
             raise AttributeError, msg
 
-        return (match_attr, match_dict)
+        return match_attr
 
     def __getattr__(self, name):
-        (attr, dict) = self._findattr(name)
+        attr = self._findattr(name)
         return getattr(self, attr)
 
     def __setattr__(self, name, value):
-	(attr, dict) = self._findattr(name)
+	attr = self._findattr(name)
 	self.__dict__[attr] = value
 
 

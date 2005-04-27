@@ -265,7 +265,7 @@ class AIPSTask(Task):
             # we only check the length of the final component of the
             # pathname.  The backend will split of the direcrory
             # component and use that as an "area".
-            (attr, dict) = self._findattr(name)
+            attr = self._findattr(name)
             file_adverbs = ['infile', 'outfile', 'outprint']
             if attr in file_adverbs and type(value) == str and \
                    os.path.dirname(value):
