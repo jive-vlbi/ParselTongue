@@ -64,6 +64,45 @@ class Popsdat:
             else:
                 continue
 
+        for line in input:
+            # Older AIPS versions have some essential additional
+            # adverbs that are defined in PROC DEFADV.
+            if line.startswith('PROC DEFADV'):
+                break
+            continue
+
+        for line in input:
+            # The end of a PROC is marked by FINISH.
+            if line.startswith('FINISH'):
+                break
+
+            split_line = line.split()
+            type = split_line[0]
+
+            if type == 'ARRAY':
+                for array in split_line[1:]:
+                    lparen = array.find('(')
+                    rparen = array.find(')')
+                    if lparen == -1 or rparen == -1:
+                        continue
+                    name = array[:lparen].lower()
+                    dim = array[lparen+1:rparen]
+                    dim = dim.split(',')
+                    if len(dim) == 1:
+                        length = int(dim[0])
+                        self.default_dict[name] = [None] + length * [0.0]
+                    elif len(dim) == 2:
+                        dimx = int(dim[0])
+                        dimy = int(dim[1])
+                        self.default_dict[name] = [None] \
+                                                  + dimx * [[None] \
+                                                            + dimy *[0.0]]
+                    else:
+                        continue
+                    continue
+                pass
+            continue
+
     def __init__(self, version):
         self.default_dict = {}
         self.strlen_dict = {}
