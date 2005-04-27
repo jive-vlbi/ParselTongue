@@ -52,11 +52,6 @@ tomorrow
 class MinimalMatch:
     """ Allow class attribute names to be abbreviated. """
 
-    def _finddict(self, attr):
-        for dict in self.__dict__, self.__class__.__dict__:
-            if attr in dict:
-                return dict
-
     def _findattr(self, name):
         # Disregard private attributes.
         if name.startswith('_'):
@@ -89,8 +84,7 @@ class MinimalMatch:
 
     def __getattr__(self, name):
         (attr, dict) = self._findattr(name)
-        dict = self._finddict(attr)
-        return dict[attr]
+        return getattr(self, attr)
 
     def __setattr__(self, name, value):
 	(attr, dict) = self._findattr(name)
