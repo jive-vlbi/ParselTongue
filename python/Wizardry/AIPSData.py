@@ -147,6 +147,7 @@ class _AIPSTable:
             raise RuntimeError
         header = self._table.Desc.Dict
         self._columns = {}
+        self._keys = []
         for column in header['FieldName']:
             # Convert the AIPS ccolumn names into acceptable Python
             # identifiers.
@@ -155,6 +156,7 @@ class _AIPSTable:
             key = key.rstrip('.')
             key = key.replace('.', '_')
             self._columns[key] = column
+            self._keys.append(key)
             continue
         self.name = name
         self.version = header['version']
@@ -204,6 +206,9 @@ class _AIPSTable:
         if self._err.isErr:
             raise RuntimeError
         return
+
+    def keys(self):
+        return [key for key in self._keys if not key == '_status']
 
 
 class _AIPSHistory:
