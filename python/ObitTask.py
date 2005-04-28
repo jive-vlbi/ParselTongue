@@ -74,6 +74,30 @@ class ObitTask(AIPSTask):
         if self.userno == 0:
             self.userno = 1
 
+    def go(self):
+        """Run the task."""
+
+        (proxy, tid) = self.spawn()
+        log = []
+        count = 0
+        rotator = ['|\b', '/\b', '-\b', '\\\b']
+        while not self.finished(proxy, tid):
+            messages = self.messages(proxy, tid)
+            if messages:
+                for message in messages:
+                    log.append(message)
+                    print message
+                    continue
+                pass
+            elif sys.stdout.isatty():
+                sys.stdout.write(rotator[count % 4])
+                sys.stdout.flush()
+                pass
+            count += 1
+            continue
+        self.wait(proxy, tid)
+        return log
+
 
 # Tests.
 if __name__ == '__main__':
