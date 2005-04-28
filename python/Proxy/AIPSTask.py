@@ -372,13 +372,11 @@ class AIPSTask(Task):
 # hex) and yyy is the process ID of the AIPS instance.
 
 def _allocate_popsno():
-    ehex = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-
     for popsno in range(1,16):
         # In order to prevent a race, first create a lock file for
         # POPSNO.
         try:
-            path = '/tmp/AIPS' + ehex[popsno] + '.' + str(os.getpid())
+            path = '/tmp/AIPS' + ehex(popsno, 1, 0) + '.' + str(os.getpid())
             fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0666)
             os.close(fd)
         except:
@@ -386,7 +384,7 @@ def _allocate_popsno():
 
         # Get a list of likely lock files and iterate over them.
         # Leave out our own lock file though.
-        files = glob.glob('/tmp/AIPS' + ehex[popsno] + '.[0-9]*')
+        files = glob.glob('/tmp/AIPS' + ehex(popsno, 1, 0) + '.[0-9]*')
         files.remove(path)
         for file in files:
             # If the part after the dot isn't an integer, it's not a
@@ -420,7 +418,5 @@ def _allocate_popsno():
     raise RuntimeError, "No free AIPS POPS number available on this system"
 
 def _free_popsno(popsno):
-    ehex = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-
-    path = '/tmp/AIPS' + ehex[popsno] + '.' + str(os.getpid())
+    path = '/tmp/AIPS' + ehex(popsno, 1, 0) + '.' + str(os.getpid())
     os.unlink(path)
