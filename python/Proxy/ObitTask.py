@@ -43,6 +43,9 @@
 #
 #-----------------------------------------------------------------------
 
+# Bits from AIPS.
+from Proxy.AIPS import ehex
+
 # Bits from the generic Task implementation.
 from Proxy.Task import Task
 
@@ -141,7 +144,7 @@ class _ObitTaskParams:
                 # If only one entry, convert deff to scalar.
                 if len(deff) == 1:
                     deff = deff[0]
-                self.adverb_dict[adverb] = deff   # default
+                self.default_dict[adverb] = deff   # default
                 self.dim_dict[adverb] = dim       # dimensionality
                 if code in ' *&$':
                     self.input_list.append(adverb)
@@ -156,12 +159,13 @@ class _ObitTaskParams:
 
 
     def __init__(self, name, version):
-        self.adverb_dict = {}
+        self.default_dict = {}
         self.input_list = []
         self.output_list = []
         self.min_dict = {}
         self.max_dict = {}
         self.strlen_dict = {}
+        self.help_string = ''
         self.dim_dict = {}
 
         self.name = name
@@ -175,7 +179,7 @@ class _ObitTaskParams:
 
         try:
             unpickler = pickle.Unpickler(open(path))
-            self.adverb_dict = unpickler.load()
+            self.default_dict = unpickler.load()
             self.input_list = unpickler.load()
             self.output_list = unpickler.load()
             self.min_dict = unpickler.load()
@@ -190,7 +194,7 @@ class _ObitTaskParams:
                 os.makedirs(os.path.dirname(path))
 
             pickler = pickle.Pickler(open(path, mode='w'))
-            pickler.dump(self.adverb_dict)
+            pickler.dump(self.default_dict)
             pickler.dump(self.input_list)
             pickler.dump(self.output_list)
             pickler.dump(self.min_dict)
@@ -325,7 +329,7 @@ class ObitTask(Task):
 
         in_file.close()
 
-        path = os.environ['OBIT'] +'/test/' + name
+        path = os.environ['OBIT'] +'/bin/' + os.environ['ARCH'] + '/' + name
         arglist = [name, "-input", tmpInput, "-output", tmpOutput,
                    "-pgmNumber", str(popsno), "-AIPSuser", str(userno)]
         tid = Task.spawn(self, path, arglist)
@@ -370,13 +374,11 @@ class ObitTask(Task):
 # hex) and yyy is the process ID of the Obit instance.
 
 def _allocate_popsno():
-    ehex = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-
     for popsno in range(1,16):
         # In order to prevent a race, first create a lock file for
         # POPSNO.
         try:
-            path = '/tmp/Obit' + ehex[popsno] + '.' + str(os.getpid())
+            path = '/tmp/Obit' + ehex(popsno, 1, 0) + '.' + str(os.getpid())
             fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0666)
             os.close(fd)
         except:
@@ -384,7 +386,7 @@ def _allocate_popsno():
 
         # Get a list of likely lock files and iterate over them.
         # Leave out our own lock file though.
-        files = glob.glob('/tmp/Obit' + ehex[popsno] + '.[0-9]*')
+        files = glob.glob('/tmp/Obit' + ehex(popsno, 1, 0) + '.[0-9]*')
         files.remove(path)
         for file in files:
             # If the part after the dot isn't an integer, it's not a
@@ -418,7 +420,5 @@ def _allocate_popsno():
     raise RuntimeError, "No free Obit POPS number available on this system"
 
 def _free_popsno(popsno):
-    ehex = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-
-    path = '/tmp/Obit' + ehex[popsno] + '.' + str(os.getpid())
+    path = '/tmp/Obit' + ehex(popsno, 1, 0) + '.' + str(os.getpid())
     os.unlink(path)
