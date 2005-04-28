@@ -494,4 +494,40 @@ The interface to access data is much richer though.
 
 </chapter>
 
-</book>
+<chapter>
+<title>General feautures</title>
+
+<section>
+<title>Logging</title>
+
+<para>
+&pt; provides a simple, yet powerfull way to capture a log of your
+session.  If you set <varname>AIPS.log</varname> to a file object all
+output from &aips; tasks will be sent to that object:
+
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>AIPS.log = open("ParselTongue.log")</command>
+</screen>
+
+In fact, the above is not the full truth. <varname>AIPS.log</varname>
+does not necessarily have to be a true Python
+<classname>file</classname> object; any object with a
+<function>write</function> method will do.
+</para>
+
+<para>
+The output sent to <varname>AIPS.log</varname> includes the messages
+that are not being displayed on your terminal because the
+<varname>msgkill</varname> attribute was set to a negative value in
+the task object (this does not apply to messages killed by a positive
+value of this attribute; those are lost forever).  </para>
+
+<para>
+To stop logging, set <varname>AIPS.log</varname> to
+<constant>None</constant>.  </para>
+
+</section>
+
+</chapter>
+
+ </book>
