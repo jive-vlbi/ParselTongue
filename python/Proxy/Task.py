@@ -36,6 +36,7 @@ class Task:
             if env:
                 os.execve(path, args, env)
             else:
+                print path, args
                 os.execv(path, args)
         else:
             fcntl.fcntl(tid, fcntl.F_SETFL, os.O_NONBLOCK)
@@ -52,7 +53,8 @@ class Task:
         (iwtd, owtd, ewtd) = select.select([tid], [], [], 0.25)
         if tid in iwtd:
             try:
-                return os.read(tid, 1024)
+                messages = os.read(tid, 1024).split('\r\n')
+                return [msg for msg in messages if msg]
             except:
                 # If reading failed, it's (probably) because the child
                 # process died.
@@ -61,7 +63,7 @@ class Task:
                     assert(pid == self._pid[tid])
                     if os.WIFEXITED(status) or os.WIFSIGNALLED(status):
                         self._pid[tid] = 0
-        return ""
+        return []
 
     def wait(self, tid):
         """Wait for the task to finish."""

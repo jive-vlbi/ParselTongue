@@ -302,8 +302,7 @@ class AIPSTask(Task):
 
         # Make sure we read the messages, even if we throw them away
         # later to prevent the task from blocking.
-        messages = Task.messages(self, tid).split('\r\n')
-        messages = [msg for msg in messages if msg]
+        messages = Task.messages(self, tid)
 
         # Strip out all formal messages.
         start = '%-5s%d' % (self._params[tid].name.upper(), self._popsno[tid])
