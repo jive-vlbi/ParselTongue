@@ -52,7 +52,7 @@ class AIPS:
         area = 'DA%02d' % disk
         if not area in os.environ:
             break
-        disks.append(AIPSDisk(None, 1))
+        disks.append(AIPSDisk(None, disk))
         continue
 
     # Message log.
