@@ -67,7 +67,7 @@ class ObitTask(AIPSTask):
     _package = 'Obit'
 
     # List of adverbs referring to disks.
-    _disk_adverbs = ['inDisk', in2Disk', 'outDisk', 'out2Disk']
+    _disk_adverbs = ['inDisk', 'in2Disk', 'outDisk', 'out2Disk']
 
     # Default version.
     version = 'OBIT'
