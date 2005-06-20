@@ -64,8 +64,7 @@ class FITS:
     # Look for FITS
     area = 'FITS'
     if area in os.environ:
-        dirname = os.getenv(area)
-        disks.append(FITSDisk(None, 1, dirname))
+        disks.append(FITSDisk(None, 1))
 
     # FITS01, FITS02...
     # Who will ever need more than 19 FITS disks?    
