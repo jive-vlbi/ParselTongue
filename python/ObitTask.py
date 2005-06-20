@@ -1,4 +1,5 @@
 # Copyright (C) 2005 Joint Institute for VLBI in Europe
+# Copyright (C) 2005 Associated Universities, Inc. Washington DC, USA.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -52,6 +53,8 @@ UVDATA
 
 # AIPSTask implementation.
 from AIPSTask import AIPSTask
+from AIPS import AIPS
+from FITS import FITS
 
 # Generic Python stuff.
 import glob, os, pickle, sys
@@ -64,7 +67,7 @@ class ObitTask(AIPSTask):
     _package = 'Obit'
 
     # List of adverbs referring to disks.
-    _disk_adverbs = ['inDisk']
+    _disk_adverbs = ['inDisk', in2Disk', 'outDisk', 'out2Disk']
 
     # Default version.
     version = 'OBIT'

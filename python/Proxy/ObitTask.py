@@ -65,6 +65,8 @@ class _ObitTaskParams:
         min = None
         max = None
 
+	#print "DEBUG in ObitTaskParams"
+
         path = os.environ['OBIT'] + '/TDF/' + name + '.TDF'
         input = open(path)
         for line in input:
@@ -125,6 +127,8 @@ class _ObitTaskParams:
                     type = bool
                     strlen = None
                     deff = total*[False]
+                # DEBUG
+                # print "DEBUG line",line,type,dim
 
             # If just parsed PARAM line get parameter.
             elif gotDesc:
@@ -146,7 +150,7 @@ class _ObitTaskParams:
                     deff = deff[0]
                 self.default_dict[adverb] = deff   # default
                 self.dim_dict[adverb] = dim       # dimensionality
-                if code in ' *&$':
+                if code in ' *&$' or len(adverb) > 9:
                     self.input_list.append(adverb)
                 if code in '&%$@':
                     self.output_list.append(adverb)
@@ -156,6 +160,8 @@ class _ObitTaskParams:
                     self.min_dict[adverb] = min
                 if max != None:
                     self.max_dict[adverb] = max
+                # DEBUG
+                #print "DEBUG adverb",adverb,deff,dim
 
 
     def __init__(self, name, version):
@@ -235,28 +241,42 @@ class ObitTask(Task):
             data = str(value)
 
         dim = params.dim_dict[adverb]   # Dimensionality array
+        dimStr = "(" + str(dim[0]) + ")"
+        if (len(dim) > 1):
+            if (dim[1] > 1):
+                dimStr = "(" + str(dim[0]) + "," + str(dim[1]) + ")"
+
         if dtype == float:
-            file.write("$Key = "+adverb+" Flt  ("+str(dim[0])+")\n" )
-            file.write(data+"\n" )  # Write data to file
+            file.write("$Key = "+adverb+" Flt  (" + dimStr + ")\n")
+            file.write(data + "\n")     # Write data to file
         elif dtype == str:
-            file.write("$Key = "+adverb+" Str ("+str(dim[0])+") \n")
+            file.write("$Key = " + adverb + " Str (" + dimStr + ") \n")
             if type(value) == list:
                 for x in value:
-                    file.write(x+"\n" )  # Write data to file
+                    file.write(x + "\n") # Write data to file
             else:
-                file.write(value+"\n" )  # Write data to file
+                #print "DEBUG write_adverb",adverb,dtype,dim,value
+                file.write(value + "\n") # Write data to file
         elif dtype == bool:
-            file.write("$Key = "+adverb+" Boo ("+str(dim[0])+") \n")
-            for x in value:
-                if x:
-                    file.write(" T" )  # Write data to file
+            file.write("$Key = " + adverb + " Boo (" + dimStr + ") \n")
+            if type(value) == list:
+                #print "DEBUG value",adverb,value
+                for x in value:
+                    if x:
+                        file.write(" T") # Write data to file
+                    else:
+                        file.write(" F")
+            else:
+                if value:
+                    file.write(" T")    # Write data to file
                 else:
-                    file.write(" F" )  
+                    file.write(" F")
             file.write("\n")  # end of line character
         elif dtype == int:
-            file.write("$Key  "+adverb+" Int ("+str(dim[0])+") \n")
-            file.write(data+"\n" )  # Write data to file
+            file.write("$Key = " + adverb + " Int (" + dimStr + ") \n")
+            file.write(data + "\n" )    # Write data to file
         else:
+            #print "DEBUG ObitTask adverb",adverb, dim,dtype
             raise AssertionError, type(value)
         
     def __read_adverb(self, params, file, adverb):
@@ -329,6 +349,15 @@ class ObitTask(Task):
 
         in_file.close()
 
+        # If debugging add a link to the input file to preserve it.
+        if input_dict['DEBUG']:
+            tmpDebug = tmpInput + 'Dbg'
+            if os.access(tmpDebug, os.F_OK):
+                os.unlink(tmpDebug)     # Remove any old version file.
+            os.link(tmpInput, tmpDebug) # Add new link.
+            # Tell about it.
+            print "Saving copy of Obit task input in" + tmpDebug
+
         path = os.environ['OBIT'] +'/bin/' + os.environ['ARCH'] + '/' + name
         arglist = [name, "-input", tmpInput, "-output", tmpOutput,
                    "-pgmNumber", str(popsno), "-AIPSuser", str(userno)]
@@ -356,8 +385,10 @@ class ObitTask(Task):
             output_dict[adverb] = self.__read_adverb(params, out_file, adverb)
             out_file.close()
 
-        os.unlink(tmpInput)                      # remove input file
-        os.unlink(tmpOutput)                     # remove output file
+        if os.access(tmpInput, os.F_OK):
+            os.unlink(tmpInput)         # Remove input file.
+        if os.access(tmpOutput, os.F_OK):
+            os.unlink(tmpOutput)        # Remove output file.
 
         _free_popsno(popsno)
 
