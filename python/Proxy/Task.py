@@ -61,7 +61,7 @@ class Task:
                 (pid, status) = os.waitpid(self._pid[tid], os.WNOHANG)
                 if pid:
                     assert(pid == self._pid[tid])
-                    if os.WIFEXITED(status) or os.WIFSIGNALLED(status):
+                    if os.WIFEXITED(status) or os.WIFSIGNALED(status):
                         self._pid[tid] = 0
         return []
 
