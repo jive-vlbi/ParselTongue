@@ -16,7 +16,7 @@
 
 import Obit
 import OErr, OSystem
-import History, UV
+import History, UV, InfoList
 
 
 def _scalarize(value):
@@ -150,6 +150,20 @@ class _AIPSTableIter(_AIPSTableRow):
         assert(not self._err.isErr)
         return self
 
+class _AIPSTableKeywords:
+    def __init__(self, table, err):
+        self._err = err
+        self._table = table
+        return
+
+    def __getitem__(self, key):
+        return InfoList.PGet(self._table.IODesc.List, key)
+
+    def __setitem__(self, key, value):
+        InfoList.PAlwaysPutInt(self._table.Desc.List, key,
+                               value[3], value[4])
+        InfoList.PAlwaysPutInt(self._table.IODesc.List, key,
+                               value[3], value[4])
 
 class _AIPSTable:
     """This class is used to access extension tables to an AIPS UV
@@ -160,7 +174,7 @@ class _AIPSTable:
         self._table = data.NewTable(3, 'AIPS ' + name, version, self._err)
         self._table.Open(3, self._err)
         if self._err.isErr:
-            raise RuntimeError
+            raise self._err
         header = self._table.Desc.Dict
         self._columns = {}
         self._keys = []
@@ -226,6 +240,9 @@ class _AIPSTable:
     def keys(self):
         return [key for key in self._keys if not key == '_status']
 
+    def _keywords(self):
+        return _AIPSTableKeywords(self._table, self._err)
+    keywords = property(_keywords)
 
 class _AIPSHistory:
     def __init__(self, data):
