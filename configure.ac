@@ -1,9 +1,9 @@
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.59)
+AC_PREREQ(2.57)
 
-AC_INIT(ParselTongue, 0.93, kettenis@jive.nl)
-AM_INIT_AUTOMAKE(1.9)
+AC_INIT(ParselTongue, 0.95, kettenis@jive.nl)
+AM_INIT_AUTOMAKE(1.6)
 AC_CONFIG_SRCDIR(python/ParselTongue.py)
 
 ## --------- ##
