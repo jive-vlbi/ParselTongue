@@ -56,6 +56,9 @@ from AIPSTask import AIPSTask
 from AIPS import AIPS
 from FITS import FITS
 
+# Generic Task implementation.
+from Task import Task, List
+
 # Generic Python stuff.
 import glob, os, pickle, sys
 
@@ -71,6 +74,9 @@ class ObitTask(AIPSTask):
 
     # Default version.
     version = 'OBIT'
+
+    # Debugging?
+    debug = False
 
     def __init__(self, name):
         AIPSTask.__init__(self, name)
