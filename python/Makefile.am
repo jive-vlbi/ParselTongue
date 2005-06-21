@@ -6,6 +6,7 @@ pythonlibdir = $(pkgdatadir)/python
 dist_pythonlib_PYTHON = \
 	MinimalMatch.py Task.py \
 	AIPS.py AIPSTask.py AIPSData.py \
+	FITS.py FITSData.py \
 	ObitTask.py \
 	LocalProxy.py XMLRPCServer.py \
 	ParselTongue.py ptcompleter.py
