@@ -163,6 +163,14 @@ class _ObitTaskParams:
                 # DEBUG
                 #print "DEBUG adverb",adverb,deff,dim
 
+        # Parse HELP section.
+        for line in input:
+            # A line of dashes terminates the help message.
+            if line.startswith('--------'):
+                break;
+            
+            self.help_string = self.help_string + line
+                                                    
 
     def __init__(self, name, version):
         self.default_dict = {}
@@ -192,6 +200,7 @@ class _ObitTaskParams:
             self.max_dict = unpickler.load()
             self.strlen_dict = unpickler.load()
             self.dim_dict = unpickler.load()
+            self.help_string = unpickler.load()
         except (IOError, EOFError):
             self.__parse(name)
 
@@ -207,7 +216,8 @@ class _ObitTaskParams:
             pickler.dump(self.max_dict)
             pickler.dump(self.strlen_dict)
             pickler.dump(self.dim_dict)
-
+            pickler.dump(self.help_string)
+            
     # Provide a dictionary-like interface to deal with the
     # idiosyncrasies of XML-RPC.
     def __getitem__(self, key):
@@ -247,10 +257,10 @@ class ObitTask(Task):
                 dimStr = "(" + str(dim[0]) + "," + str(dim[1]) + ")"
 
         if dtype == float:
-            file.write("$Key = "+adverb+" Flt  (" + dimStr + ")\n")
+            file.write("$Key = " + adverb + " Flt " + dimStr + "\n")
             file.write(data + "\n")     # Write data to file
         elif dtype == str:
-            file.write("$Key = " + adverb + " Str (" + dimStr + ") \n")
+            file.write("$Key = " + adverb + " Str " + dimStr + "\n")
             if type(value) == list:
                 for x in value:
                     file.write(x + "\n") # Write data to file
@@ -258,7 +268,7 @@ class ObitTask(Task):
                 #print "DEBUG write_adverb",adverb,dtype,dim,value
                 file.write(value + "\n") # Write data to file
         elif dtype == bool:
-            file.write("$Key = " + adverb + " Boo (" + dimStr + ") \n")
+            file.write("$Key = " + adverb + " Boo " + dimStr + "\n")
             if type(value) == list:
                 #print "DEBUG value",adverb,value
                 for x in value:
@@ -273,7 +283,7 @@ class ObitTask(Task):
                     file.write(" F")
             file.write("\n")  # end of line character
         elif dtype == int:
-            file.write("$Key = " + adverb + " Int (" + dimStr + ") \n")
+            file.write("$Key = " + adverb + " Int " + dimStr + "\n")
             file.write(data + "\n" )    # Write data to file
         else:
             #print "DEBUG ObitTask adverb",adverb, dim,dtype
