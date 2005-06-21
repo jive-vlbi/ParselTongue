@@ -22,11 +22,15 @@ session.
 
 # Global AIPS defaults
 from AIPS import AIPS
+# Global FITS defaults
+from FITS import FITS
 
 # The main classes ParselTongue provides.
 from AIPSTask import *
 from AIPSData import *
-
+from ObitTask import *
+from FITSData import *
+ 
 # Use our own, somewhat restricted rlcompleter.
 import readline, ptcompleter
 readline.parse_and_bind("tab: complete")
@@ -34,7 +38,7 @@ readline.parse_and_bind("tab: complete")
 # This is not a batch job.
 AIPSTask.isbatch = 0
 
-# Seperate the blurb below from what the Python interpreter spits out.
+# Separate the blurb below from what the Python interpreter spits out.
 print ""
 
 print "Welcome to ParselTongue"
