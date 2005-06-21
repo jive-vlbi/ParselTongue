@@ -157,6 +157,16 @@ class AIPSTask(Task):
         """Display all outputs for this task."""
         self.__display_adverbs(self._output_list)
 
+    def _retype(self, value):
+        """ Recursively transform a 'List' into a 'list' """
+
+        if type(value) == List:
+            value = list(value)
+            for i in range(1, len(value)):
+                value[i] = self._retype(value[i])
+
+        return value
+
     def spawn(self):
         """Spawn the task."""
 
@@ -165,10 +175,7 @@ class AIPSTask(Task):
 
         input_dict = {}
         for adverb in self._input_list:
-            if type(self.__dict__[adverb]) == List:
-                input_dict[adverb] = list(self.__dict__[adverb])
-            else:
-                input_dict[adverb] = self.__dict__[adverb]
+            input_dict[adverb] = self._retype(self.__dict__[adverb])
 
         # Figure out what proxy to use for running the task, and
         # translate the related disk numbers.

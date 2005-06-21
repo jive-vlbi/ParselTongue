@@ -85,10 +85,7 @@ class ObitTask(AIPSTask):
 
         input_dict = {}
         for adverb in self._input_list:
-            if type(self.__dict__[adverb]) == List:
-                input_dict[adverb] = list(self.__dict__[adverb])
-            else:
-                input_dict[adverb] = self.__dict__[adverb]
+            input_dict[adverb] = self._retype(self.__dict__[adverb])
 
         # Debugging?
         input_dict["DEBUG"] = self.debug
