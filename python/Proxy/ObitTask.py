@@ -70,7 +70,8 @@ class _ObitTaskParams:
         path = os.environ['OBIT'] + '/TDF/' + name + '.TDF'
         input = open(path)
         for line in input:
-            #print line   # DEBUG
+            # DEBUG
+            #print line
             # A line of dashes terminates the parameter definitions.
             if line.startswith('--------'):
                 break;
@@ -107,27 +108,26 @@ class _ObitTaskParams:
                     total *= int(x)
                     dim.append(int(x));
                 # Want number of strings, not number of characters.
-                if parts[1] == "str":
+                if parts[1] == 'str':
                     total = total / dim[0]
                 # Type.
                 type = parts[1]
-                if type == "float":
+                if type == 'float':
                     type = float
                     strlen = None
-                    deff = total*[0.0]
-                elif type == "str":
+                    deff = total * [0.0]
+                elif type == 'str':
                     type = str
                     strlen = dim[0]
-                    deff = total*[strlen*' ']
-                elif type == "int":
+                    deff = total * [strlen * ' ']
+                elif type == 'int':
                     type = int
                     strlen = None
-                    deff = total*[0]
-                elif type == "boo":
+                    deff = total * [0]
+                elif type == 'boo':
                     type = bool
                     strlen = None
-                    deff = total*[False]
-                # DEBUG
+                    deff = total * [False]
                 # print "DEBUG line",line,type,dim
 
             # If just parsed PARAM line get parameter.
@@ -148,8 +148,8 @@ class _ObitTaskParams:
                 # If only one entry, convert deff to scalar.
                 if len(deff) == 1:
                     deff = deff[0]
-                self.default_dict[adverb] = deff   # default
-                self.dim_dict[adverb] = dim       # dimensionality
+                self.default_dict[adverb] = deff # default
+                self.dim_dict[adverb] = dim # dimensionality
                 if code in ' *&$' or len(adverb) > 9:
                     self.input_list.append(adverb)
                 if code in '&%$@':
@@ -160,17 +160,15 @@ class _ObitTaskParams:
                     self.min_dict[adverb] = min
                 if max != None:
                     self.max_dict[adverb] = max
-                # DEBUG
-                #print "DEBUG adverb",adverb,deff,dim
+                #print "DEBUG adverb", adverb, deff, dim
 
         # Parse HELP section.
         for line in input:
             # A line of dashes terminates the help message.
             if line.startswith('--------'):
                 break;
-            
+
             self.help_string = self.help_string + line
-                                                    
 
     def __init__(self, name, version):
         self.default_dict = {}
@@ -217,7 +215,7 @@ class _ObitTaskParams:
             pickler.dump(self.strlen_dict)
             pickler.dump(self.dim_dict)
             pickler.dump(self.help_string)
-            
+
     # Provide a dictionary-like interface to deal with the
     # idiosyncrasies of XML-RPC.
     def __getitem__(self, key):
@@ -265,30 +263,30 @@ class ObitTask(Task):
                 for x in value:
                     file.write(x + "\n") # Write data to file
             else:
-                #print "DEBUG write_adverb",adverb,dtype,dim,value
+                #print "DEBUG write_adverb", adverb, dtype, dim, value
                 file.write(value + "\n") # Write data to file
         elif dtype == bool:
             file.write("$Key = " + adverb + " Boo " + dimStr + "\n")
             if type(value) == list:
-                #print "DEBUG value",adverb,value
+                #print "DEBUG value", adverb, value
                 for x in value:
                     if x:
-                        file.write(" T") # Write data to file
+                        file.write(" T") # Write data to file.
                     else:
                         file.write(" F")
             else:
                 if value:
-                    file.write(" T")    # Write data to file
+                    file.write(" T")    # Write data to file.
                 else:
                     file.write(" F")
-            file.write("\n")  # end of line character
+            file.write("\n")
         elif dtype == int:
             file.write("$Key = " + adverb + " Int " + dimStr + "\n")
-            file.write(data + "\n" )    # Write data to file
+            file.write(data + "\n" )    # Write data to file.
         else:
-            #print "DEBUG ObitTask adverb",adverb, dim,dtype
+            #print "DEBUG ObitTask adverb", adverb, dim, dtype
             raise AssertionError, type(value)
-        
+
     def __read_adverb(self, params, file, adverb):
         """read value from output file."""
 
@@ -299,9 +297,10 @@ class ObitTask(Task):
         total = 1
         value = []       # to accept
         for line in file:
-            #print line # DEBUG
+            # DEBUG
+            #print line
             # Look for header for parameter
-            if line.startswith("$Key  "+adverb):
+            if line.startswith("$Key  " + adverb):
                 gotIt = True
                 parts = string.split(line)
                 # How many values
@@ -311,20 +310,20 @@ class ObitTask(Task):
                     total *= int(x)
                 dtype  = parts[2]
                 if type=="str":
-                    total = total / parts[3]  # number of strings
+                    total = total / parts[3] # Number of strings.
 
-            # Read data one value per line after Gotit
+            # Read data one value per line after 'gotIt'.
             elif gotIt:
-                # DEBUG print "gotIt",type,line
-                if dtype=="Flt":
+                # DEBUG print "gotIt", type, line
+                if dtype == 'Flt':
                     value.append(float(line))
-                if dtype=="Dbl":
+                elif dtype == 'Dbl':
                     value.append(float(line))
-                elif dtype=="Str":
+                elif dtype == 'Str':
                     value.append(line)
-                elif dtype=="Int":
+                elif dtype == 'Int':
                     value.append(int(line))
-                elif dtype=="Boo":
+                elif dtype == 'Boo':
                     if line.startswith('T'):
                         value.append(True)
                     else:
@@ -333,12 +332,12 @@ class ObitTask(Task):
 
             if gotIt and count >= total:  # Finished?
                     break
-                    
-        # Convert to scalar if only one
+
+        # Convert to scalar if only one.
         if len(value)==1:
             value = value[0]
         # Done
-        # DEBUG print "fetch adverb",adverb,value
+        # DEBUG print "fetch adverb", adverb, value
         return value
 
     def spawn(self, name, version, userno, msgkill, isbatch, input_dict):
