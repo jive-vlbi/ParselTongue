@@ -77,6 +77,55 @@ class ObitTask(AIPSTask):
         if self.userno == 0:
             self.userno = 1
 
+    def spawn(self):
+        """Spawn the task."""
+
+        if self.userno == 0:
+            raise RuntimeError, "AIPS user number is not set"
+
+        input_dict = {}
+        for adverb in self._input_list:
+            if type(self.__dict__[adverb]) == List:
+                input_dict[adverb] = list(self.__dict__[adverb])
+            else:
+                input_dict[adverb] = self.__dict__[adverb]
+
+        # Debugging?
+        input_dict["DEBUG"] = self.debug
+
+        # Figure out what proxy to use for running the task, and
+        # translate the related disk numbers.
+        url = None
+        proxy = None
+        for adverb in self._disk_adverbs:
+            if adverb in input_dict:
+                disk = int(input_dict[adverb])
+                if disk == 0:
+                    continue
+                if not url and not proxy:
+                    if self.__dict__['DataType'] == 'AIPS':
+                        url = AIPS.disks[disk].url
+                        proxy = AIPS.disks[disk].proxy()
+                        if AIPS.disks[disk].url != url:
+                            raise RuntimeError, \
+                                  "AIPS disks are not on the same machine"
+                        input_dict[adverb] = int(AIPS.disks[disk].disk)
+                    elif self.__dict__['DataType'] == 'FITS':
+                        url = FITS.disks[disk].url
+                        proxy = FITS.disks[disk].proxy()
+                        if FITS.disks[disk].url != url:
+                            raise RuntimeError, \
+                                  "FITS disks are not on the same machine"
+                        input_dict[adverb] = int(FITS.disks[disk].disk)
+        if not proxy:
+            raise RuntimeError, \
+                  "Unable to determine where to execute task"
+
+        inst = getattr(proxy, self.__class__.__name__)
+        tid = inst.spawn(self._name, self.version, self.userno,
+                         self.msgkill, self.isbatch, input_dict)
+        return (proxy, tid)
+
     def go(self):
         """Run the task."""
 
