@@ -56,6 +56,13 @@ UVDATA
 >>> print imean.blc
 [None, 256.0, 256.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
+It doesn't hurt to apply AIPSList to a scalar:
+>>> AIPSList(1)
+1
+
+And it works on matrices (lists of lists) too:
+>>> AIPSList([[1,2],[3,4],[5,6]])
+[None, [None, 1, 2], [None, 3, 4], [None, 5, 6]]
 """
 
 # Global AIPS defaults.
@@ -291,9 +298,16 @@ def AIPSList(list):
     Returns a list suitable for using 1-based indices.
     """
 
-    _list = [None]
-    _list.extend(list)
-    return _list
+    try:
+        # Insert 'None' at index zero, and transform LIST's elements.
+        _list = [None]
+        for l in list:
+            _list.append(AIPSList(l))
+            continue
+        return _list
+    except:
+        # Apparently LIST isn't a list; simply return it unchanged.
+        return list
 
 
 # Tests.
