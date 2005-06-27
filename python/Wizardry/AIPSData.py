@@ -157,13 +157,18 @@ class _AIPSTableKeywords:
         return
 
     def __getitem__(self, key):
-        return InfoList.PGet(self._table.IODesc.List, key)
+        value = InfoList.PGet(self._table.IODesc.List, key)
+        return _scalarize(value[4])
 
     def __setitem__(self, key, value):
-        InfoList.PAlwaysPutInt(self._table.Desc.List, key,
-                               value[3], value[4])
-        InfoList.PAlwaysPutInt(self._table.IODesc.List, key,
-                               value[3], value[4])
+        if int(value) == value:
+            InfoList.PAlwaysPutInt(self._table.Desc.List, key,
+                                   [1, 1, 1, 1, 1], _vectorize(value))
+            InfoList.PAlwaysPutInt(self._table.IODesc.List, key,
+                                   [1, 1, 1, 1, 1], _vectorize(value))
+        else:
+            raise AssertionError, "not implemented"
+        return
 
 class _AIPSTable:
     """This class is used to access extension tables to an AIPS UV
