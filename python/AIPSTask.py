@@ -103,6 +103,7 @@ class AIPSTask(Task):
         self._name = name
         self._input_list = []
         self._output_list = []
+        self._message_list = []
 
         # Optional arguments.
         if 'version' in kwds:
@@ -207,20 +208,34 @@ class AIPSTask(Task):
         inst = getattr(proxy, self.__class__.__name__)
         tid = inst.spawn(self._name, self.version, self.userno,
                          self.msgkill, self.isbatch, input_dict)
+
+        self._message_list = []
         return (proxy, tid)
 
     def finished(self, proxy, tid):
         """Determine whether the task specified by PROXY and TID has
         finished."""
+
         inst = getattr(proxy, self.__class__.__name__)
         return inst.finished(tid)
 
-    def messages(self, proxy, tid):
-        """Return messages for the task specified by PROXY and TID to
-        finish."""
+    def messages(self, proxy=None, tid=None):
+        """Return messages for the task specified by PROXY and TID."""
+
+        if not proxy and not tid:
+            return self._message_list
 
         inst = getattr(proxy, self.__class__.__name__)
-        return inst.messages(tid)
+        messages = inst.messages(tid)
+        if not messages:
+            return None
+        for message in messages:
+            self._message_list.append(message[1])
+            if message[0] > abs(self.msgkill):
+                print message[1]
+                pass
+            continue
+        return [message[1] for message in messages]
 
     def wait(self, proxy, tid):
         """Wait for the task specified by PROXY and TID to finish."""
@@ -242,13 +257,7 @@ class AIPSTask(Task):
         while not self.finished(proxy, tid):
             messages = self.messages(proxy, tid)
             if messages:
-                for message in messages:
-                    log.append(message[1])
-                    if message[0] > abs(self.msgkill):
-                        print message[1]
-                        pass
-                    continue
-                pass
+                log.extend(messages)
             elif sys.stdout.isatty():
                 sys.stdout.write(rotator[count % 4])
                 sys.stdout.flush()
@@ -259,7 +268,7 @@ class AIPSTask(Task):
         if AIPS.log:
             for message in log:
                 AIPS.log.write('%s\n' % message)
-        return log
+        return
 
     def __call__(self):
         return self.go()
