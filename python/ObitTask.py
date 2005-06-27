@@ -127,7 +127,22 @@ class ObitTask(AIPSTask):
         inst = getattr(proxy, self.__class__.__name__)
         tid = inst.spawn(self._name, self.version, self.userno,
                          self.msgkill, self.isbatch, input_dict)
+
+        self._message_list = []
         return (proxy, tid)
+
+    def messages(self, proxy=None, tid=None):
+        """Return messages for the task specified by PROXY and TID."""
+
+        if not proxy and not tid:
+            return self._message_list
+
+        inst = getattr(proxy, self.__class__.__name__)
+        messages = inst.messages(tid)
+        if not messages:
+            return None
+        self._message_list.extend(messages)
+        return messages
 
     def go(self):
         """Run the task."""
@@ -139,11 +154,7 @@ class ObitTask(AIPSTask):
         while not self.finished(proxy, tid):
             messages = self.messages(proxy, tid)
             if messages:
-                for message in messages:
-                    log.append(message)
-                    print message
-                    continue
-                pass
+                log.extend(messages)
             elif sys.stdout.isatty():
                 sys.stdout.write(rotator[count % 4])
                 sys.stdout.flush()
@@ -151,7 +162,7 @@ class ObitTask(AIPSTask):
             count += 1
             continue
         self.wait(proxy, tid)
-        return log
+        return
 
 
 # Tests.
