@@ -18,6 +18,7 @@ import Obit
 import OErr, OSystem
 import History, UV, InfoList
 
+from AIPS import AIPS
 
 def _scalarize(value):
     """Scalarize a value.
@@ -295,6 +296,7 @@ class AIPSUVData:
 
     def __init__(self, name, klass, disk, seq):
         self._err = OErr.OErr()
+        OSystem.PSetAIPSuser(AIPS.userno)
         self._data = UV.newPAUV(name, name, klass, disk, seq, True, self._err)
         if self._err.isErr:
             raise RuntimeError
@@ -418,3 +420,7 @@ class AIPSUVData:
 
     def history(self):
         return _AIPSHistory(self._data)
+
+
+err = OErr.OErr()
+OSystem.OSystem('AIPSData', 1, 0, -1, [], -1, [], True, False, err)
