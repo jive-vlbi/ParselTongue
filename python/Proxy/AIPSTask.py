@@ -207,12 +207,15 @@ class AIPSTask(Task):
         else:
             raise AssertionError, type(value)
 
-    def __read_adverb(self, params, file, adverb):
-        """Read (scalar) adverb from TD file FILE."""
+    def __read_adverb(self, params, file, adverb, value=None):
+        """Read (sub)value for adverb ADVERB from TD file FILE."""
 
         assert(adverb in params.output_list)
 
-        value = params.default_dict[adverb]
+        # We use the default value for type checks.
+        if value == None:
+            value = params.default_dict[adverb]
+
         if type(value) == float:
             (value,) = struct.unpack('f', file.read(4))
         elif type(value) == str:
@@ -220,6 +223,13 @@ class AIPSTask(Task):
             fmt = "%ds" % strlen
             (value,) = struct.unpack(fmt, file.read(strlen))
             value.strip()
+        elif type(value) == list:
+            newvalue = [None]
+            for subvalue in value[1:]:
+                subvalue = self.__read_adverb(params, file, adverb, subvalue)
+                newvalue.append(subvalue)
+                continue
+            value = newvalue
         else:
             raise AssertionError, type(value)
         return value
