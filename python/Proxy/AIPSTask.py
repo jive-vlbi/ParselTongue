@@ -44,8 +44,7 @@ class _AIPSTaskParams:
 
         popsdat = Popsdat(self.version)
 
-        path = os.environ['AIPS_ROOT'] + '/' + self.version + '/HELP/' \
-               + name.upper() + '.HLP'
+        path = self.version + '/HELP/' + name.upper() + '.HLP'
         input = open(path)
 
         # Parse INPUTS section.
@@ -138,13 +137,15 @@ class _AIPSTaskParams:
         self.help_string = ''
 
         self.name = name
-        if version in ['OLD', 'NEW', 'TST']:
-            self.version = os.path.basename(os.environ[version])
+        if version in os.environ:
+            self.version = os.environ[version]
         else:
-            self.version = version
+            self.version = os.environ['AIPS_ROOT'] + '/' + version
+            pass
 
         path = os.environ['HOME'] + '/.ParselTongue/' \
-               + self.version + '/' + name.lower() + '.pickle'
+               + os.path.basename(self.version) + '/' \
+               + name.lower() + '.pickle'
 
         try:
             unpickler = pickle.Unpickler(open(path))
@@ -289,8 +290,8 @@ class AIPSTask(Task):
         (msgno,) = struct.unpack('i', ms_file.read(4))
         ms_file.close()
 
-        path = os.environ['AIPS_ROOT'] + '/' + params.version + '/' \
-               + os.environ['ARCH'] + '/LOAD/' + name.upper() + ".EXE"
+        path = params.version + '/' + os.environ['ARCH'] + '/LOAD/' \
+               + name.upper() + ".EXE"
         tid = Task.spawn(self, path, [name.upper() + str(popsno)], env)
         self._params[tid] = params
         self._popsno[tid] = popsno

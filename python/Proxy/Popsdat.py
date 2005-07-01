@@ -30,9 +30,7 @@ class Popsdat:
         """Determine default values and string lengths for all AIPS
         tasks by parsing POPSDAT.HLP."""
 
-        path = os.environ['AIPS_ROOT'] + '/' + self.version \
-               + '/HELP/POPSDAT.HLP'
-        input = open(path)
+        input = open(self.path)
 
         for line in input:
             # A line of dashes starts the parameter definitions.
@@ -124,11 +122,14 @@ class Popsdat:
         self.strlen_dict = {}
         self.verb_dict = {}
 
-        assert(not version in ['OLD', 'NEW', 'TST'])
         self.version = version
+        self.path = self.version + '/HELP/POPSDAT.HLP'
+        if not os.path.exists(self.path):
+            self.version = os.environ['AIPS_VERSION']
+            self.path = self.version + '/HELP/POPSDAT.HLP'
 
         path = os.environ['HOME'] + '/.ParselTongue/' \
-               + self.version + '/' + 'popsdat.pickle'
+               + os.path.basename(self.version) + '/' + 'popsdat.pickle'
 
         try:
             unpickler = pickle.Unpickler(open(path))
