@@ -155,7 +155,8 @@ class AIPSTask(Task):
             if self.__dict__[adverb] == '':
                 print "'%s': ''" % adverb
             else:
-                print "'%s': %s" % (adverb, self.__dict__[adverb])
+                value = PythonList(self.__dict__[adverb])
+                print "'%s': %s" % (adverb, value)
 
     def inputs(self):
         """Display all inputs for this task."""
@@ -312,6 +313,25 @@ def AIPSList(list):
         _list = [None]
         for l in list:
             _list.append(AIPSList(l))
+            continue
+        return _list
+    except:
+        # Apparently LIST isn't a list; simply return it unchanged.
+        return list
+
+def PythonList(list):
+    """Transform an AIPS array into a Python array.
+
+    Returns a list suitable for using normal 0-based indices.
+    """
+
+    try:
+        if list[0] != None:
+            return list
+
+        _list = []
+        for l in list[1:]:
+            _list.append(PythonList(l))
             continue
         return _list
     except:
