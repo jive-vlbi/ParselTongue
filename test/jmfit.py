@@ -5,6 +5,8 @@ from AIPSData import AIPSImage
 AIPS.userno = 1999
 
 image = AIPSImage('MANDELBROT', 'MANDL', 1, 1)
+if image.exists():
+    image.zap()
 
 mandl = AIPSTask('mandl')
 mandl.outdata = image
