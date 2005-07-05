@@ -17,5 +17,4 @@ export DADEVS_QUIET
 PYTHONPATH=@top_srcdir@/python:@OBIT_PYTHONPATH@
 export PYTHONPATH
 
-env > /tmp/env
 exec @PYTHON@ "$@"
