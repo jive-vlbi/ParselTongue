@@ -5,7 +5,7 @@ check_SCRIPTS = ParselTest
 TESTS = mandl.py imean.py jmfit.py
 TESTS_ENVIRONMENT = ./ParselTest
 
-EXTRA_DIST = $(TESTS) template.py
+EXTRA_DIST = $(TESTS) template.py ParselTest.in
 
 # Files that should be removed, but which Automake does not know.
 CLEANFILES = $(check_SCRIPTS)
