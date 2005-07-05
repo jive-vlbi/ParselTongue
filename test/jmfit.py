@@ -2,7 +2,7 @@ from AIPS import AIPS
 from AIPSTask import AIPSTask
 from AIPSData import AIPSImage
 
-AIPS.userno = 3601
+AIPS.userno = 1999
 
 image = AIPSImage('MANDELBROT', 'MANDL', 1, 1)
 
@@ -18,5 +18,7 @@ try:
     jmfit.domax[1:] = [1, 0, 0, 0]
     jmfit.go()
     print 'Peak values:', jmfit.fmax[1:]
+    for fmax in jmfit.fmax[1:]:
+        assert(fmax)
 finally:
     image.zap()

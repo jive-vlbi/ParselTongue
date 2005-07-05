@@ -2,7 +2,7 @@ from AIPS import AIPS
 from AIPSTask import AIPSTask
 from AIPSData import AIPSImage
 
-AIPS.userno = 3601
+AIPS.userno = 1999
 
 image = AIPSImage('MANDELBROT', 'MANDL', 1, 1)
 

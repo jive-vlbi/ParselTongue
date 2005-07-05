@@ -2,7 +2,7 @@ from AIPS import AIPS
 from AIPSTask import AIPSTask
 from AIPSData import AIPSImage
 
-AIPS.userno = 3601
+AIPS.userno = 1999
 
 image = AIPSImage('MANDELBROT', 'MANDL', 1, 1)
 
@@ -16,5 +16,7 @@ try:
     imean.indata = image
     imean.go()
     print 'Average: %f, RMS noise: %f' % (imean.pixavg, imean.pixstd)
+    assert(imean.pixavg)
+    assert(imean.pixstd)
 finally:
     image.zap()
