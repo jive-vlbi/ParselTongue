@@ -1,0 +1,20 @@
+from AIPS import AIPS
+from AIPSTask import AIPSTask
+from AIPSData import AIPSImage
+
+AIPS.userno = 3601
+
+image = AIPSImage('MANDELBROT', 'MANDL', 1, 1)
+
+mandl = AIPSTask('mandl')
+mandl.outdata = image
+mandl.imsize[1:] = [ 512, 512 ]
+mandl.go()
+
+try:
+    imean = AIPSTask('imean')
+    imean.indata = image
+    imean.go()
+    print 'Average: %f, RMS noise: %f' % (imean.pixavg, imean.pixstd)
+finally:
+    image.zap()
