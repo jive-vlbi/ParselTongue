@@ -63,6 +63,12 @@ It doesn't hurt to apply AIPSList to a scalar:
 And it works on matrices (lists of lists) too:
 >>> AIPSList([[1,2],[3,4],[5,6]])
 [None, [None, 1, 2], [None, 3, 4], [None, 5, 6]]
+
+It should also work for strings:
+>>> AIPSList('foobar')
+'foobar'
+>>> AIPSList(['foo', 'bar'])
+[None, 'foo', 'bar']
 """
 
 # Global AIPS defaults.
@@ -307,6 +313,13 @@ def AIPSList(list):
 
     Returns a list suitable for using 1-based indices.
     """
+
+    try:
+        # Make sure we don't consider strings to be lists.
+        if str(list) == list:
+            return list
+    except:
+        pass
 
     try:
         # Insert 'None' at index zero, and transform LIST's elements.
