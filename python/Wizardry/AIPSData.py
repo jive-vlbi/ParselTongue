@@ -397,12 +397,16 @@ class AIPSUVData:
         jlocif = header['jlocif']
         no_if = header['inaxes'][jlocif]
         no_pol = len(self.polarizations)
-        if name == 'CL':
-            Obit.newUVTableCL(self._data.me, 3, 'AIPS ' + name, [version],
-                              no_pol, no_if, kwds['no_term'], self._err.me)
+        data = Obit.UVCastData(self._data.me)
+        if name == 'AI':
+            Obit.TableAI(data, [version], 3, 'AIPS ' + name,
+                         kwds['no_term'], self._err.me)
+        elif name == 'CL':
+            Obit.TableCL(data, [version], 3, 'AIPS ' + name,
+                         no_pol, no_if, kwds['no_term'], self._err.me)
         elif name == 'SN':
-            Obit.newUVTableSN(self._data.me, 3, 'AIPS ' + name, [version],
-                              no_pol, no_if, self._err.me)
+            Obit.TableSN(data, [version], 3, 'AIPS ' + name,
+                         no_pol, no_if, self._err.me)
         else:
             raise RuntimeError
         if self._err.isErr:
