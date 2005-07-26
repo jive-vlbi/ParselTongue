@@ -84,6 +84,7 @@ class AIPSData:
         data = self._verify(desc)
         try:
             table = data.NewTable(1, type, version, self.err)
+            table.Open(3, self.err)
         except OErr.OErr, err:
             OErr.printErrMsg(err, "AIPSData.getrow_table")
             msg = "Cannot open %s table version %d", (type, version)
