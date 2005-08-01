@@ -253,6 +253,14 @@ class AIPSTask(Task):
         output_dict = inst.wait(tid)
         for adverb in self._output_list:
             self.__dict__[adverb] = output_dict[adverb]
+            continue
+        return
+
+    def kill(self, proxy, tid):
+        """Kill the task specified by PROXY and TID."""
+
+        inst = getattr(proxy, self.__class__.__name__)
+        return inst.kill(tid)
 
     def go(self):
         """Run the task."""
@@ -261,20 +269,27 @@ class AIPSTask(Task):
         log = []
         count = 0
         rotator = ['|\b', '/\b', '-\b', '\\\b']
-        while not self.finished(proxy, tid):
-            messages = self.messages(proxy, tid)
-            if messages:
-                log.extend(messages)
-            elif sys.stdout.isatty():
-                sys.stdout.write(rotator[count % 4])
-                sys.stdout.flush()
-                pass
-            count += 1
-            continue
+        try:
+            while not self.finished(proxy, tid):
+                messages = self.messages(proxy, tid)
+                if messages:
+                    log.extend(messages)
+                elif sys.stdout.isatty():
+                    sys.stdout.write(rotator[count % 4])
+                    sys.stdout.flush()
+                    pass
+                count += 1
+                continue
+        except KeyboardInterrupt, exception:
+            self.kill(proxy, tid)
+            raise exception
+
         self.wait(proxy, tid)
         if AIPS.log:
             for message in log:
                 AIPS.log.write('%s\n' % message)
+                continue
+            pass
         return
 
     def __call__(self):
