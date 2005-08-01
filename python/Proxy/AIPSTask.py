@@ -31,7 +31,7 @@ from Proxy.Popsdat import Popsdat
 from Proxy.Task import Task
 
 # Generic Python stuff.
-import glob, os, pickle, struct
+import glob, os, pickle, signal, struct
 
 class _AIPSTaskParams:
     def __parse(self, name):
@@ -374,6 +374,17 @@ class AIPSTask(Task):
         Task.wait(self, tid)
 
         return output_dict
+
+    def kill(self, tid):
+        _free_popsno(self._popsno[tid])
+
+        del self._params[tid]
+        del self._popsno[tid]
+        del self._userno[tid]
+        del self._msgno[tid]
+
+        # AIPS seems to ignore SIGINT, so use SIGTERM instead.
+        return Task.kill(self, tid, signal.SIGTERM)
 
 
 # In order to prevent multiple AIPS instances from using the same POPS

@@ -22,7 +22,7 @@ objects.
 """
 
 # Generic Python stuff.
-import fcntl, os, select, pty
+import fcntl, os, pty, select, signal
 
 class Task:
     def __init__(self):
@@ -72,3 +72,13 @@ class Task:
 
         del self._pid[tid]
         os.close(tid)
+        return
+
+    def kill(self, tid, sig=signal.SIGINT):
+        """Kill a task."""
+
+        os.kill (self._pid[tid], sig)
+
+        del self._pid[tid]
+        os.close(tid)
+        return
