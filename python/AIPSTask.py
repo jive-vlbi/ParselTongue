@@ -256,11 +256,11 @@ class AIPSTask(Task):
             continue
         return
 
-    def kill(self, proxy, tid):
-        """Kill the task specified by PROXY and TID."""
+    def abort(self, proxy, tid):
+        """Abort the task specified by PROXY and TID."""
 
         inst = getattr(proxy, self.__class__.__name__)
-        return inst.kill(tid)
+        return inst.abort(tid)
 
     def go(self):
         """Run the task."""
@@ -281,7 +281,7 @@ class AIPSTask(Task):
                 count += 1
                 continue
         except KeyboardInterrupt, exception:
-            self.kill(proxy, tid)
+            self.abort(proxy, tid)
             raise exception
 
         self.wait(proxy, tid)

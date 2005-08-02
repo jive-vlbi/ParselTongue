@@ -375,7 +375,10 @@ class AIPSTask(Task):
 
         return output_dict
 
-    def kill(self, tid):
+    # AIPS seems to ignore SIGINT, so use SIGTERM instead.
+    def abort(self, tid, sig=signal.SIGTERM):
+        """Abort a task."""
+
         _free_popsno(self._popsno[tid])
 
         del self._params[tid]
@@ -383,8 +386,7 @@ class AIPSTask(Task):
         del self._userno[tid]
         del self._msgno[tid]
 
-        # AIPS seems to ignore SIGINT, so use SIGTERM instead.
-        return Task.kill(self, tid, signal.SIGTERM)
+        return Task.abort(self, tid, sig)
 
 
 # In order to prevent multiple AIPS instances from using the same POPS

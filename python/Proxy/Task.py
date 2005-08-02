@@ -74,8 +74,8 @@ class Task:
         os.close(tid)
         return
 
-    def kill(self, tid, sig=signal.SIGINT):
-        """Kill a task."""
+    def abort(self, tid, sig=signal.SIGINT):
+        """Abort a task."""
 
         os.kill (self._pid[tid], sig)
 
