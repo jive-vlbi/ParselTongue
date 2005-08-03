@@ -73,3 +73,6 @@ class AIPS:
 
     # Message log.
     log = None
+
+    # Debug log.
+    debuglog = None
