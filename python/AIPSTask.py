@@ -126,7 +126,9 @@ class AIPSTask(Task):
             try:
                 inst = getattr(proxy, self.__class__.__name__)
                 params = inst.params(name, self.version)
-            except:
+            except Exception, exception:
+                if AIPS.debuglog:
+                    print >>AIPS.debuglog, exception
                 continue
             break
         if not params:
