@@ -18,6 +18,13 @@ import Obit
 import OErr, OSystem
 import History, UV, InfoList
 
+# Fail gracefully if numarray isn't available.
+try:
+    import numarray
+except:
+    numarray = None
+    pass
+
 from AIPS import AIPS
 
 def _scalarize(value):
@@ -290,6 +297,100 @@ class _AIPSHistory:
             raise RuntimeError
         return
 
+class _AIPSVisibilityIter(object):
+    """This class is used as an iterator over visibilities."""
+
+    def __init__(self, data, err):
+        # Give an early warning we're not going to succeed.
+        if not numarray:
+            msg = 'Numerical Python (numarray) not available'
+            raise NotImplementedError, msg
+
+        self._err = err
+        self._data = data
+        self._index = -1
+        self._desc = self._data.Desc.Dict
+        self._len = self._desc['nvis']
+        self._first = 0
+        self._count = 0
+        self._dirty = False
+        self._flush = False
+        return
+
+    def __len__(self):
+        return self._len
+
+    def next(self):
+        self._index += 1
+        if self._index + self._first >= self._len:
+            raise StopIteration
+        if self._index >= self._count:
+            self._fill()
+        return self
+
+    def _fill(self):
+        if self._flush and self._dirty:
+            Obit.UVWrite(self._data.me, self._err.me)
+            if self._err.isErr:
+                raise RuntimeError
+            self._flush = False
+            self._dirty = False
+            pass
+        Obit.UVRead(self._data.me, self._err.me)
+        if self._err.isErr:
+            raise RuntimeError
+        shape = len(self._data.VisBuf) / 4
+        self._buffer = numarray.array(sequence=self._data.VisBuf,
+                                      type=numarray.Float32, shape=shape)
+        self._first = self._data.Desc.Dict['firstVis'] - 1
+        self._count = self._data.Desc.Dict['numVisBuff']
+        self._buffer.setshape((self._count, -1))
+        self._index = 0
+        return
+
+    def update(self):
+        self._flush = True
+        return
+
+    def _get_uvw(self):
+        u = self._buffer[self._index][self._desc['ilocu']]
+        v = self._buffer[self._index][self._desc['ilocv']]
+        w = self._buffer[self._index][self._desc['ilocw']]
+        return [u, v, w]
+    uvw = property(_get_uvw)
+
+    def _get_time(self):
+        return self._buffer[self._index][self._desc['iloct']]
+    time = property(_get_time)
+
+    def _get_baseline(self):
+        baseline = int(self._buffer[self._index][self._desc['ilocb']])
+        return [baseline / 256, baseline % 256]
+    baseline = property(_get_baseline)
+
+    def _get_source(self):
+        return self._buffer[self._index][self._desc['ilocsu']]
+    def _set_source(self, value):
+        self._buffer[self._index][self._desc['ilocsu']] = value
+        self._dirty = True
+    source = property(_get_source, _set_source)
+
+    def _get_inttim(self):
+        return self._buffer[self._index][self._desc['ilocit']]
+    inttim = property(_get_inttim)
+
+    def _get_weight(self):
+        return self._buffer[self._index][self._desc['ilocw']]
+    weight = property(_get_weight)
+
+    def _get_visibility(self):
+        visibility = self._buffer[self._index][self._desc['nrparm']:]
+        inaxes = self._desc['inaxes']
+        shape = (inaxes[self._desc['jlocif']], inaxes[self._desc['jlocf']],
+                 inaxes[self._desc['jlocs']], inaxes[self._desc['jlocc']])
+        visibility.setshape(shape)
+        return visibility
+    visibility = property(_get_visibility)
 
 class AIPSUVData:
     """This class is used to access an AIPS UV data set."""
@@ -301,6 +402,10 @@ class AIPSUVData:
         if self._err.isErr:
             raise RuntimeError
         return
+
+    def __iter__(self):
+        self._data.Open(3, self._err)
+        return _AIPSVisibilityIter(self._data, self._err)
 
     _antennas = []
     def _generate_antennas(self):
