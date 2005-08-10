@@ -23,6 +23,7 @@ AIPSUVData objects.
 
 # Bits from Obit.
 import OErr, OSystem
+import AIPSDir
 import Image, UV
 import TableList
 
@@ -31,6 +32,7 @@ class AIPSData:
         self.err = OErr.OErr()
         self.sys = OSystem.OSystem("ParselTongue", 1, 1, -1, [], -1, [],
                                    True, False, self.err)
+        return
 
     def exists(self, desc):
         try:
@@ -102,6 +104,8 @@ class AIPSData:
             raise RuntimeError, msg
         return True                # Return something other than None.
 
+    pass
+
 
 class AIPSImage(AIPSData):
     def _init(self, desc):
@@ -112,6 +116,8 @@ class AIPSImage(AIPSData):
         OSystem.PSetAIPSuser(userno)
         return image
 
+    pass
+
 
 class AIPSUVData(AIPSData):
     def _init(self, desc):
@@ -121,3 +127,35 @@ class AIPSUVData(AIPSData):
                             desc['disk'], desc['seq'], True, self.err)
         OSystem.PSetAIPSuser(userno)
         return uvdata
+
+    pass
+
+
+class AIPSCat:
+    def __init__(self):
+        self.err = OErr.OErr()
+        self.sys = OSystem.OSystem("ParselTongue", 1, 1, -1, [], -1, [],
+                                   True, False, self.err)
+        return
+
+    def cat(self, disk, userno):
+        _userno = OSystem.PGetAIPSuser()
+        OSystem.PSetAIPSuser(userno)
+
+        try:
+            num_slots = AIPSDir.PNumber(disk, userno, self.err)
+        except OErr.OErr, err:
+            OErr.PClear(err)
+            return []
+
+        catalog = []
+        for slot in xrange(1, num_slots):
+            entry = AIPSDir.PInfo(disk, userno, slot, self.err)
+            if entry:
+                catalog.append('%d %s' % (slot, entry))
+                pass
+            continue
+        OSystem.PSetAIPSuser(_userno)
+        return catalog
+
+    pass

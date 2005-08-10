@@ -206,3 +206,17 @@ class _AIPSTable:
 
     def __getattr__(self, name):
         return _AIPSTableMethod(self, name)
+
+
+class AIPSCat:
+    def __init__(self, disk):
+        proxy = AIPS.disks[disk].proxy()
+        self.catalog = proxy.AIPSCat.cat(disk, AIPS.userno)
+        return
+
+    def __repr__(self):
+        # Print something useful if the catalof is empty.
+        if len(self.catalog) == 0:
+            return 'Empty'
+
+        return ''.join (['%s\n' % entry for entry in self.catalog]).strip()

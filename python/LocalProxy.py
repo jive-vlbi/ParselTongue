@@ -39,3 +39,4 @@ except:
 else:
     AIPSImage = Proxy.AIPSData.AIPSImage()
     AIPSUVData = Proxy.AIPSData.AIPSUVData()
+    AIPSCat = Proxy.AIPSData.AIPSCat()

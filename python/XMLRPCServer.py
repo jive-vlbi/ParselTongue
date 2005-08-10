@@ -31,12 +31,15 @@ class SimpleThreadedXMLRPCServer(ThreadingMixIn, SimpleXMLRPCServer):
 
 class ServerFuncs:
     def __init__(self):
+        self.AIPSTask = Proxy.AIPSTask.AIPSTask()
         self.AIPSUVData = Proxy.AIPSData.AIPSUVData()
         self.AIPSImage = Proxy.AIPSData.AIPSImage()
-        self.AIPSTask = Proxy.AIPSTask.AIPSTask()
+        self.AIPSCat = Proxy.AIPSCat.AIPSCat()
+        return
+
+    pass
+
 
 server = SimpleXMLRPCServer(('', 8000))
 server.register_instance(ServerFuncs())
 server.serve_forever()
-
-
