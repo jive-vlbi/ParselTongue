@@ -63,6 +63,20 @@ AttributeError: MyClass instance has no attribute 'group'
 >>> print my_instance.stop
 tomorrow
 
+Getting and setting private attributes should just work:
+
+>>> my_instance._private = ('do', 'not', 'touch')
+>>> print my_instance._private
+('do', 'not', 'touch')
+
+And accesing non-existent private attributes should fail (and not land
+us in an infinite loop):
+
+>>> print my_instance._does_not_exist
+Traceback (most recent call last):
+  ...
+AttributeError: MyClass instance has no attribute '_does_not_exist'
+
 """
 
 class MinimalMatch:
@@ -96,6 +110,11 @@ class MinimalMatch:
 
     def __getattr__(self, name):
         attr = self._findattr(name)
+        # Prevent infinite recursion
+        if attr == name:
+            msg = "%s instance has no attribute '%s'" \
+                  % (self.__class__.__name__, name)
+            raise AttributeError, msg
         return getattr(self, attr)
 
     def __setattr__(self, name, value):
