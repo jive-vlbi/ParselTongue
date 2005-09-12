@@ -47,8 +47,8 @@ Now configure and install &pt;
 where <replaceable>obit</replaceable> is the location where you
 installed Obit.  Note that the last step will most likely require
 super-user privileges since by default, &pt; will be installed in
-<filename>/usr/local</filename>.  If you do not have those, replace
-the first step above by
+<filename>/usr/local</filename>.  If you do not have the appropriate
+privileges, replace the first step above by
 
 <screen>
 <prompt>$</prompt> <command>./configure --prefix=<replaceable>prefix</replaceable> --with-obit=<replaceable>obit</replaceable></command>
