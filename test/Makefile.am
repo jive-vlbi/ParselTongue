@@ -5,7 +5,8 @@ check_SCRIPTS = ParselTest
 TESTS = mandl.py imean.py jmfit.py \
 	$(top_srcdir)/python/MinimalMatch.py \
 	$(top_srcdir)/python/Task.py \
-	$(top_srcdir)/python/AIPSTask.py
+	$(top_srcdir)/python/AIPSTask.py \
+	$(top_srcdir)/python/AIPSData.py
 TESTS_ENVIRONMENT = ./ParselTest
 
 EXTRA_DIST = $(TESTS) template.py ParselTest.in
