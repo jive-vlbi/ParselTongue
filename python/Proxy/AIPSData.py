@@ -27,6 +27,10 @@ import AIPSDir
 import Image, UV
 import TableList
 
+# Wizardry bits.
+from Wizardry.AIPSData import AIPSUVData as WAIPSUVData
+from Wizardry.AIPSData import AIPSImage as WAIPSImage
+
 class AIPSData:
     def __init__(self):
         self.err = OErr.OErr()
@@ -42,66 +46,39 @@ class AIPSData:
             return False
         return True
 
-    def _verify(self, desc):
-        try:
-            data = self._init(desc)
-        except OErr.OErr, err:
-            print err
-            #OErr.printErrMsg(err, "AIPSData._verify")
-            raise RuntimeError, "Cannot open data set %s" % desc['name']
-        return data
-
     def verify(self, desc):
-        data = self._verify(desc)
+        data = self._init(desc)
         return True                # Return something other than None.
 
     def header(self, desc):
-        data = self._verify(desc)
-        return data.Desc.Dict
+        data = self._init(desc)
+        return data._data.Desc.Dict
 
     def tables(self, desc):
-        data = self._verify(desc)
-        return TableList.PGetList(data.TableList, self.err)
+        data = self._init(desc)
+        return TableList.PGetList(data._data.TableList, self.err)
 
     def table_highver(self, desc, type):
-        data = self._verify(desc)
-        return TableList.PGetHigh(data.TableList, type)
+        data = self._init(desc)
+        return TableList.PGetHigh(data._data.TableList, type)
 
     def zap(self, desc):
-        data = self._verify(desc)
-        data.Zap(self.err)
+        self._init(desc).zap()
         return True                # Return something other than None.
 
     def header_table(self, desc, type, version):
-        data = self._verify(desc)
-        try:
-            table = data.NewTable(1, type, version, self.err)
-        except OErr.OErr, err:
-            OErr.printErrMsg(err, "AIPSData.header_table")
-            msg = "Cannot open %s table version %d", (type, version)
-            raise RuntimeError, msg
-        return table.Desc.Dict
+        data = self._init(desc)
+        table = data.table(type, version)
+        return table._table.Desc.Dict
 
     def getrow_table(self, desc, type, version, rowno):
-        data = self._verify(desc)
-        try:
-            table = data.NewTable(1, type, version, self.err)
-            table.Open(3, self.err)
-        except OErr.OErr, err:
-            OErr.printErrMsg(err, "AIPSData.getrow_table")
-            msg = "Cannot open %s table version %d", (type, version)
-            raise RuntimeError, msg
-        return table.ReadRow(rowno, self.err)
+        data = self._init(desc)
+        table = data.table(type, version)
+        return table[rowno - 1]._row
 
     def zap_table(self, desc, type, version):
-        data = self._verify(desc)
-        try:
-            data.ZapTable(type, version, self.err)
-            data.UpdateTables(self.err)
-        except OErr.OErr, err:
-            OErr.printErrMsg(err, "AIPSData.zap_table")
-            msg = "Cannot zap %s table version %d", (type, version)
-            raise RuntimeError, msg
+        data = self._init(desc)
+        data.zap_table(type, version)
         return True                # Return something other than None.
 
     pass
@@ -110,11 +87,10 @@ class AIPSData:
 class AIPSImage(AIPSData):
     def _init(self, desc):
         userno = OSystem.PGetAIPSuser()
-        OSystem.PSetAIPSuser(desc['userno'])
-        image = Image.newPAImage(desc['name'], desc['name'], desc['klass'],
-                                 desc['disk'], desc['seq'], True, self.err)
+        uvdata = WAIPSImage(desc['name'], desc['klass'], desc['disk'],
+                            desc['seq'], desc['userno'])
         OSystem.PSetAIPSuser(userno)
-        return image
+        return uvdata
 
     pass
 
@@ -122,11 +98,26 @@ class AIPSImage(AIPSData):
 class AIPSUVData(AIPSData):
     def _init(self, desc):
         userno = OSystem.PGetAIPSuser()
-        OSystem.PSetAIPSuser(desc['userno'])
-        uvdata = UV.newPAUV(desc['name'], desc['name'], desc['klass'],
-                            desc['disk'], desc['seq'], True, self.err)
+        uvdata = WAIPSUVData(desc['name'], desc['klass'], desc['disk'],
+                             desc['seq'], desc['userno'])
         OSystem.PSetAIPSuser(userno)
         return uvdata
+
+    def antennas(self, desc):
+        uvdata = self._init(desc)
+        return uvdata.antennas
+
+    def polarizations(self, desc):
+        uvdata = self._init(desc)
+        return uvdata.polarizations
+
+    def sources(self, desc):
+        uvdata = self._init(desc)
+        return uvdata.sources
+
+    def stokes(self, desc):
+        uvdata = self._init(desc)
+        return uvdata.stokes
 
     pass
 
