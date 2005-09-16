@@ -20,6 +20,21 @@ This module provides the AIPSImage and AIPSUVData classes.  These
 classes implement most of the data oriented verb-like functionality
 from classic AIPS.
 
+Images can be manipulated by creating instances of the AIPSImage class:
+
+>> image = AIPSImage('NONAME', 'IMAGE', 1, 1)
+
+For UV data, the AIPSUVData class should be used:
+
+>>> uvdata = AIPSUVData('NONAME', 'UVDATA', 1, 1)
+
+Checking whether the image or UV data actually exists is easy:
+
+>>> image.exists()
+False
+>>> uvdata.exists()
+False
+
 """
 
 # Global AIPS defaults.
