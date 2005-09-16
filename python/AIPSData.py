@@ -183,6 +183,28 @@ class _AIPSData:
         VERSION is -1, delete all versions of table TYPE."""
         return self._method(_whoami())(self.desc, type, version)
 
+    def _generate_antennas(self):
+        return self._method('antennas')(self.desc)
+    antennas = property(_generate_antennas,
+                        doc = 'Antennas in this data set.')
+
+    def _generate_polarizations(self):
+        return self._method('polarizations')(self.desc)
+    polarizations = property(_generate_polarizations,
+                             doc='Polarizations in this data set.')
+
+    def _generate_sources(self):
+        return self._method('sources')(self.desc)
+    sources = property(_generate_sources,
+                       doc='Sources in this data set.')
+
+    def _generate_stokes(self):
+        return self._method('stokes')(self.desc)
+    stokes = property(_generate_stokes,
+                      doc='Stokes parameters for this data set.')
+
+    pass                                # class AIPSUVData
+
 
 class AIPSImage(_AIPSData):
 
