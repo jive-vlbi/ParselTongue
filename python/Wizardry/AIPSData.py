@@ -16,7 +16,7 @@
 
 import Obit
 import OErr, OSystem
-import History, UV, InfoList
+import History, Image, UV, InfoList
 
 # Fail gracefully if numarray isn't available.
 try:
@@ -25,7 +25,14 @@ except:
     numarray = None
     pass
 
-from AIPS import AIPS
+# ??? Why can't we use the AIPS module if we are imported by
+# Proxy.AIPSData?
+try:
+    from AIPS import AIPS
+except:
+    class AIPS:
+        userno = 0
+    pass
 
 def _scalarize(value):
     """Scalarize a value.
@@ -183,8 +190,11 @@ class _AIPSTable:
     data set."""
 
     def __init__(self, data, name, version):
+        if not name.startswith('AIPS '):
+            name = 'AIPS ' + name
+
         self._err = OErr.OErr()
-        self._table = data.NewTable(3, 'AIPS ' + name, version, self._err)
+        self._table = data.NewTable(3, name, version, self._err)
         self._table.Open(3, self._err)
         if self._err.isErr:
             raise self._err
@@ -392,12 +402,60 @@ class _AIPSVisibilityIter(object):
         return visibility
     visibility = property(_get_visibility)
 
-class AIPSUVData:
+class _AIPSData:
+    """This class is used to access generic AIPS data."""
+
+    def table(self, name, version):
+        """Access an extension table attached to this UV data set.
+
+        Returns version VERSION of the extension table NAME.  If
+        VERSION is 0, this returns the highest available version of
+        the requested extension table."""
+
+        return _AIPSTable(self._data, name, version)
+
+    def zap_table(self, name, version):
+        """Remove an extension table from this UV data set."""
+
+        if not name.startswith('AIPS '):
+            name = 'AIPS ' + name
+
+        assert(not self._err.isErr)
+        try:
+            self._data.ZapTable(name, version, self._err)
+            self._data.UpdateTables(self._err)
+        except OErr.OErr, err:
+            print err
+            msg = "Cannot zap %s table version %d", (name, version)
+            raise RuntimeError, msg
+        return
+
+    def zap(self):
+        self._data.Zap(self._err)
+        return
+
+    pass
+
+class AIPSImage(_AIPSData):
+    """This class is used to access an AIPS image."""
+
+    def __init__(self, name, klass, disk, seq, userno = AIPS.userno):
+        self._err = OErr.OErr()
+        OSystem.PSetAIPSuser(userno)
+        self._data = Image.newPAImage(name, name, klass, disk, seq,
+                                      True, self._err)
+        if self._err.isErr:
+            raise RuntimeError
+        return
+
+    pass
+
+class AIPSUVData(_AIPSData):
     """This class is used to access an AIPS UV data set."""
 
-    def __init__(self, name, klass, disk, seq):
+    def __init__(self, name, klass, disk, seq, userno = AIPS.userno):
         self._err = OErr.OErr()
-        OSystem.PSetAIPSuser(AIPS.userno)
+        OSystem.PSetAIPSuser(userno)
         self._data = UV.newPAUV(name, name, klass, disk, seq, True, self._err)
         if self._err.isErr:
             raise RuntimeError
@@ -478,15 +536,6 @@ class AIPSUVData:
     stokes = property(_generate_stokes,
                       doc='Stokes parameters for this data set.')
 
-    def table(self, name, version):
-        """Access an extension table attached to this UV data set.
-
-        Returns version VERSION of the extension table NAME.  If
-        VERSION is 0, this returns the highest available version of
-        the requested extension table."""
-
-        return _AIPSTable(self._data, name, version)
-
     def attach_table(self, name, version, **kwds):
         """Attach an extension table to this UV data set.
 
@@ -495,8 +544,11 @@ class AIPSUVData:
         extension table is created with a version that is one higher
         than the highest available version."""
 
+        if not name.startswith('AIPS '):
+            name = 'AIPS ' + name
+
         if version == 0:
-            version = Obit.UVGetHighVer(self._data.me, 'AIPS ' + name) + 1
+            version = Obit.UVGetHighVer(self._data.me, name) + 1
 
         header = self._data.Desc.Dict
         jlocif = header['jlocif']
@@ -504,28 +556,19 @@ class AIPSUVData:
         no_pol = len(self.polarizations)
         data = Obit.UVCastData(self._data.me)
         if name == 'AI':
-            Obit.TableAI(data, [version], 3, 'AIPS ' + name,
+            Obit.TableAI(data, [version], 3, name,
                          kwds['no_term'], self._err.me)
         elif name == 'CL':
-            Obit.TableCL(data, [version], 3, 'AIPS ' + name,
+            Obit.TableCL(data, [version], 3, name,
                          no_pol, no_if, kwds['no_term'], self._err.me)
         elif name == 'SN':
-            Obit.TableSN(data, [version], 3, 'AIPS ' + name,
+            Obit.TableSN(data, [version], 3, name,
                          no_pol, no_if, self._err.me)
         else:
             raise RuntimeError
         if self._err.isErr:
             raise RuntimeError
         return _AIPSTable(self._data, name, version)
-
-    def zap_table(self, name, version):
-        """Remove an extension table from this UV data set."""
-
-        assert(not self._err.isErr)
-        self._data.ZapTable('AIPS + name', version, self._err)
-        if self._err.isErr:
-            raise RuntimeError
-        return
 
     def history(self):
         return _AIPSHistory(self._data)
