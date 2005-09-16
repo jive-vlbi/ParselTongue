@@ -31,9 +31,20 @@ from AIPSData import *
 from ObitTask import *
 from FITSData import *
  
-# Use our own, somewhat restricted rlcompleter.
+# Use our own, somewhat restricted, rlcompleter.
 import readline, ptcompleter
 readline.parse_and_bind("tab: complete")
+
+# Override help() such that it prints something useful for instances
+# of AIPSTask.
+_help = help
+def help(obj):
+    if isinstance(obj, AIPSTask):
+        obj.help()
+    else:
+        _help(obj)
+        pass
+    return
 
 # This is not a batch job.
 AIPSTask.isbatch = 0
