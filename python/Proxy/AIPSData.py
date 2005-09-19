@@ -80,6 +80,11 @@ class AIPSData:
         table = data.table(type, version)
         return table[key]._dict()
 
+    def _len_table(self, desc, type, version): 
+        data = self._init(desc)
+        table = data.table(type, version)
+        return len(table)
+
     def zap_table(self, desc, type, version):
         data = self._init(desc)
         data.zap_table(type, version)
