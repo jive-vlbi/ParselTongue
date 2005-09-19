@@ -372,4 +372,5 @@ def PythonList(list):
 # Tests.
 if __name__ == '__main__':
     import doctest, sys
-    doctest.testmod(sys.modules[__name__])
+    results = doctest.testmod(sys.modules[__name__])
+    sys.exit(results[0])
