@@ -22,7 +22,7 @@ from classic AIPS.
 
 Images can be manipulated by creating instances of the AIPSImage class:
 
->> image = AIPSImage('NONAME', 'IMAGE', 1, 1)
+>>> image = AIPSImage('NONAME', 'IMAGE', 1, 1)
 
 For UV data, the AIPSUVData class should be used:
 
@@ -34,6 +34,9 @@ Checking whether the image or UV data actually exists is easy:
 False
 >>> uvdata.exists()
 False
+
+>>> print uvdata
+AIPSUVData('NONAME', 'UVDATA', 1, 1)
 
 """
 
@@ -257,3 +260,10 @@ class AIPSCat:
             return 'Empty'
 
         return ''.join (['%s\n' % entry for entry in self.catalog]).strip()
+
+
+# Tests.
+if __name__ == '__main__':
+    import doctest, sys
+    results = doctest.testmod(sys.modules[__name__])
+    sys.exit(results[0])
