@@ -269,9 +269,6 @@ class _AIPSTable:
             raise RuntimeError
         return
 
-    def keys(self):
-        return [key for key in self._keys if not key == '_status']
-
     def _keywords(self):
         return _AIPSTableKeywords(self._table, self._err)
     keywords = property(_keywords)
