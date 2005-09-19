@@ -76,7 +76,16 @@ class _AIPSTableRow:
         return
 
     def __str__(self):
-        return str(self._row)
+        return str(self._dict())
+
+    def _dict(self):
+        dict = {}
+        for name in self._fields:
+            if name.startswith('_'):
+                continue
+            dict[name] = getattr(self, name)
+            pass
+        return dict
 
     def _findattr(self, name):
         """Return the field name corresponding to attribute NAME."""
