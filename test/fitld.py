@@ -34,5 +34,13 @@ try:
     assert(len(uvdata.sources) == 2)
     print 'Stokes:', uvdata.stokes
     assert(len(uvdata.stokes) == 4)
+
+    sutable = uvdata.table('SU', 1)
+    assert(sutable[0]['epoch'] == 2000.0)
+
+    antable = uvdata.table('AN', 0)
+    stabxyz = antable[3]['stabxyz']
+    assert(3822846 < stabxyz[0] < 3822847)
+
 finally:
     uvdata.zap()
