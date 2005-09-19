@@ -171,6 +171,7 @@ class _AIPSData:
         TYPE."""
         return self._method(_whoami())(self.desc, type, version)
 
+    # XXX Deprecated.
     def getrow_table(self, type, version, rowno):
         """Get a row from an extension table.
 
@@ -246,6 +247,9 @@ class _AIPSTable:
 
     def __getattr__(self, name):
         return _AIPSTableMethod(self, name)
+
+    def __getitem__(self, key):
+        return _AIPSTableMethod(self, '_getitem')(key)
 
 
 class AIPSCat:
