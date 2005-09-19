@@ -34,8 +34,6 @@ from Wizardry.AIPSData import AIPSImage as WAIPSImage
 class AIPSData:
     def __init__(self):
         self.err = OErr.OErr()
-        self.sys = OSystem.OSystem("ParselTongue", 1, 1, -1, [], -1, [],
-                                   True, False, self.err)
         return
 
     def exists(self, desc):
@@ -71,10 +69,16 @@ class AIPSData:
         table = data.table(type, version)
         return table._table.Desc.Dict
 
+    # XXX Deprecated.
     def getrow_table(self, desc, type, version, rowno):
         data = self._init(desc)
         table = data.table(type, version)
         return table[rowno - 1]._row
+
+    def _getitem_table(self, desc, type, version, key):
+        data = self._init(desc)
+        table = data.table(type, version)
+        return table[key]._dict()
 
     def zap_table(self, desc, type, version):
         data = self._init(desc)
@@ -125,8 +129,6 @@ class AIPSUVData(AIPSData):
 class AIPSCat:
     def __init__(self):
         self.err = OErr.OErr()
-        self.sys = OSystem.OSystem("ParselTongue", 1, 1, -1, [], -1, [],
-                                   True, False, self.err)
         return
 
     def cat(self, disk, userno):
