@@ -235,6 +235,16 @@ class _AIPSTableMethod(_AIPSDataMethod):
         return func(self.inst.data.desc,
                     self.inst.name, self.inst.version, *args)
 
+
+class _AIPSTableRow:
+
+    """This class describes a row of an AIPS extenstion table."""
+
+    def __init__(self, dict):
+        self.__dict__.update(dict)
+        return
+
+
 class _AIPSTableIter:
 
     """This class provides an iterator for AIPS extension tables."""
@@ -266,7 +276,8 @@ class _AIPSTable:
         return _AIPSTableMethod(self, name)
 
     def __getitem__(self, key):
-        return _AIPSTableMethod(self, '_getitem')(key)
+        dict = _AIPSTableMethod(self, '_getitem')(key)
+        return _AIPSTableRow(dict)
 
     def __iter__(self):
         return _AIPSTableIter(self)
