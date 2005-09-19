@@ -235,6 +235,23 @@ class _AIPSTableMethod(_AIPSDataMethod):
         return func(self.inst.data.desc,
                     self.inst.name, self.inst.version, *args)
 
+class _AIPSTableIter:
+
+    """This class provides an iterator for AIPS extension tables."""
+
+    def __init__(self, table):
+        self._table = table
+        self._len = len(self._table)
+        self._index = 0
+        return
+
+    def next(self):
+        if self._index >= self._len:
+            raise StopIteration
+        result = self._table[self._index]
+        self._index += 1
+        return result
+    
 
 class _AIPSTable:
 
@@ -250,6 +267,12 @@ class _AIPSTable:
 
     def __getitem__(self, key):
         return _AIPSTableMethod(self, '_getitem')(key)
+
+    def __iter__(self):
+        return _AIPSTableIter(self)
+
+    def __len__(self):
+        return _AIPSTableMethod(self, '_len')()
 
 
 class AIPSCat:
