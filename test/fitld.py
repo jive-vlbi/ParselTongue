@@ -42,7 +42,7 @@ try:
     stabxyz = antable[3].stabxyz
     assert(3822846 < stabxyz[0] < 3822847)
 
-    cltable = uvdata.table('NX', 0)
+    cltable = uvdata.table('CL', 0)
     start = cltable[0].time
     nxtable = uvdata.table('NX', 0)
     for row in nxtable:
