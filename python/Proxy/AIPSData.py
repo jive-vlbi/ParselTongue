@@ -50,7 +50,7 @@ class AIPSData:
 
     def header(self, desc):
         data = self._init(desc)
-        return data._data.Desc.Dict
+        return data.header
 
     def tables(self, desc):
         data = self._init(desc)
@@ -68,6 +68,11 @@ class AIPSData:
         data = self._init(desc)
         table = data.table(type, version)
         return table._table.Desc.Dict
+
+    def keywords_table(self, desc, type, version):
+        data = self._init(desc)
+        table = data.table(type, version)
+        return table.keywords
 
     # XXX Deprecated.
     def getrow_table(self, desc, type, version, rowno):
