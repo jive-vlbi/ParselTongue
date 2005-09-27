@@ -92,6 +92,19 @@ class _AIPSDataDesc:
         return self.__dict__[key]
 
 
+class _AIPSDataHeader:
+
+    """This class describes the header of an AIPS extenstion table."""
+
+    def __init__(self, dict):
+        self._dict = dict
+        self.__dict__.update(dict)
+        return
+
+    def __repr__(self):
+        return str(self._dict)
+
+
 class _AIPSData:
 
     """This class describes generic AIPS data."""
@@ -143,15 +156,16 @@ class _AIPSData:
         """Verify whether this image or data set can be accessed."""
         return self._method(_whoami())(self.desc)
 
-    def header(self):
-        """Get the header for this image or data set.
+    def _generate_header(self):
+        dict = self._method('header')(self.desc)
+        return _AIPSDataHeader(dict)
+    header = property(_generate_header,
+                      doc='Header for this data set.')
 
-        Returns the header as a dictionary."""
+    def _generate_tables(self):
         return self._method(_whoami())(self.desc)
-
-    def tables(self):
-        """Get the list of extension tables."""
-        return self._method(_whoami())(self.desc)
+    tables = property(_generate_header,
+                      doc='Extension tables for this data set.')
 
     def table_highver(self, type):
         """Get the highest version of an extension table.
@@ -241,8 +255,12 @@ class _AIPSTableRow:
     """This class describes a row of an AIPS extenstion table."""
 
     def __init__(self, dict):
+        self._dict = dict
         self.__dict__.update(dict)
         return
+
+    def __repr__(self):
+        return str(self._dict)
 
 
 class _AIPSTableIter:
@@ -284,6 +302,11 @@ class _AIPSTable:
 
     def __len__(self):
         return _AIPSTableMethod(self, '_len')()
+
+    def _generate_keywords(self):
+        return _AIPSTableMethod(self, 'keywords')()
+    keywords = property(_generate_keywords,
+                        doc='Keywords for this table.')
 
 
 class AIPSCat:
