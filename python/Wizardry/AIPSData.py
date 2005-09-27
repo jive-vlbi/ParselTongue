@@ -411,6 +411,39 @@ class _AIPSVisibilityIter(object):
 class _AIPSData:
     """This class is used to access generic AIPS data."""
 
+    def _generate_header(self):
+        header = {}
+        keys = {'object': 'object',
+                'teles': 'telescop',
+                'instrume': 'instrume',
+                'observer': 'observer',
+                'obsdat': 'date_obs',
+                'date': 'date_map',
+                'bunit': 'bunit',
+                'naxis': 'ndim',
+                'inaxes': 'naxis',
+                'epoch': 'epoch',
+                'ctype': 'ctype',
+                'crval': 'crval',
+                'cdelt': 'cdelt',
+                'crpix': 'crpix',
+                'crota': 'crota',
+                # Images
+                'niter': 'niter',
+                # UV Data sets
+                'sortord': 'isort',
+                'nrparm': 'nrparm',
+                'ptype': 'ptype',
+                'ncorr': 'ncorr'}
+        for key in keys:
+            if key in self._data.Desc.Dict:
+                header[keys[key]] = self._data.Desc.Dict[key]
+                pass
+            pass
+        return header
+    header = property(_generate_header,
+                      doc = 'Header for this data set.')
+
     def table(self, name, version):
         """Access an extension table attached to this UV data set.
 
