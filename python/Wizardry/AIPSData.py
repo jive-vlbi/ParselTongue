@@ -444,6 +444,27 @@ class _AIPSData:
     header = property(_generate_header,
                       doc = 'Header for this data set.')
 
+    _stokes = []
+    def _generate_stokes(self):
+        """Generate the 'stokes' attribute."""
+
+        stokes_dict = {1: 'I', 2: 'Q', 3: 'U', 4: 'V',
+                       -1: 'RR', -2: 'LL', -3: 'RL', -4: 'LR',
+                       -5: 'XX', -6: 'YY', -7: 'XY', -8: 'YX'}
+
+        if not self._stokes:
+            header = self._data.Desc.Dict
+            jlocs = header['jlocs']
+            cval = header['crval'][jlocs]
+            for i in xrange(header['inaxes'][jlocs]):
+                self._stokes.append(stokes_dict[int(cval)])
+                cval += header['cdelt'][jlocs]
+                continue
+            pass
+        return self._stokes
+    stokes = property(_generate_stokes,
+                      doc='Stokes parameters for this data set.')
+
     def table(self, name, version):
         """Access an extension table attached to this UV data set.
 
@@ -553,27 +574,6 @@ class AIPSUVData(_AIPSData):
         return self._sources
     sources = property(_generate_sources,
                        doc='Sources in this data set.')
-
-    _stokes = []
-    def _generate_stokes(self):
-        """Generate the 'stokes' attribute."""
-
-        stokes_dict = {1: 'I', 2: 'Q', 3: 'U', 4: 'V',
-                       -1: 'RR', -2: 'LL', -3: 'RL', -4: 'LR',
-                       -5: 'XX', -6: 'YY', -7: 'XY', -8: 'YX'}
-
-        if not self._stokes:
-            header = self._data.Desc.Dict
-            jlocs = header['jlocs']
-            cval = header['crval'][jlocs]
-            for i in xrange(header['inaxes'][jlocs]):
-                self._stokes.append(stokes_dict[int(cval)])
-                cval += header['cdelt'][jlocs]
-                continue
-            pass
-        return self._stokes
-    stokes = property(_generate_stokes,
-                      doc='Stokes parameters for this data set.')
 
     def attach_table(self, name, version, **kwds):
         """Attach an extension table to this UV data set.
