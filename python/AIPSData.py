@@ -221,7 +221,7 @@ class _AIPSData:
     stokes = property(_generate_stokes,
                       doc='Stokes parameters for this data set.')
 
-    pass                                # class AIPSUVData
+    pass                                # class AIPSData
 
 
 class AIPSImage(_AIPSData):
