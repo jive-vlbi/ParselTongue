@@ -52,6 +52,10 @@ class AIPSData:
         data = self._init(desc)
         return data.header
 
+    def stokes(self, desc):
+        uvdata = self._init(desc)
+        return uvdata.stokes
+
     def tables(self, desc):
         data = self._init(desc)
         return TableList.PGetList(data._data.TableList, self.err)
@@ -128,10 +132,6 @@ class AIPSUVData(AIPSData):
     def sources(self, desc):
         uvdata = self._init(desc)
         return uvdata.sources
-
-    def stokes(self, desc):
-        uvdata = self._init(desc)
-        return uvdata.stokes
 
     pass
 
