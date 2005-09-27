@@ -1,1 +1,16 @@
-Nothing yet.
+*** Changes in ParselTongue 0.97
+
+* Interface changes
+
+AIPSUVData.header, AIPSImage.header, AIPSUVData.tables and
+AIPSImage.tables are now properties of the data set.  The header
+property has its own attributes.  The names of these attributes match
+the names used by AIPS' GETHEAD and PUTHEAD verbs.  So instead of:
+
+>>> print AIPSUVData.header()['OBSDAT']
+
+you now should use:
+
+>>> print AIPSUVData.header.date_obs
+
+This should make the ParselTongue interface much more consistent
