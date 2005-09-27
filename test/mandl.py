@@ -14,9 +14,8 @@ mandl.imsize[1:] = [ 512, 512 ]
 mandl.go()
 
 try:
-    header = image.header()
-    print 'Dimension: %dx%d' % (header['inaxes'][0], header['inaxes'][1])
-    tables = image.tables()
-    print tables
+    header = image.header
+    print 'Dimension: %dx%d' % (header.naxis[0], header.naxis[1])
+    print image.tables
 finally:
     image.zap()
