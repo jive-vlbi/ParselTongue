@@ -35,6 +35,8 @@ try:
     print 'Stokes:', uvdata.stokes
     assert(len(uvdata.stokes) == 4)
 
+    assert(uvdata.header.date_obs == '2003-02-25')
+
     sutable = uvdata.table('SU', 1)
     assert(sutable[0].epoch == 2000.0)
 
