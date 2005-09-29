@@ -151,10 +151,13 @@ class AIPSTask(Task):
 
         # Initialize all adverbs to their default values.
         self.__dict__.update(self._default_dict)
+        
+        return                          # __init__
 
     def defaults(self):
         """Set adverbs to their defaults."""
         self.__dict__.update(self._default_dict)
+        return
 
     def __display_adverbs(self, adverbs):
         """Display ADVERBS."""
@@ -165,14 +168,20 @@ class AIPSTask(Task):
             else:
                 value = PythonList(self.__dict__[adverb])
                 print "'%s': %s" % (adverb, value)
+                pass
+            continue
 
+        return
+        
     def inputs(self):
         """Display all inputs for this task."""
         self.__display_adverbs(self._input_list)
+        return
 
     def outputs(self):
         """Display all outputs for this task."""
         self.__display_adverbs(self._output_list)
+        return
 
     def _retype(self, value):
         """ Recursively transform a 'List' into a 'list' """
@@ -181,6 +190,8 @@ class AIPSTask(Task):
             value = list(value)
             for i in range(1, len(value)):
                 value[i] = self._retype(value[i])
+                continue
+            pass
 
         return value
 
@@ -206,10 +217,13 @@ class AIPSTask(Task):
                 if not url and not proxy:
                     url = AIPS.disks[disk].url
                     proxy = AIPS.disks[disk].proxy()
+                    pass
                 if AIPS.disks[disk].url != url:
                     raise RuntimeError, \
                           "AIPS disks are not on the same machine"
                 input_dict[adverb] = float(AIPS.disks[disk].disk)
+                pass
+            continue
         if not proxy:
             raise RuntimeError, \
                   "Unable to determine where to execute task"
@@ -282,6 +296,7 @@ class AIPSTask(Task):
                     pass
                 count += 1
                 continue
+            pass
         except KeyboardInterrupt, exception:
             self.abort(proxy, tid)
             raise exception
@@ -323,6 +338,11 @@ class AIPSTask(Task):
                 self.__dict__[attr] = value
             else:
                 Task.__setattr__(self, name, value)
+                pass
+            pass
+        return
+
+    pass                                # class AIPSTask
 
 
 def AIPSList(list):
@@ -335,6 +355,7 @@ def AIPSList(list):
         # Make sure we don't consider strings to be lists.
         if str(list) == list:
             return list
+        pass
     except:
         pass
 
@@ -346,8 +367,11 @@ def AIPSList(list):
             continue
         return _list
     except:
-        # Apparently LIST isn't a list; simply return it unchanged.
-        return list
+        pass
+    
+    # Apparently LIST isn't a list; simply return it unchanged.
+    return list
+
 
 def PythonList(list):
     """Transform an AIPS array into a Python array.
@@ -365,8 +389,10 @@ def PythonList(list):
             continue
         return _list
     except:
-        # Apparently LIST isn't a list; simply return it unchanged.
-        return list
+        pass
+    
+    # Apparently LIST isn't a list; simply return it unchanged.
+    return list
 
 
 # Tests.
