@@ -163,8 +163,9 @@ class _AIPSData:
                       doc='Header for this data set.')
 
     def _generate_tables(self):
-        return self._method(_whoami())(self.desc)
-    tables = property(_generate_header,
+        dict = self._method('tables')(self.desc)
+        return dict
+    tables = property(_generate_tables,
                       doc='Extension tables for this data set.')
 
     def table_highver(self, type):
