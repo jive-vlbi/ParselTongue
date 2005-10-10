@@ -306,6 +306,7 @@ class AIPSTask(Task):
             for message in log:
                 AIPS.log.write('%s\n' % message)
                 continue
+            AIPS.log.flush()
             pass
         return
 
