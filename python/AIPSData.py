@@ -104,6 +104,9 @@ class _AIPSDataHeader:
     def __repr__(self):
         return str(self._dict)
 
+    def __getitem__(self, key):
+        return self._dict[key]
+
 
 class _AIPSData:
 
@@ -112,7 +115,6 @@ class _AIPSData:
     def __init__(self, name, klass, disk, seq):
         self.desc = _AIPSDataDesc(name, klass, AIPS.disks[disk].disk, seq)
         self.proxy = AIPS.disks[disk].proxy()
-        self.disk = disk
         return
 
     name = property(lambda self: self.desc.name,
