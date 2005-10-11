@@ -53,8 +53,8 @@ class AIPSData:
         return data.header
 
     def stokes(self, desc):
-        uvdata = self._init(desc)
-        return uvdata.stokes
+        data = self._init(desc)
+        return data.stokes
 
     def tables(self, desc):
         data = self._init(desc)
