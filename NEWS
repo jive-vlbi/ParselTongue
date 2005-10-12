@@ -7,10 +7,30 @@ AIPSImage.tables are now properties of the data set.  The header
 property has its own attributes.  The names of these attributes match
 the names used by AIPS' GETHEAD and PUTHEAD verbs.  So instead of:
 
->>> print AIPSUVData.header()['OBSDAT']
+>>> print AIPSImage.header()['OBSDAT']
+>>> print AIPSUVData.tables()
 
 you now should use:
 
->>> print AIPSUVData.header.date_obs
+>>> print AIPSImage.header.date_obs
+>>> print AIPSUVData.tables
 
-This should make the ParselTongue interface much more consistent
+
+AIPSTable.header should no longer be used since a much better syntax
+now exists to deal with tables.  So instead of:
+
+    sutable = uvdata.table('AIPS SU', 0)
+    suheader = sutable.header()
+    nrow = suheader['nrow']
+    for rowno in xrange(1, nrow + 1):
+        row = sutable.getrow(rowno)
+        print row['SOURCE'][0].strip()
+
+you now should use:
+
+    sutable = uvdata.table('SU', 0)
+    for row in sutable:
+        print row.source.strip()
+
+
+This should make the ParselTongue interface much more consistent.
