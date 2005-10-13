@@ -1,0 +1,442 @@
+<?xml version='1.0'?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+               "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
+  <!ENTITY pt "<application>ParselTongue</application>">
+  <!ENTITY aips "<application><acronym>AIPS</acronym></application>">
+]>
+
+<book>
+
+<bookinfo>
+<title>&pt; Tutorial</title>
+<author>
+<firstname>Mark</firstname>
+<surname>Kettenis</surname>
+<affiliation><orgname>JIVE</orgname></affiliation>
+</author>
+</bookinfo>
+
+<chapter>
+<title>Starting an interactive &pt; session</title>
+
+<para>
+For this tutorial we will use an interactive &pt; session:
+
+<screen>
+<prompt>$</prompt> <command>ParselTongue</command>
+Python 2.3.4 (#1, Oct  5 2004, 00:17:14) 
+[GCC 3.3.4 (pre 3.3.5 20040809)] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+
+Welcome to ParselTongue
+Please enter your AIPS user ID number: <userinput>3601</userinput>
+<prompt>&gt;&gt;&gt;</prompt>
+
+</screen>
+
+</para>
+
+</chapter>
+
+<chapter>
+<title>Running &aips; tasks</title>
+
+<para>
+Use the <classname>AIPSTask</classname> class to run &aips; tasks:
+
+<orderedlist numeration="arabic">
+<listitem>
+<para>
+Create an instance for the task you want to run
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>fitld = AIPSTask('fitld')</command>
+</screen>
+</para>
+</listitem>
+<listitem>
+<para>
+Set attributes (adverbs)
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>fitld.infile = '/tmp/4C39.25.FITS'</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>fitld.clint = 0.33</command>
+</screen>
+</para>
+</listitem>
+<listitem>
+<para>
+Go!
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>fitld.go()</command>
+...
+</screen>
+</para>
+</listitem>
+</orderedlist>
+</para>
+
+<para>
+Attributes are not shared between instances:
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>fitld2 = AIPSTask('fitld')</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>print fitld.clint</command>
+0.33
+<prompt>&gt;&gt;&gt;</prompt> <command>print fitld2.clint</command>
+0.0
+</screen>
+</para>
+
+<para>
+&aips; Tasks can return attributes:
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>imean = AIPSTask('imean')</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>imean.inname = '4C39.25'</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>imean.inclass = 'ICL001'</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>imean.indisk = 1</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>imean.go()</command>
+...
+<prompt>&gt;&gt;&gt;</prompt> <command>print imean.pixavg, imean.pixstd</command>
+0.00019473816792 0.00434004655108
+</screen>
+</para>
+
+<para>
+Output is logged to <varname>AIPS.log</varname> if you set it to a
+file-like object:
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>AIPS.log = open('/tmp/pt.log', 'r+')</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>imean.go()</command>
+...
+<prompt>&gt;&gt;&gt;</prompt> <command>for line in open('/tmp/pt.log'): print line,</command>
+<prompt>...</prompt>
+</screen>
+
+The verbosity of the output is controlled by
+<varname>AIPSTask.msgkill</varname>:
+<itemizedlist>
+<listitem><para> &gt; 0 - Reduce output on screen</para></listitem>
+<listitem><para> &lt; 0 - Reduce output on both screen and log</para></listitem>
+</itemizedlist>
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>imean.msgkill = 2</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>imean.go()</command>
+...
+</screen>
+</para>
+
+</chapter>
+
+<chapter>
+<title>Array Indexing</title>
+
+<para>
+
+There are different array indexing conventions around:
+
+<itemizedlist>
+<listitem><para> &aips; uses 1-based array indexing (like FORTRAN)</para></listitem>
+<listitem><para> Python uses 0-based array indexing (like everyone else)</para></listitem>
+</itemizedlist>
+
+Unfortunately 0-based indexing is very confusing for things like
+<varname>APARM</varname>.  Therefore &pt; arrays used for task
+attributes are a bit special and have element 0 hardwired to
+<varname>None</varname>.
+
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>imean.trc = AIPSList([256, 256])</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>imean.trc[1:] = [256, 256]</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>print imean.trc</command>
+[None, 256.0, 256.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+</screen>
+
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>imean.trc[0] = 1</command>
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in ?
+  File "/export/jive/kettenis/opt/ParselTongue/share/parseltongue/python/Task.py", line 131, in __setitem__
+    raise ValueError, msg
+ValueError: setting element '0' is prohibited
+</screen>
+
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>print PythonList(imean.trc)</command>
+[256.0, 256.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+</screen>
+
+</para>
+
+</chapter>
+
+<chapter>
+<title>Accessing &aips; data</title>
+
+<para>
+
+Use the <classname>AIPSUVData</classname> and
+<classname>AIPSImage</classname> classes to access the metadata
+associated with &aips; UV data and images:
+
+<orderedlist numeration="arabic">
+<listitem>
+<para>
+Create an instance for the data set you want to access:
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>uvdata = AIPSUVData('N03L1', 'UVDATA', 1, 1)</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>image = AIPSImage('4C39.25', 'ICL001', 1, 1)</command>
+</screen>
+</para>
+</listitem>
+</orderedlist>
+
+Note that we refer to data sets by their name, class, disk and
+sequence number and not by its catalog number.
+</para>
+
+<para>
+It is easy to check whether the data set actually exists in the AIPS catalog:
+
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>uvdata.exists()</command>
+False
+<prompt>&gt;&gt;&gt;</prompt> <command>image.exists()</command>
+True
+</screen>
+</para>
+
+<para>
+These &pt; data can be used conveniently when running &aips; tasks:
+
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>fitld = AIPSTask('fitld')</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>fitld.infile = '/tmp/N03L1.IDI'</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>fitld.clint = 0.33</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>fitld.outdata = uvdata</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>fitld.go()</command>
+...
+<prompt>&gt;&gt;&gt;</prompt> <command>uvdata.exists()</command>
+True
+</screen>
+</para>
+
+
+<section>
+<title>Headers</title>
+<para>
+You can access the header through the <varname>header</varname> attribute:
+
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>uvdata.header</command>
+...
+<prompt>&gt;&gt;&gt;</prompt> <command>uvdata.header.telescop</command>
+'EVN     '
+<prompt>&gt;&gt;&gt;</prompt> <command>image.header</command>
+...
+<prompt>&gt;&gt;&gt;</prompt> <command>image.header.date_obs</command>
+'2005-03-01'
+</screen>
+
+Keywords are the same as for the &aips; GETHEAD verb, but lower case
+with '-' replaced by '_'.
+</para>
+</section>
+
+<section>
+<title>Tables</title>
+<para>
+What tables do we have?
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>uvdata.tables</command>
+[[1, 'AIPS HI'], [1, 'AIPS AT'], [1, 'AIPS NX'], [1, 'AIPS CL'], [1, 'AIPS FQ'], [1, 'AIPS AN'], [1, 'AIPS SU']]
+</screen>
+
+These tables can be opened for further analysis:
+
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>sutable = uvdata.table('SU', 1)</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>for row in sutable:</command>
+<prompt>...</prompt> <command>    print row.source, row.raapp, row.decapp</command>
+<prompt>...</prompt>
+3C84             49.9489485008 41.513581044
+DA193            88.8813073705 39.8151637728
+</screen>
+
+It is also possible to access individual rows directly:
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>cltable = uvdata.table('CL', 1)</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>print cltable[0]</command>
+...
+</screen>
+</para>
+
+</section>
+
+<section>
+<title>Convenience functions</title>
+<para>
+&pt; includes some convenience functions that 
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>uvdata.antennas</command>
+['MC', 'WB', 'NT', 'JB']
+<prompt>&gt;&gt;&gt;</prompt> <command>uvdata.sources</command>
+['3C84', 'DA193']
+<prompt>&gt;&gt;&gt;</prompt> <command>uvdata.polarizations</command>
+['R', 'L']
+<prompt>&gt;&gt;&gt;</prompt> <command>uvdata.stokes</command>
+['RR', 'LL', 'RL', 'LR']
+<prompt>&gt;&gt;&gt;</prompt> <command>image.stokes</command>
+['I']
+</screen>
+</para>
+
+</section>
+
+<section>
+<title>Cleaning up</title>
+
+<para>
+Finally when you're done you should clean up.  The following command
+removes the entire data set:
+
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>image.zap()</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>image.exists()</command>
+False
+</screen>
+
+It is also possible to remove individual tables:
+
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>uvdata.tables</command>
+[[1, 'AIPS HI'], [1, 'AIPS AT'], [1, 'AIPS NX'], [1, 'AIPS CL'], [1, 'AIPS FQ'], [1, 'AIPS AN'], [1, 'AIPS SU']]
+<prompt>&gt;&gt;&gt;</prompt> <command>uvdata.table('NX', 1).zap()</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>uvdata.tables</command>
+[[1, 'AIPS HI'], [1, 'AIPS AT'], [1, 'AIPS CL'], [1, 'AIPS FQ'], [1, 'AIPS AN'], [1, 'AIPS SU']]
+</screen>
+</para>
+
+</section>
+
+</chapter>
+
+<chapter>
+<title>Scripts</title>
+
+<para>
+In order to use &pt; from scripts you'll need to import the
+appropriate &pt; modules and set your &aips; user number.  For the
+examples we have seen before, something like the following will
+suffice:
+
+<programlisting>
+from AIPS import AIPS
+from AIPSTask import AIPSTask, AIPSList
+from AIPSData import AIPSUVData, AIPSImage
+
+AIPS.userno = 3601
+</programlisting>
+
+Starting &pt; scripts is easiest done by using the
+<command>ParselTongue</command> command:
+
+<screen>
+<prompt>$</prompt> <command>ParselTongue script.py</command>
+</screen>
+
+This will start <application>Python</application> with all the magic
+environment variables set.
+</para>
+
+</chapter>
+
+<chapter>
+<title>Wizardry</title>
+
+<para>
+For Hogwarts graduates it is even possible to create new extension
+tables.  The following bit of code creates a new CL table with a
+different amplitude calibration:
+
+<programlisting>
+from AIPS import AIPS
+from Wizardry.AIPSData import AIPSUVData
+
+AIPS.userno = 3601
+
+data = AIPSUVData('N03L1', 'UVDATA', 1, 1)
+oldcl = data.table('CL', 1)
+
+newcl = data.attach_table('CL', 2, no_term=oldcl.keywords['NO_TERM'])
+newcl.keywords['NO_ANT'] = oldcl.keywords['NO_ANT']
+
+for row in oldcl:
+    row.real1 = [2 * x for x in row.real1]
+    row.real2 = [2 * x for x in row.real2]
+    newcl.append(row)
+
+newcl.close()
+oldcl.close()
+</programlisting>
+
+<classname>Wizardry.AIPSUVData</classname> is very similar to the
+normal <classname>AIPSUVData</classname> but is in a different module
+because it doesn't support remote executaion like
+<classname>AIPSUVData</classname> does.  Remote execution will be
+adressed later in this workshop.
+</para>
+
+<para>
+It's also possible to get at the actual visibilities in a UV data set.
+Here is a little script that uses
+<application>matplotlib</application> to make a UV coverage plot:
+
+<programlisting>
+from Wizardry.AIPSData import AIPSUVData
+from AIPS import AIPS
+
+from pylab import plot, show
+
+AIPS.userno = 3601
+
+data = AIPSUVData('MULTI', 'UVDATA', 1, 3)
+u = []
+v = []
+for visibility in data:
+    u.append(visibility.uvw[0])
+    v.append(visibility.uvw[1])
+
+plot(u, v, '.')
+show()
+</programlisting>
+
+And here is a script that makes a plot of the phase for a single
+channel on a randomly chosen baseline:
+
+<programlisting>
+from Wizardry.AIPSData import AIPSUVData
+from AIPS import AIPS
+
+from pylab import plot, show
+from math import atan2
+
+AIPS.userno = 3601
+
+data = AIPSUVData('MULTI', 'UVDATA', 1, 3)
+phase = []
+time = []
+for visibility in data:
+    if visibility.baseline == [1, 2]:
+        re = visibility.visibility[0, 0, 0, 0]
+        im = visibility.visibility[0, 0, 0, 1]
+        phase.append(atan2(re, im))
+        time.append(visibility.time)
+
+plot(time, phase, '.')
+show()
+
+
+</programlisting>
+</para>
+
+</chapter>
+
+</book>
