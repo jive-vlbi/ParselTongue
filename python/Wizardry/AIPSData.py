@@ -408,7 +408,7 @@ class _AIPSVisibilityIter(object):
         return visibility
     visibility = property(_get_visibility)
 
-class _AIPSData:
+class _AIPSData(object):
     """This class is used to access generic AIPS data."""
 
     def _generate_header(self):
@@ -444,7 +444,6 @@ class _AIPSData:
     header = property(_generate_header,
                       doc = 'Header for this data set.')
 
-    _stokes = []
     def _generate_stokes(self):
         """Generate the 'stokes' attribute."""
 
@@ -452,16 +451,15 @@ class _AIPSData:
                        -1: 'RR', -2: 'LL', -3: 'RL', -4: 'LR',
                        -5: 'XX', -6: 'YY', -7: 'XY', -8: 'YX'}
 
-        if not self._stokes:
-            header = self._data.Desc.Dict
-            jlocs = header['jlocs']
-            cval = header['crval'][jlocs]
-            for i in xrange(header['inaxes'][jlocs]):
-                self._stokes.append(stokes_dict[int(cval)])
-                cval += header['cdelt'][jlocs]
-                continue
-            pass
-        return self._stokes
+        stokes = []
+        header = self._data.Desc.Dict
+        jlocs = header['jlocs']
+        cval = header['crval'][jlocs]
+        for i in xrange(header['inaxes'][jlocs]):
+            stokes.append(stokes_dict[int(cval)])
+            cval += header['cdelt'][jlocs]
+            continue
+        return stokes
     stokes = property(_generate_stokes,
                       doc='Stokes parameters for this data set.')
 
@@ -499,7 +497,9 @@ class _AIPSData:
 class AIPSImage(_AIPSData):
     """This class is used to access an AIPS image."""
 
-    def __init__(self, name, klass, disk, seq, userno = AIPS.userno):
+    def __init__(self, name, klass, disk, seq, userno = 0):
+        if userno == 0:
+            userno = AIPS.userno
         self._err = OErr.OErr()
         OSystem.PSetAIPSuser(userno)
         self._data = Image.newPAImage(name, name, klass, disk, seq,
@@ -513,7 +513,9 @@ class AIPSImage(_AIPSData):
 class AIPSUVData(_AIPSData):
     """This class is used to access an AIPS UV data set."""
 
-    def __init__(self, name, klass, disk, seq, userno = AIPS.userno):
+    def __init__(self, name, klass, disk, seq, userno = 0):
+        if userno == 0:
+            userno = AIPS.userno
         self._err = OErr.OErr()
         OSystem.PSetAIPSuser(userno)
         self._data = UV.newPAUV(name, name, klass, disk, seq, True, self._err)
@@ -594,13 +596,13 @@ class AIPSUVData(_AIPSData):
         no_if = header['inaxes'][jlocif]
         no_pol = len(self.polarizations)
         data = Obit.UVCastData(self._data.me)
-        if name == 'AI':
+        if name == 'AIPS AI':
             Obit.TableAI(data, [version], 3, name,
                          kwds['no_term'], self._err.me)
-        elif name == 'CL':
+        elif name == 'AIPS CL':
             Obit.TableCL(data, [version], 3, name,
                          no_pol, no_if, kwds['no_term'], self._err.me)
-        elif name == 'SN':
+        elif name == 'AIPS SN':
             Obit.TableSN(data, [version], 3, name,
                          no_pol, no_if, self._err.me)
         else:
