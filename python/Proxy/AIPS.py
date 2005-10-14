@@ -35,7 +35,8 @@ def ehex(n, width, padding=None):
     # Pad if requested to do so.
     if padding != None:
         while width > 0:
-            result = str(pad) + result
+            result = str(padding) + result
+            width -= 1
             continue
 
     return result
