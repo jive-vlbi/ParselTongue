@@ -72,8 +72,7 @@ Obit and move the source code there.  Then type:
 <screen>
 <prompt>$</prompt> <command>tar xfz Obit.tar.gz</command>
 <prompt>$</prompt> <command>./configure</command>
-<prompt>$</prompt> <command>mkdir -p bin/LINUX</command>
-<prompt>$</prompt> <command>make ARCH=LINUX</command>
+<prompt>$</prompt> <command>make</command>
 </screen>
 
 If any of these steps fail, there probably is a problem with the
