@@ -375,6 +375,13 @@ class ObitTask(Task):
         self._popsno[tid] = popsno
         return tid
 
+    def messages(self, tid):
+        """Return task's messages."""
+
+        # Add a default priority to the messages
+        messages = Task.messages(self, tid)
+        return [(1, msg) for msg in messages]
+
     def wait(self, tid):
         """Wait for the task to finish."""
 
