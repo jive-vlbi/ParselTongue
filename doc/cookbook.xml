@@ -17,6 +17,72 @@
 </bookinfo>
 
 <chapter>
+<title>Installation</title>
+
+<para>
+
+Note that in order to use &pt;, you need a workstation with a classic
+&aips; installation, <application>Python 2.2</application> or later
+and <application>Obit</application>.  &aips; and
+<application>Python</application> will be available on most
+astronomer's desktops (if not, please see your local system
+administrator), but <application>Obit</application> probably isn't.  A
+version of <application>Obit</application> that is known to work with
+&pt; is available from <ulink
+url="http://www.radionet-eu.org/rnwiki/ParselTongue">the &pt;
+Wiki</ulink>.
+
+</para>
+
+<section>
+<title>Installing <application>Obit</application></title>
+
+<para>
+Installing <application>Obit</application> can be a bit of a pain.  To
+be able to build it, you need <application>GLib 2.0</application> or
+later.  A usable version of <application>GLib</application> is
+probably already installed on any Linux workstation, but its C header
+files might not be installed.  These files are usually part of a
+package called glib2-devel; if it is not installed on your system,
+please contact your system administrator to install this package.
+<application>Obit</application> also needs some
+<application>Python</application> C header files, usually provided by
+the python-devel package.  <application>Obit</application> will use
+<application>PGPlot</application>, <application>CFITSIO</application>
+and <application>FFTW</application> if it finds the appropriate
+libraries on your system, but these are not essential for &pt;.
+<application>Obit</application> will also use
+<application>SWIG</application> if available.  Unfortunately
+different, incompatible versions of <application>SWIG</application>
+exists.  For compiling <application>Obit</application> you need
+<application>SWIG 1.1-883</application>.  More recent versions of
+<application>SWIG</application> (1.3.x) won't work.  This may bite you
+if your system has such a version of <application>SWIG</application>.
+In any case, the right version of SWIG (as well as the wrong ones) can
+be found on <ulink url="http://www.swig.org">the
+<application>SWIG</application> web site</ulink>.
+
+</para>
+
+<para>
+Once your system has the necessary tools and libraries, building Obit
+is fairly easy.  Just create the directory where you want to install
+Obit and move the source code there.  Then type:
+
+<screen>
+<prompt>$</prompt> <command>tar xfz Obit.tar.gz</command>
+<prompt>$</prompt> <command>./configure</command>
+<prompt>$</prompt> <command>mkdir -p bin/LINUX</command>
+<prompt>$</prompt> <command>make ARCH=LINUX</command>
+</screen>
+
+If any of these steps fail, there probably is a problem with the
+prerequisites mentioned above.
+</para>
+
+</section>
+
+<section>
 <title>Installing &pt;</title>
 
 <para>
@@ -33,7 +99,7 @@ First unpack the distribution
 
 and enter the distribution directory
 <screen>
-<prompt>$</prompt> <command>cd parseltongue</command>
+<prompt>$</prompt> <command>cd parseltongue-1.0</command>
 </screen>
 
 Now configure and install &pt;
@@ -86,6 +152,8 @@ command is
 You might want to add these commands to your
 <filename>.profile</filename> or <filename>.login</filename>.
 </para>
+
+</section>
 
 </chapter>
 
