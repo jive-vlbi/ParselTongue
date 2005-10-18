@@ -312,6 +312,16 @@ It is also possible to remove individual tables:
 <prompt>&gt;&gt;&gt;</prompt> <command>uvdata.tables</command>
 [[1, 'AIPS HI'], [1, 'AIPS AT'], [1, 'AIPS CL'], [1, 'AIPS FQ'], [1, 'AIPS AN'], [1, 'AIPS SU']]
 </screen>
+
+There is an alternative way for zapping tables that might come handy
+if you want to zap all tables of a particular type:
+
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>uvdata.tables</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>uvdata.zap_table('AT', -1)</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>uvdata.tables</command>
+[[1, 'AIPS HI'], [1, 'AIPS CL'], [1, 'AIPS FQ'], [1, 'AIPS AN'], [1, 'AIPS SU']]
+</screen>
 </para>
 
 </section>
@@ -382,6 +392,28 @@ normal <classname>AIPSUVData</classname> but is in a different module
 because it doesn't support remote executaion like
 <classname>AIPSUVData</classname> does.  Remote execution will be
 adressed later in this workshop.
+</para>
+
+<para>
+It is also possible to change an existing table (although that is not
+very &aips;-ish):
+
+<programlisting>
+from Wizardry.AIPSData import AIPSUVData
+from AIPS import AIPS
+
+AIPS.userno = 3602
+
+data = AIPSUVData('N03L1', 'UVDATA', 1, 1)
+table = data.table('CL', 1)
+
+for row in table:
+    row.real1 = [2 * x for x in row.real1]
+    row.real2 = [2 * x for x in row.real2]
+    row.update()
+
+table.close()
+</programlisting>
 </para>
 
 <para>
