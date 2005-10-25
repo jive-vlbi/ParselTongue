@@ -14,9 +14,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+# Obit stuff.
 import Obit
 import OErr, OSystem
 import History, Image, UV, InfoList
+
+# Generic Python stuff.
+import sys
 
 # Fail gracefully if numarray isn't available.
 try:
@@ -25,14 +29,9 @@ except:
     numarray = None
     pass
 
-# ??? Why can't we use the AIPS module if we are imported by
-# Proxy.AIPSData?
-try:
+# Avoid importing the AIPS module twice.
+if not 'AIPS' in sys.modules:
     from AIPS import AIPS
-except:
-    class AIPS:
-        userno = 0
-    pass
 
 def _scalarize(value):
     """Scalarize a value.
@@ -497,8 +496,8 @@ class _AIPSData(object):
 class AIPSImage(_AIPSData):
     """This class is used to access an AIPS image."""
 
-    def __init__(self, name, klass, disk, seq, userno = 0):
-        if userno == 0:
+    def __init__(self, name, klass, disk, seq, userno = -1):
+        if userno == -1:
             userno = AIPS.userno
         self._err = OErr.OErr()
         OSystem.PSetAIPSuser(userno)
@@ -513,8 +512,8 @@ class AIPSImage(_AIPSData):
 class AIPSUVData(_AIPSData):
     """This class is used to access an AIPS UV data set."""
 
-    def __init__(self, name, klass, disk, seq, userno = 0):
-        if userno == 0:
+    def __init__(self, name, klass, disk, seq, userno = -1):
+        if userno == -1:
             userno = AIPS.userno
         self._err = OErr.OErr()
         OSystem.PSetAIPSuser(userno)
