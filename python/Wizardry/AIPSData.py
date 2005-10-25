@@ -359,7 +359,8 @@ class _AIPSVisibilityIter(object):
                                       type=numarray.Float32, shape=shape)
         self._first = self._data.Desc.Dict['firstVis'] - 1
         self._count = self._data.Desc.Dict['numVisBuff']
-        self._buffer.setshape((self._count, -1))
+        count = InfoList.PGet(self._data.List, "nVisPIO")[4][0]
+        self._buffer.setshape((count, -1))
         self._index = 0
         return
 
@@ -521,6 +522,9 @@ class AIPSUVData(_AIPSData):
         if self._err.isErr:
             raise RuntimeError
         return
+
+    def __len__(self):
+        return self._data.Desc.Dict['nvis']
 
     def __iter__(self):
         self._data.Open(3, self._err)
