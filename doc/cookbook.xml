@@ -159,6 +159,33 @@ You might want to add these commands to your
 <chapter>
 <title>Running &pt;</title>
 
+<para>
+Before running &pt;, make sure you have sourced yous &aips; login
+script.  Banana addicts will probably do this automatically as part of
+their <filename>.profile</filename> or <filename>.login</filename>,
+but otherwise you should do it manually.  If
+<replaceable>aips-root</replaceable> is the root of your &aips;
+installation, issue the command
+
+<screen>
+<prompt>$</prompt> <command>. <replaceable>aips-root</replaceable>/LOGIN.SH</command>
+</screen>
+
+if you use a Bourne shell (<command>sh</command>,
+<command>bash</command>) or Korn Shell (<command>ksh</command>,
+<command>pdksh</command>).  If you use a C shell
+(<command>csh</command>, <command>tcsh</command>), the equivalent
+command is
+
+<screen>
+<prompt>$</prompt> <command>source <replaceable>aips-root</replaceable>/LOGIN.CSH</command>
+</screen>
+
+Again, you might want to add this to your
+<filename>.profile</filename> or <filename>.login</filename> if you
+find yourself using &pt; regularly.
+</para>
+
 <section>
 <title>Interactive use</title>
 
