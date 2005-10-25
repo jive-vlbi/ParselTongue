@@ -54,6 +54,13 @@ def _vectorize(value):
         return [value]
     return value
 
+def _rstrip(value):
+    """Strip trailing whitespace."""
+
+    if type (value) == list:
+        return [str.rstrip()  for str in value]
+    return value.rstrip()
+
 
 class _AIPSTableRow:
     """This class is used to access rows in an extension table."""
@@ -435,9 +442,14 @@ class _AIPSData(object):
                 'nrparm': 'nrparm',
                 'ptype': 'ptype',
                 'ncorr': 'ncorr'}
+        strip = ('object', 'telescop', 'instrume', 'observer', 'bunit',
+                 'ptype', 'ctype')
         for key in keys:
             if key in self._data.Desc.Dict:
                 header[keys[key]] = self._data.Desc.Dict[key]
+                if keys[key] in strip:
+                    header[keys[key]] = _rstrip(header[keys[key]])
+                    pass
                 pass
             pass
         return header
