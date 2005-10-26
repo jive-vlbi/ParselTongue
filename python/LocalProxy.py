@@ -34,7 +34,10 @@ ObitTask = Proxy.ObitTask.ObitTask()
 # fail to load the module.
 try:
     import Proxy.AIPSData
-except:
+except Exception, exception:
+    if AIPS.debuglog:
+        print >>AIPS.debuglog, exception
+        pass
     pass
 else:
     AIPSImage = Proxy.AIPSData.AIPSImage()
