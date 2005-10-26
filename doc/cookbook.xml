@@ -600,7 +600,7 @@ session.  If you set <varname>AIPS.log</varname> to a file object all
 output from &aips; tasks will be sent to that object:
 
 <screen>
-<prompt>&gt;&gt;&gt;</prompt> <command>AIPS.log = open("ParselTongue.log")</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>AIPS.log = open('ParselTongue.log', 'a')</command>
 </screen>
 
 In fact, the above is not the full truth. <varname>AIPS.log</varname>

@@ -103,7 +103,7 @@ Attributes are not shared between instances:
 Output is logged to <varname>AIPS.log</varname> if you set it to a
 file-like object:
 <screen>
-<prompt>&gt;&gt;&gt;</prompt> <command>AIPS.log = open('/tmp/pt.log', 'r+')</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>AIPS.log = open('/tmp/pt.log', 'a')</command>
 <prompt>&gt;&gt;&gt;</prompt> <command>imean.go()</command>
 ...
 <prompt>&gt;&gt;&gt;</prompt> <command>for line in open('/tmp/pt.log'): print line,</command>
