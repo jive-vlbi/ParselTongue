@@ -44,7 +44,7 @@
 #-----------------------------------------------------------------------
 
 # Bits from AIPS.
-from Proxy.AIPS import ehex
+from AIPSUtil import ehex
 
 # Bits from the generic Task implementation.
 from Proxy.Task import Task

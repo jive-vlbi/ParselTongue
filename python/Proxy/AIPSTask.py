@@ -22,7 +22,8 @@ proxy object.
 """
 
 # Global AIPS defaults.
-from Proxy.AIPS import AIPS, ehex
+from AIPSUtil import ehex
+from Proxy.AIPS import AIPS
 
 # The results from parsing POPSDAT.HLP.
 from Proxy.Popsdat import Popsdat
