@@ -1,4 +1,4 @@
-from AIPS import AIPS
+import AIPS
 from AIPSTask import AIPSTask
 from AIPSData import AIPSImage
 
