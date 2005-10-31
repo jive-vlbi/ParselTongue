@@ -51,9 +51,11 @@ UVDATA
 
 """
 
+# Global AIPS defaults.
+import AIPS
+
 # AIPSTask implementation.
 from AIPSTask import AIPSTask
-from AIPS import AIPS
 from FITS import FITS
 
 # Generic Task implementation.

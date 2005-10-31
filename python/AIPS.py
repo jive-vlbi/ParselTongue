@@ -16,17 +16,20 @@
 
 """
 
-This module provides the AIPSDisk and AIPS classes.  Together they
-provide some basic infrastructure used by the AIPSTask and AIPSData
-modules.
+This module provides the AIPSDisk class and serves as a container for
+several AIPS-related defaults.  It provides some basic infrastructure
+used by the AIPSTask and AIPSData modules.
 
 """
 
 # Generic Python stuff.
-import os
+import os, sys
 
 # Generic AIPS functionality.
 from AIPSUtil import ehex
+
+# Debug log.  Define before including proxies.
+debuglog = None
 
 # Available proxies.
 import LocalProxy
@@ -43,39 +46,70 @@ class AIPSDisk:
     def __init__(self, url, disk):
         self.url = url
         self.disk = disk
+        return
 
     def proxy(self):
         """Return the proxy through which this AIPS disk can be
            accessed."""
         if self.url:
             return ServerProxy(self.url)
-        else:
-            return LocalProxy
+        return LocalProxy
+
+    pass                                # class AIPSDisk
 
 
-class AIPS:
+# Default AIPS user ID.
+userno = 0
+
+# List of available proxies.
+proxies = [ LocalProxy ]
+
+# AIPS disk mapping. 
+disks = [ None ]                        # Disk numbers are one-based.
+
+# AIPS seems to support a maximum of 35 disks.
+for disk in xrange(1, 35):
+    area = 'DA' + ehex(disk, 2, '0')
+    if not area in os.environ:
+        break
+    disks.append(AIPSDisk(None, disk))
+    continue
+
+# Message log.
+log = None
+
+
+# The code below is the result of a serious design flaw.  It should
+# really die, but removing it will probably affect most scripts.
+
+class _AIPS(object):
     
-    """Container for several AIPS-related default values."""
+    """Backwards compatibility gunk."""
 
-    # Default AIPS user ID.
-    userno = 0
+    def _get_userno(self):
+        return sys.modules[__name__].userno
+    def _set_userno(self, value):
+        sys.modules[__name__].userno = value
+    userno = property(_get_userno, _set_userno)
 
-    # List of available proxies.
-    proxies = [ LocalProxy ]
+    def _get_disks(self):
+        return sys.modules[__name__].disks
+    def _set_disks(self, value):
+        sys.modules[__name__].disks = value
+    disks = property(_get_disks, _set_disks)
 
-    # AIPS disk mapping. 
-    disks = [ None ]                    # Disk numbers are one-based.
+    def _get_log(self):
+        return sys.modules[__name__].log
+    def _set_log(self, value):
+        sys.modules[__name__].log = value
+    log = property(_get_log, _set_log)
 
-    # Who will ever need more than 9 AIPS disks?    
-    for disk in xrange(1, 35):
-        area = 'DA' + ehex(disk, 2, '0')
-        if not area in os.environ:
-            break
-        disks.append(AIPSDisk(None, disk))
-        continue
+    def _get_debuglog(self):
+        return sys.modules[__name__].debuglog
+    def _set_debuglog(self, value):
+        sys.modules[__name__].debuglog = value
+    log = property(_get_debuglog, _set_debuglog)
 
-    # Message log.
-    log = None
+    pass                                # class _AIPS
 
-    # Debug log.
-    debuglog = None
+AIPS = _AIPS()

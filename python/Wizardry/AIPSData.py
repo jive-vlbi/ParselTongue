@@ -19,8 +19,8 @@ import Obit
 import OErr, OSystem
 import History, Image, UV, InfoList
 
-# Generic Python stuff.
-import sys
+# Global AIPS defaults.
+import AIPS
 
 # Fail gracefully if numarray isn't available.
 try:
@@ -29,9 +29,6 @@ except:
     numarray = None
     pass
 
-# Avoid importing the AIPS module twice.
-if not 'AIPS' in sys.modules:
-    from AIPS import AIPS
 
 def _scalarize(value):
     """Scalarize a value.

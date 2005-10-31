@@ -21,6 +21,9 @@ without doing any RPC.
 
 """
 
+# Global AIPS defaults.
+import AIPS
+
 # The AIPSTask module should always be available.
 import Proxy.AIPSTask
 AIPSTask = Proxy.AIPSTask.AIPSTask()

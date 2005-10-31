@@ -21,7 +21,8 @@ session.
 """
 
 # Global AIPS defaults
-from AIPS import AIPS
+import AIPS
+
 # Global FITS defaults
 from FITS import FITS
 

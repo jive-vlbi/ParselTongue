@@ -41,7 +41,7 @@ AIPSUVData('NONAME', 'UVDATA', 1, 1)
 """
 
 # Global AIPS defaults.
-from AIPS import AIPS
+import AIPS
 
 # Generic Python stuff.
 import sys

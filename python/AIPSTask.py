@@ -72,7 +72,7 @@ It should also work for strings:
 """
 
 # Global AIPS defaults.
-from AIPS import AIPS
+import AIPS
 
 # Generic Task implementation.
 from Task import Task, List
