@@ -1,4 +1,4 @@
-from AIPS import AIPS
+import AIPS
 from AIPSTask import AIPSTask
 from AIPSData import AIPSUVData
 from Wizardry.AIPSData import AIPSUVData as WizAIPSUVData
