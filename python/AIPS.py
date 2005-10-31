@@ -25,6 +25,9 @@ modules.
 # Generic Python stuff.
 import os
 
+# Generic AIPS functionality.
+from AIPSUtil import ehex
+
 # Available proxies.
 import LocalProxy
 from xmlrpclib import ServerProxy
@@ -64,8 +67,8 @@ class AIPS:
     disks = [ None ]                    # Disk numbers are one-based.
 
     # Who will ever need more than 9 AIPS disks?    
-    for disk in xrange(1, 10):
-        area = 'DA%02d' % disk
+    for disk in xrange(1, 35):
+        area = 'DA' + ehex(disk, 2, '0')
         if not area in os.environ:
             break
         disks.append(AIPSDisk(None, disk))
