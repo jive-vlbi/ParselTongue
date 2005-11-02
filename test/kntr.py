@@ -27,14 +27,8 @@ fitld.msgkill = 2
 fitld.go()
 
 try:
-    env = os.environ.copy()
-    env['TVDEV'] = 'TVDEV01'
-    env['TVDEV01'] = 'sssin:localhost'
-
-    file = env['LOAD'] + '/TVSERV.EXE'
-    lock_pid = os.spawnve(os.P_NOWAIT, file, ['TVSERVER'], env)
-    file = env['LOAD'] + '/XAS'
-    server_pid = os.spawnve(os.P_NOWAIT, file, ['XAS'], env)
+    tv = AIPSTV()
+    tv.start()
 
     kntr = AIPSTask('kntr')
     kntr.indata = image
@@ -43,11 +37,7 @@ try:
     kntr.dotv = 1
     kntr.go()
 
-    tv = AIPSTV()
     tv.kill()
-
-    os.waitpid(lock_pid, 0)
-    os.waitpid(server_pid, 0)
 
 finally:
     image.zap()
