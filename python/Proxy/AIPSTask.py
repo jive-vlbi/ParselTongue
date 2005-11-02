@@ -243,6 +243,10 @@ class AIPSTask(Task):
         popsno = _allocate_popsno()
         index = popsno - 1
 
+        # A single hardcoded TV will do until support for multiple TVs
+        # is implemented.
+        ntvdev = 1
+
         # Construct the environment for the task.  For the 'infile',
         # 'outfile' and 'outprint' adverbs, we split off the directory
         # component of the pathname and use that as the area.
@@ -260,6 +264,11 @@ class AIPSTask(Task):
                     input_dict[adverb] = area + ':' + \
                                          os.path.basename(input_dict[adverb])
                     area = chr(ord(area) + 1)
+                    pass
+                pass
+            continue
+        # Send output to the TV running on this machine.
+        env['TVDEV' + ehex(ntvdev, 2, 0)] = 'sssin:localhost'
 
         td_name = os.environ['DA00'] + '/TD' + AIPS.revision + '000004;'
         td_file = open(td_name, mode='r+b')
@@ -271,7 +280,7 @@ class AIPSTask(Task):
 
         td_file.seek(1024 + index * 4096)
         td_file.write(struct.pack('i', userno))
-        td_file.write(struct.pack('i', 0))
+        td_file.write(struct.pack('i', ntvdev))
         td_file.write(struct.pack('i', 0))
         td_file.write(struct.pack('i', msgkill + 32000 - 1))
         td_file.write(struct.pack('i', isbatch))
