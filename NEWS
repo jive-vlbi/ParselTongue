@@ -1,3 +1,27 @@
+*** Changes in ParselTongue 0.99
+
+* Support for the AIPS TV
+
+It is now possible to run AIPS tasks that use the AIPS TV, provided
+the AIPS TV is running on the local machine and it is set up to use
+internet sockets for communication with AIPS tasks.  A TVServer script
+to start the AIPS TV server is provided.  Some limited support to
+control the TV from ParselTongue is also included:
+
+>>> tv = AIPSTV()
+>>> tv.clear()
+
+will clear the AIPS TV ("TVINIT").
+
+>>> tv.kill()
+
+will close down the AIPS TV in a somewhat gracefully.
+
+* Support for more AIPS disks
+
+ParselTongue now supports up to 35 AIPS disks.
+
+
 *** Changes in ParselTongue 0.97
 
 * Interface changes
