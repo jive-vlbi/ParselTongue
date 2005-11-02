@@ -14,7 +14,11 @@ export DADEVS_QUIET
 . $AIPS_VERSION/SYSTEM/UNIX/DADEVS.SH
 . $AIPS_VERSION/SYSTEM/UNIX/PRDEVS.SH
 
-PYTHONPATH=@top_srcdir@/python:@OBIT_PYTHONPATH@
+if test -z "$PYTHONPATH"; then
+    PYTHONPATH=@top_srcdir@/python:@OBIT_PYTHONPATH@
+else
+    PYTHONPATH=@top_srcdir@/python:@OBIT_PYTHONPATH@:$PYTHONPATH
+fi
 export PYTHONPATH
 
 exec @PYTHON@ "$@"
