@@ -9,13 +9,17 @@ to start the AIPS TV server is provided.  Some limited support to
 control the TV from ParselTongue is also included:
 
 >>> tv = AIPSTV()
+>>> tv.start()
+
+will start the AIPS TV from ParselTongue
+
 >>> tv.clear()
 
 will clear the AIPS TV ("TVINIT").
 
 >>> tv.kill()
 
-will close down the AIPS TV in a somewhat gracefully.
+will close down the AIPS TV in a somewhat gracefull way.
 
 * Support for more AIPS disks
 
