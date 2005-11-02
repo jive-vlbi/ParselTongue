@@ -2,7 +2,7 @@
 
 check_SCRIPTS = ParselTest
 
-TESTS = mandl.py imean.py jmfit.py fitld.py fitld2.py \
+TESTS = mandl.py imean.py jmfit.py fitld.py fitld2.py kntr.py \
 	convenience.py visibilities.py \
 	$(top_srcdir)/python/MinimalMatch.py \
 	$(top_srcdir)/python/Task.py \
