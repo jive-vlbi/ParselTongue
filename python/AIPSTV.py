@@ -102,14 +102,22 @@ class AIPSTV(object):
         self._socket.close()
 
         # Kill of the zombies.
+        waited = False
         if self._lock_pid:
             os.waitpid(self._lock_pid, 0)
             self._lock_pid = 0
+            waited = True
             pass
         if self._server_pid:
             os.waitpid(self._server_pid, 0)
             self._server_pid = 0
+            waited = True
             pass
+        if not waited:
+            # Take a nap to avoid confusing users with the output of
+            # the dying processes.
+            time.sleep(2)
+
         return
 
     pass                                # Class AIPSTV
