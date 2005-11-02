@@ -1,6 +1,6 @@
 ## Process this file with automake to create Makefile.in.
 
-bin_SCRIPTS = ParselTongue ParselTongueServer
+bin_SCRIPTS = ParselTongue ParselTongueServer TVServer
 
 EXTRA_DIST = ParselTongue.in ParselTongueServer.in
 
