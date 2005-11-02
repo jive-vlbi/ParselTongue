@@ -29,6 +29,7 @@ from FITS import FITS
 # The main classes ParselTongue provides.
 from AIPSTask import *
 from AIPSData import *
+from AIPSTV import *
 from ObitTask import *
 from FITSData import *
  
