@@ -1,0 +1,17 @@
+#! /bin/sh
+
+# Check whether AIPS is available.
+if test -z "$AIPS_ROOT"; then
+    echo "$0: cannot proceed, AIPS_ROOT not defined"
+    exit 1
+fi
+
+TVDEV=TVDEV01
+TVDEV01="sssin:localhost"
+export TVDEV TVDEV01
+
+# Start AIPS TV locking daemon.
+$LOAD/TVSERV.EXE &
+
+# Start AIPS TV server.
+exec $LOAD/XAS "$@"
