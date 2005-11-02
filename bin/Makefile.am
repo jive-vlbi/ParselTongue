@@ -2,7 +2,7 @@
 
 bin_SCRIPTS = ParselTongue ParselTongueServer TVServer
 
-EXTRA_DIST = ParselTongue.in ParselTongueServer.in
+EXTRA_DIST = ParselTongue.in ParselTongueServer.in TVServer
 
 # Files that should be removed, but which Automake does not know.
 CLEANFILES = $(bin_SCRIPTS)
