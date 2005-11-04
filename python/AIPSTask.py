@@ -151,7 +151,12 @@ class AIPSTask(Task):
 
         # Initialize all adverbs to their default values.
         self.__dict__.update(self._default_dict)
-        
+
+        # The maximum value for disk numbers is bogus.
+        for name in self._disk_adverbs:
+            if name in self._max_dict:
+                self._max_dict[name] = float(len(AIPS.disks) - 1)
+
         return                          # __init__
 
     def defaults(self):
