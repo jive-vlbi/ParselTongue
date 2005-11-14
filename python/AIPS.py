@@ -108,7 +108,7 @@ class _AIPS(object):
         return sys.modules[__name__].debuglog
     def _set_debuglog(self, value):
         sys.modules[__name__].debuglog = value
-    log = property(_get_debuglog, _set_debuglog)
+    debuglog = property(_get_debuglog, _set_debuglog)
 
     pass                                # class _AIPS
 
