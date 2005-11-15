@@ -243,66 +243,75 @@ class AIPSTask(Task):
         popsno = _allocate_popsno()
         index = popsno - 1
 
-        # A single hardcoded TV will do until support for multiple TVs
-        # is implemented.
-        ntvdev = 1
+        try:
+            # A single hardcoded TV will do until support for multiple
+            # TVs is implemented.
+            ntvdev = 1
 
-        # Construct the environment for the task.  For the 'infile',
-        # 'outfile' and 'outprint' adverbs, we split off the directory
-        # component of the pathname and use that as the area.
-        env = os.environ.copy()
-        area = 'a'
-        for adverb in ['infile', 'outfile', 'outprint']:
-            if adverb in input_dict:
-                assert(ord(area) <= ord('z'))
-                dirname = os.path.dirname(input_dict[adverb])
-                if dirname:
-                    if not os.path.isdir(dirname):
-                        msg = "Direcory '%s' does not exist" % dirname
-                        raise RuntimeError, msg
-                    env[area] = dirname
-                    input_dict[adverb] = area + ':' + \
-                                         os.path.basename(input_dict[adverb])
-                    area = chr(ord(area) + 1)
+            # Construct the environment for the task.  For the
+            # 'infile', 'outfile' and 'outprint' adverbs, we split off
+            # the directory component of the pathname and use that as
+            # the area.
+            env = os.environ.copy()
+            area = 'a'
+            for adverb in ['infile', 'outfile', 'outprint']:
+                if adverb in input_dict:
+                    assert(ord(area) <= ord('z'))
+                    dirname = os.path.dirname(input_dict[adverb])
+                    if dirname:
+                        if not os.path.isdir(dirname):
+                            msg = "Direcory '%s' does not exist" % dirname
+                            raise RuntimeError, msg
+                        env[area] = dirname
+                        basename = os.path.basename(input_dict[adverb])
+                        input_dict[adverb] = area + ':' + basename
+                        area = chr(ord(area) + 1)
+                        pass
                     pass
-                pass
-            continue
-        # Send output to the TV running on this machine.
-        env['TVDEV' + ehex(ntvdev, 2, 0)] = 'sssin:localhost'
+                continue
+            # Send output to the TV running on this machine.
+            env['TVDEV' + ehex(ntvdev, 2, 0)] = 'sssin:localhost'
 
-        td_name = os.environ['DA00'] + '/TD' + AIPS.revision + '000004;'
-        td_file = open(td_name, mode='r+b')
+            td_name = os.environ['DA00'] + '/TD' + AIPS.revision + '000004;'
+            td_file = open(td_name, mode='r+b')
 
-        td_file.seek(index * 20)
-        td_file.write(struct.pack('8s', name.upper().ljust(8)))
-        td_file.write(struct.pack('l', -999))
-        td_file.write(struct.pack('2l', 0, 0))
+            td_file.seek(index * 20)
+            td_file.write(struct.pack('8s', name.upper().ljust(8)))
+            td_file.write(struct.pack('l', -999))
+            td_file.write(struct.pack('2l', 0, 0))
 
-        td_file.seek(1024 + index * 4096)
-        td_file.write(struct.pack('i', userno))
-        td_file.write(struct.pack('i', ntvdev))
-        td_file.write(struct.pack('i', 0))
-        td_file.write(struct.pack('i', msgkill + 32000 - 1))
-        td_file.write(struct.pack('i', isbatch))
-        td_file.write(struct.pack('i', 0))
-        td_file.write(struct.pack('2i', 0, 0))
-        td_file.write(struct.pack('f', 1.0))
-        td_file.write(struct.pack('4s', '    '))
-        for adverb in params.input_list:
-            self.__write_adverb(params, td_file, adverb, input_dict[adverb])
+            td_file.seek(1024 + index * 4096)
+            td_file.write(struct.pack('i', userno))
+            td_file.write(struct.pack('i', ntvdev))
+            td_file.write(struct.pack('i', 0))
+            td_file.write(struct.pack('i', msgkill + 32000 - 1))
+            td_file.write(struct.pack('i', isbatch))
+            td_file.write(struct.pack('i', 0))
+            td_file.write(struct.pack('2i', 0, 0))
+            td_file.write(struct.pack('f', 1.0))
+            td_file.write(struct.pack('4s', '    '))
+            for adverb in params.input_list:
+                self.__write_adverb(params, td_file, adverb,
+                                    input_dict[adverb])
+                continue
 
-        td_file.close()
+            td_file.close()
 
-        user = ehex(userno, 3, 0)
-        ms_name = os.environ['DA01'] + '/MS' + AIPS.revision \
-                  + user + '000.' + user + ';'
-        ms_file = open(ms_name, mode='r')
-        (msgno,) = struct.unpack('i', ms_file.read(4))
-        ms_file.close()
+            user = ehex(userno, 3, 0)
+            ms_name = os.environ['DA01'] + '/MS' + AIPS.revision \
+                      + user + '000.' + user + ';'
+            ms_file = open(ms_name, mode='r')
+            (msgno,) = struct.unpack('i', ms_file.read(4))
+            ms_file.close()
 
-        path = params.version + '/' + os.environ['ARCH'] + '/LOAD/' \
-               + name.upper() + ".EXE"
-        tid = Task.spawn(self, path, [name.upper() + str(popsno)], env)
+            path = params.version + '/' + os.environ['ARCH'] + '/LOAD/' \
+                   + name.upper() + ".EXE"
+            tid = Task.spawn(self, path, [name.upper() + str(popsno)], env)
+
+        except Exception, exception:
+            _free_popsno(popsno)
+            raise exception
+            
         self._params[tid] = params
         self._popsno[tid] = popsno
         self._userno[tid] = userno
