@@ -291,27 +291,30 @@ class AIPSTask(Task):
         count = 0
         rotator = ['|\b', '/\b', '-\b', '\\\b']
         try:
-            while not self.finished(proxy, tid):
-                messages = self.messages(proxy, tid)
-                if messages:
-                    log.extend(messages)
-                elif sys.stdout.isatty():
-                    sys.stdout.write(rotator[count % 4])
-                    sys.stdout.flush()
-                    pass
-                count += 1
-                continue
-            pass
-        except KeyboardInterrupt, exception:
-            self.abort(proxy, tid)
-            raise exception
+            try:
+                while not self.finished(proxy, tid):
+                    messages = self.messages(proxy, tid)
+                    if messages:
+                        log.extend(messages)
+                    elif sys.stdout.isatty():
+                        sys.stdout.write(rotator[count % 4])
+                        sys.stdout.flush()
+                        pass
+                    count += 1
+                    continue
+                pass
+            except KeyboardInterrupt, exception:
+                self.abort(proxy, tid)
+                raise exception
 
-        self.wait(proxy, tid)
-        if AIPS.log:
-            for message in log:
-                AIPS.log.write('%s\n' % message)
-                continue
-            AIPS.log.flush()
+            self.wait(proxy, tid)
+        finally:
+            if AIPS.log:
+                for message in log:
+                    AIPS.log.write('%s\n' % message)
+                    continue
+                AIPS.log.flush()
+                pass
             pass
         return
 
