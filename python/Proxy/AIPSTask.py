@@ -180,6 +180,11 @@ class _AIPSTaskParams:
 
 
 class AIPSTask(Task):
+
+    # List of adverbs referring to file names.
+    _file_adverbs = ['infile', 'infile2', 'outfile', 'outprint',
+                     'ofmfile', 'boxfile', 'oboxfile']
+
     def __init__(self):
         Task.__init__(self)
         self._params = {}
@@ -248,13 +253,13 @@ class AIPSTask(Task):
             # TVs is implemented.
             ntvdev = 1
 
-            # Construct the environment for the task.  For the
-            # 'infile', 'outfile' and 'outprint' adverbs, we split off
+            # Construct the environment for the task.  For the adverbs
+            # like 'infile', 'outfile' and 'outprint', we split off
             # the directory component of the pathname and use that as
             # the area.
             env = os.environ.copy()
             area = 'a'
-            for adverb in ['infile', 'outfile', 'outprint']:
+            for adverb in self._file_adverbs:
                 if adverb in input_dict:
                     assert(ord(area) <= ord('z'))
                     dirname = os.path.dirname(input_dict[adverb])
