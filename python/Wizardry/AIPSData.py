@@ -435,7 +435,7 @@ class _AIPSData(object):
                 # Images
                 'niter': 'niter',
                 # UV Data sets
-                'sortord': 'isort',
+                'isort': 'sortord',
                 'nrparm': 'nrparm',
                 'ptype': 'ptype',
                 'ncorr': 'ncorr'}
