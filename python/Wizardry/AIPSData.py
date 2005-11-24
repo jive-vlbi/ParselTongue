@@ -606,7 +606,13 @@ class AIPSUVData(_AIPSData):
         header = self._data.Desc.Dict
         jlocif = header['jlocif']
         no_if = header['inaxes'][jlocif]
+        if 'no_if' in kwds:
+            no_if = kwds['no_if']
+            pass
         no_pol = len(self.polarizations)
+        if 'no_pol' in kwds:
+            no_pol = kwds['no_pol']
+            pass
         data = Obit.UVCastData(self._data.me)
         if name == 'AIPS AI':
             Obit.TableAI(data, [version], 3, name,
@@ -614,11 +620,14 @@ class AIPSUVData(_AIPSData):
         elif name == 'AIPS CL':
             Obit.TableCL(data, [version], 3, name,
                          no_pol, no_if, kwds['no_term'], self._err.me)
+        elif name == 'AIPS FQ':
+            Obit.TableFQ(data, [version], 3, name, no_if, self._err.me)
         elif name == 'AIPS SN':
             Obit.TableSN(data, [version], 3, name,
                          no_pol, no_if, self._err.me)
         else:
-            raise RuntimeError
+            msg = 'Attaching %s tables is not implemented yet' % name
+            raise NotImplementedError, msg
         if self._err.isErr:
             raise RuntimeError
         return _AIPSTable(self._data, name, version)
