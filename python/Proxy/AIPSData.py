@@ -58,7 +58,7 @@ class AIPSData:
 
     def tables(self, desc):
         data = self._init(desc)
-        return TableList.PGetList(data._data.TableList, self.err)
+        return data.tables
 
     def table_highver(self, desc, type):
         data = self._init(desc)
