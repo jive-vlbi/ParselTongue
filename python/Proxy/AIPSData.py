@@ -78,6 +78,11 @@ class AIPSData:
         table = data.table(type, version)
         return table.keywords
 
+    def version_table(self, desc, type, version):
+        data = self._init(desc)
+        table = data.table(type, version)
+        return table.version
+
     # XXX Deprecated.
     def getrow_table(self, desc, type, version, rowno):
         data = self._init(desc)
