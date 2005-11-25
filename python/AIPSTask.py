@@ -96,7 +96,7 @@ class AIPSTask(Task):
     version = os.environ.get('VERSION', 'NEW')
 
     # Default user number.
-    userno = 0
+    userno = -1
 
     # Default verbosity level.
     msgkill = 0
@@ -116,8 +116,8 @@ class AIPSTask(Task):
             self.version = kwds['version']
 
         # Update default user number.
-        if self.__class__.userno == 0:
-            self.__class__.userno = AIPS.userno
+        if self.userno == -1:
+            self.userno = AIPS.userno
 
         # See if there is a proxy that can hand us the details for
         # this task.
@@ -203,7 +203,7 @@ class AIPSTask(Task):
     def spawn(self):
         """Spawn the task."""
 
-        if self.userno == 0:
+        if self.userno == -1:
             raise RuntimeError, "AIPS user number is not set"
 
         input_dict = {}
