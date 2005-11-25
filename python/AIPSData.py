@@ -248,9 +248,11 @@ class _AIPSTableMethod(_AIPSDataMethod):
         _AIPSDataMethod.__init__(self, inst, name)
 
     def __call__(self, *args):
-        func = self.inst.data._method(self.name + '_table')
-        return func(self.inst.data.desc,
-                    self.inst.name, self.inst.version, *args)
+        func = self.inst._data._method(self.name + '_table')
+        return func(self.inst._data.desc,
+                    self.inst._name, self.inst._version, *args)
+
+    pass                                # class _AIPSTableMethod
 
 
 class _AIPSTableRow:
@@ -264,6 +266,8 @@ class _AIPSTableRow:
 
     def __repr__(self):
         return str(self._dict)
+
+    pass                                # class _AIPSTableRow
 
 
 class _AIPSTableIter:
@@ -282,16 +286,19 @@ class _AIPSTableIter:
         result = self._table[self._index]
         self._index += 1
         return result
+
+    pass                                # class _AIPSTableIter
     
 
-class _AIPSTable:
+class _AIPSTable(object):
 
     """This class describes a generic AIPS extension table."""
 
     def __init__(self, data, name, version):
-        self.data = data
-        self.name = name
-        self.version = version
+        self._data = data
+        self._name = name
+        self._version = version
+        return
 
     def __getattr__(self, name):
         return _AIPSTableMethod(self, name)
@@ -310,6 +317,12 @@ class _AIPSTable:
         return _AIPSTableMethod(self, 'keywords')()
     keywords = property(_generate_keywords,
                         doc='Keywords for this table.')
+
+    def _generate_version(self):
+        return _AIPSTableMethod(self, 'version')()
+    version = property(_generate_version, doc='Table version.')
+
+    pass                                # class _AIPSTable
 
 
 class AIPSCat:
