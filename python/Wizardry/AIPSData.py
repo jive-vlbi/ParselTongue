@@ -17,7 +17,7 @@
 # Obit stuff.
 import Obit
 import OErr, OSystem
-import History, Image, UV, InfoList
+import History, Image, UV, InfoList, TableList
 
 # Global AIPS defaults.
 import AIPS
@@ -452,6 +452,11 @@ class _AIPSData(object):
         return header
     header = property(_generate_header,
                       doc = 'Header for this data set.')
+
+    def _generate_tables(self):
+        return TableList.PGetList(self._data.TableList, self._err)
+    tables = property(_generate_tables,
+                      doc = 'Tables attached to this data set.')
 
     def _generate_stokes(self):
         """Generate the 'stokes' attribute."""
