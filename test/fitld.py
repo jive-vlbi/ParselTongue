@@ -38,9 +38,11 @@ try:
     assert(uvdata.header.date_obs == '2003-02-25')
 
     sutable = uvdata.table('SU', 1)
+    assert(sutable.version == 1)
     assert(sutable[0].epoch == 2000.0)
 
     antable = uvdata.table('AN', 0)
+    assert(antable.version == 1)
     stabxyz = antable[3].stabxyz
     assert(3822846 < stabxyz[0] < 3822847)
 
