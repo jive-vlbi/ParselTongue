@@ -113,8 +113,12 @@ file-like object:
 The verbosity of the output is controlled by
 <varname>AIPSTask.msgkill</varname>:
 <itemizedlist>
-<listitem><para> &gt; 0 - Reduce output on screen</para></listitem>
-<listitem><para> &lt; 0 - Reduce output on both screen and log</para></listitem>
+<listitem>
+<para> &gt; 0 - Reduce output on both screen and log</para>
+</listitem>
+<listitem>
+<para> &lt; 0 - Reduce output only on screen</para>
+</listitem>
 </itemizedlist>
 <screen>
 <prompt>&gt;&gt;&gt;</prompt> <command>imean.msgkill = 2</command>
