@@ -79,17 +79,20 @@ class _AIPSDataDesc:
     """This class implements the description of AIPS data that is used
        when dispatching function calls to a proxy."""
 
-    def __init__(self, name, klass, disk, seq):
-        self.userno = AIPS.userno
+    def __init__(self, name, klass, disk, seq, userno):
         self.name = name
         self.klass = klass
         self.disk = disk
         self.seq = seq
+        self.userno = userno
+        return
 
     # Provide a dictionary-like interface to deal with the
     # idiosyncrasies of XML-RPC.
     def __getitem__(self, key):
         return self.__dict__[key]
+
+    pass                                # class _AIPSDataDesc
 
 
 class _AIPSDataHeader:
@@ -107,14 +110,19 @@ class _AIPSDataHeader:
     def __getitem__(self, key):
         return self._dict[key]
 
+    pass                                # class _AIPSDataHeader
+
 
 class _AIPSData:
 
     """This class describes generic AIPS data."""
 
-    def __init__(self, name, klass, disk, seq):
-        self.desc = _AIPSDataDesc(name, klass, AIPS.disks[disk].disk, seq)
-        self.proxy = AIPS.disks[disk].proxy()
+    def __init__(self, name, klass, disk, seq, userno = -1):
+        if userno == -1:
+            userno = AIPS.userno
+        disk = AIPS.disks[disk]
+        self.desc = _AIPSDataDesc(name, klass, disk.disk, seq, userno)
+        self.proxy = disk.proxy()
         return
 
     name = property(lambda self: self.desc.name,
