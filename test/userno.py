@@ -9,8 +9,8 @@ if image.exists():
     image.zap()
 
 image2 = AIPSImage('MANDELBROT', 'MANDL', 1, 1, 2)
-if image.exists():
-    image.zap()
+if image2.exists():
+    image2.zap()
 
 mandl = AIPSTask('mandl')
 mandl.userno = 2
