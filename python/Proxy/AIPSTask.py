@@ -302,9 +302,16 @@ class AIPSTask(Task):
 
             td_file.close()
 
+            # Create the message file if necessary and record the
+            # number of messages currently in it.
             user = ehex(userno, 3, 0)
             ms_name = os.environ['DA01'] + '/MS' + AIPS.revision \
                       + user + '000.' + user + ';'
+            if not os.path.exists(ms_name):
+                ms_file = open(ms_name, mode='w')
+                ms_file.truncate(1024)
+                ms_file.close()
+                pass
             ms_file = open(ms_name, mode='r')
             (msgno,) = struct.unpack('i', ms_file.read(4))
             ms_file.close()
