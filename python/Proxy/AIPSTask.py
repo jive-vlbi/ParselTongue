@@ -311,6 +311,7 @@ class AIPSTask(Task):
                 ms_file = open(ms_name, mode='w')
                 ms_file.truncate(1024)
                 ms_file.close()
+                os.chmod(ms_name, 0664)
                 pass
             ms_file = open(ms_name, mode='r')
             (msgno,) = struct.unpack('i', ms_file.read(4))
