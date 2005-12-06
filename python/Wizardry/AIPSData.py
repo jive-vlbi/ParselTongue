@@ -522,7 +522,18 @@ class AIPSImage(_AIPSData):
             raise RuntimeError
         return
 
-    pass
+    def _pixels(self):
+        Obit.ImageRead(self._data.me, self._err.me)
+        if self._err.isErr:
+            raise RuntimeError, "Reading image pixels"
+        shape = self.header['naxis'][0:2]
+        pixels = numarray.array(sequence=self._data.PixBuf,
+                                type=numarray.Float32, shape=shape)
+        pixels.transpose()
+        return pixels
+    pixels = property(_pixels)
+
+    pass                                # class AIPSImage
 
 class AIPSUVData(_AIPSData):
     """This class is used to access an AIPS UV data set."""
@@ -639,6 +650,8 @@ class AIPSUVData(_AIPSData):
 
     def history(self):
         return _AIPSHistory(self._data)
+
+    pass                                # class AIPSUVData
 
 
 err = OErr.OErr()
