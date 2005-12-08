@@ -18,12 +18,17 @@ name = os.path.basename(url).split('_')[1].upper()
 image = AIPSImage(name, 'ICLN', 1, 1)
 if image.exists():
     image.zap()
+    pass
+
+assert(not image.exists())
 
 fitld = AIPSTask('fitld')
 fitld.infile = file
 fitld.outdata = image
 #fitld.msgkill = 2
 fitld.go()
+
+assert(image.exists())
 
 try:
     print 'Stokes:', image.stokes

@@ -18,12 +18,17 @@ name = os.path.basename(url).split('_')[0].upper()
 uvdata = AIPSUVData(name, 'UVDATA', 1, 1)
 if uvdata.exists():
     uvdata.zap()
+    pass
+
+assert(not uvdata.exists())
 
 fitld = AIPSTask('fitld')
 fitld.infile = file
 fitld.outdata = uvdata
 fitld.msgkill = 2
 fitld.go()
+
+assert(uvdata.exists())
 
 try:
     print 'Antennas:', uvdata.antennas
