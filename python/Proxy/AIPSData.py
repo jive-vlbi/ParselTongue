@@ -22,7 +22,7 @@ AIPSUVData objects.
 """
 
 # Bits from Obit.
-import OErr, OSystem
+import Obit, OErr, OSystem
 import AIPSDir
 import Image, UV
 import TableList
@@ -37,10 +37,11 @@ class AIPSData:
         return
 
     def exists(self, desc):
-        try:
-            self._init(desc)
-        except OErr.OErr, err:
-            OErr.PClear(err)
+        assert(not self.err.isErr)
+        Obit.AIPSDirFindCNO(desc['disk'], desc['userno'], desc['name'],
+                            desc['klass'], self.type, desc['seq'], self.err.me)
+        if self.err.isErr:
+            OErr.PClear(self.err)
             return False
         return True
 
@@ -104,10 +105,15 @@ class AIPSData:
         data.zap_table(type, version)
         return True                # Return something other than None.
 
-    pass
+    pass                           # class AIPSData
 
 
 class AIPSImage(AIPSData):
+    def __init__(self):
+        self.type = 'MA'
+        AIPSData.__init__(self)
+        return
+
     def _init(self, desc):
         userno = OSystem.PGetAIPSuser()
         uvdata = WAIPSImage(desc['name'], desc['klass'], desc['disk'],
@@ -119,6 +125,11 @@ class AIPSImage(AIPSData):
 
 
 class AIPSUVData(AIPSData):
+    def __init__(self):
+        self.type = 'UV'
+        AIPSData.__init__(self)
+        return
+
     def _init(self, desc):
         userno = OSystem.PGetAIPSuser()
         uvdata = WAIPSUVData(desc['name'], desc['klass'], desc['disk'],
