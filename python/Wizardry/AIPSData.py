@@ -434,6 +434,9 @@ class _AIPSData(object):
                 'crota': 'crota',
                 # Images
                 'niter': 'niter',
+                'beamMaj': 'bmaj',
+                'beamMin': 'bmin',
+                'beamPA': 'bpa',
                 # UV Data sets
                 'isort': 'sortord',
                 'nrparm': 'nrparm',
