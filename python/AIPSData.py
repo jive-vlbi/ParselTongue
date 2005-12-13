@@ -38,6 +38,14 @@ False
 >>> print uvdata
 AIPSUVData('NONAME', 'UVDATA', 1, 1)
 
+Checking whether two instance refer to the same data is fairly simple:
+
+>>> image == uvdata
+False
+
+>>> image == AIPSImage('NONAME', 'IMAGE', 1, 1)
+True
+
 """
 
 # Global AIPS defaults.
@@ -141,6 +149,21 @@ class _AIPSData:
                (self.__class__.__name__,
                 self.name, self.klass, self.disk, self.seq)
         return repr
+
+    def __eq__(self, other):
+        if self.__class__ != other.__class__:
+            return False
+        if self.desc.name != other.desc.name:
+            return False
+        if self.desc.klass != other.desc.klass:
+            return False
+        if self.desc.disk != other.desc.disk:
+            return False
+        if self.desc.seq != other.desc.seq:
+            return False
+        if self.desc.userno != other.desc.userno:
+            return False
+        return True
 
     def __str__(self):
         return self.__repr__()
