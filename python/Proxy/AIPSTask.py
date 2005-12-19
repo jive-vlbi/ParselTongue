@@ -382,22 +382,28 @@ class AIPSTask(Task):
         index = popsno - 1
 
         td_name = os.environ['DA00'] + '/TDD000004;'
-        td_file = open(td_name, mode='rb')
 
-        td_file.seek(index * 20 + 8)
-        (result,) = struct.unpack('i', td_file.read(4))
-        if result != 0:
-            msg = "Task '%s' returns '%d'" % (params.name, result)
-            raise RuntimeError, msg
+        try:
+            td_file = open(td_name, mode='rb')
 
-        td_file.seek(1024 + index * 4096 + 40)
-        output_dict = {}
-        for adverb in params.output_list:
-            output_dict[adverb] = self.__read_adverb(params, td_file, adverb)
+            td_file.seek(index * 20 + 8)
+            (result,) = struct.unpack('i', td_file.read(4))
+            if result != 0:
+                msg = "Task '%s' returns '%d'" % (params.name, result)
+                raise RuntimeError, msg
 
-        td_file.close()
+            td_file.seek(1024 + index * 4096 + 40)
+            output_dict = {}
+            for adverb in params.output_list:
+                output = self.__read_adverb(params, td_file, adverb)
+                output_dict[adverb] = output
+                continue
 
-        _free_popsno(popsno)
+            td_file.close()
+
+        finally:
+            _free_popsno(popsno)
+            pass
 
         del self._params[tid]
         del self._popsno[tid]
