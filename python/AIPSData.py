@@ -46,6 +46,15 @@ False
 >>> image == AIPSImage('NONAME', 'IMAGE', 1, 1)
 True
 
+Both classes implement the copy method:
+
+>>> uvjunk = uvdata.copy()
+>>> uvjunk == uvdata
+True
+>>> uvjunk.name = 'GARBAGE'
+>>> uvjunk != uvdata
+True
+
 """
 
 # Global AIPS defaults.
@@ -121,7 +130,7 @@ class _AIPSDataHeader:
     pass                                # class _AIPSDataHeader
 
 
-class _AIPSData:
+class _AIPSData(object):
 
     """This class describes generic AIPS data."""
 
@@ -133,15 +142,20 @@ class _AIPSData:
         self.proxy = disk.proxy()
         return
 
-    name = property(lambda self: self.desc.name,
+    def _set_name(self, name): self.desc.name = name; pass
+    name = property(lambda self: self.desc.name, _set_name,
                     doc='Name of this data set.')
-    klass = property(lambda self: self.desc.klass,
+    def _set_klass(self, klass): self.desc.klass = klass; pass
+    klass = property(lambda self: self.desc.klass, _set_klass,
                      doc='Class of this data set.')
-    disk = property(lambda self: self.desc.disk,
+    def _set_disk(self, disk): self.desc.disk = disk; pass
+    disk = property(lambda self: self.desc.disk, _set_disk,
                     doc='Disk where this data set is stored.')
-    seq = property(lambda self: self.desc.seq,
+    def _set_seq(self, seq): self.desc.seq = seq; pass
+    seq = property(lambda self: self.desc.seq, _set_seq,
                    doc='Sequence number of this data set.')
-    userno = property(lambda self: self.desc.userno,
+    def _set_userno(self, userno): self.desc.userno = userno; pass
+    userno = property(lambda self: self.desc.userno, _set_userno,
                       doc='User number used to access this data set.')
 
     def __repr__(self):
@@ -172,6 +186,10 @@ class _AIPSData:
         if name in self.desc.__dict__:
             return self.desc.__dict__[name]
         return _AIPSDataMethod(self, name)
+
+    def copy(self):
+        return self.__class__(self.name, self.klass, self.disk, self.seq,
+                              self.userno)
 
     def table(self, type, version):
         return _AIPSTable(self, type, version)
