@@ -434,6 +434,8 @@ class _AIPSData(object):
                 'crota': 'crota',
                 # Images
                 'niter': 'niter',
+                'minval': 'datamin',
+                'maxval': 'datamax',
                 'beamMaj': 'bmaj',
                 'beamMin': 'bmin',
                 'beamPA': 'bpa',
