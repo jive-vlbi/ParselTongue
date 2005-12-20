@@ -53,6 +53,10 @@ class AIPSData:
         data = self._init(desc)
         return data.header
 
+    def keywords(self, desc):
+        data = self._init(desc)
+        return data.keywords
+
     def stokes(self, desc):
         data = self._init(desc)
         return data.stokes

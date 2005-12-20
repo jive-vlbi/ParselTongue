@@ -276,6 +276,8 @@ class _AIPSTable:
         return _AIPSTableKeywords(self._table, self._err)
     keywords = property(_keywords)
 
+    pass                                # class _AIPSTable
+
 class _AIPSHistory:
     def __init__(self, data):
         self._err = OErr.OErr()
@@ -315,6 +317,8 @@ class _AIPSHistory:
         if self._err.isErr:
             raise RuntimeError
         return
+
+    pass                                # class _AIPSHistory
 
 class _AIPSVisibilityIter(object):
     """This class is used as an iterator over visibilities."""
@@ -412,6 +416,20 @@ class _AIPSVisibilityIter(object):
         return visibility
     visibility = property(_get_visibility)
 
+    pass                                # class _AIPSVisibilityIter
+
+class _AIPSDataKeywords:
+    def __init__(self, data, err):
+        self._err = err
+        self._data = data
+        return
+
+    def __getitem__(self, key):
+        value = InfoList.PGet(self._data.Desc.List, key)
+        return _scalarize(value[4])
+
+    pass                                # class _AIPSDataKeywords
+
 class _AIPSData(object):
     """This class is used to access generic AIPS data."""
 
@@ -457,6 +475,10 @@ class _AIPSData(object):
         return header
     header = property(_generate_header,
                       doc = 'Header for this data set.')
+
+    def _keywords(self):
+        return _AIPSDataKeywords(self._data, self._err)
+    keywords = property(_keywords)
 
     def _generate_tables(self):
         return TableList.PGetList(self._data.TableList, self._err)

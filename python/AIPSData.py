@@ -213,6 +213,11 @@ class _AIPSData(object):
     header = property(_generate_header,
                       doc='Header for this data set.')
 
+    def _generate_keywords(self):
+        return _AIPSDataMethod(self, 'keywords')()
+    keywords = property(_generate_keywords,
+                        doc='Keywords for this data set.')
+
     def _generate_tables(self):
         dict = self._method('tables')(self.desc)
         return dict
