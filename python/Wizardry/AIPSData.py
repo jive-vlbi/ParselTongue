@@ -482,6 +482,22 @@ class _AIPSData(object):
     stokes = property(_generate_stokes,
                       doc='Stokes parameters for this data set.')
 
+    def rename(self, name=None, klass=None, seq=None):
+        """Rename this image or data set.
+
+        NAME is the new name, KLASS is the new class and SEQ is the
+        new sequence number for the data set.  Note that you can't
+        change the disk number, since that would require copying the
+        data."""
+
+        if name == None: name = self._data.Aname
+        if klass == None: klass = self._data.Aclass
+        if seq == None: seq = self._data.Aseq
+
+        self._obit.PRename(self._data, self._err, newAIPSName=name.ljust(12),
+                           newAIPSClass=klass.ljust(6), newAIPSSeq=seq)
+        return
+
     def table(self, name, version):
         """Access an extension table attached to this UV data set.
 
@@ -517,6 +533,7 @@ class AIPSImage(_AIPSData):
     """This class is used to access an AIPS image."""
 
     def __init__(self, name, klass, disk, seq, userno = -1):
+        self._obit = Image
         if userno == -1:
             userno = AIPS.userno
         self._err = OErr.OErr()
@@ -543,6 +560,7 @@ class AIPSUVData(_AIPSData):
     """This class is used to access an AIPS UV data set."""
 
     def __init__(self, name, klass, disk, seq, userno = -1):
+        self._obit = UV
         if userno == -1:
             userno = AIPS.userno
         self._err = OErr.OErr()

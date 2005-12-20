@@ -226,6 +226,25 @@ class _AIPSData(object):
         table TYPE."""
         return self._method(_whoami())(self.desc, type)
 
+    def rename(self, name=None, klass=None, seq=None, **kwds):
+        """Rename this image or data set.
+
+        NAME is the new name, KLASS is the new class and SEQ is the
+        new sequence number for the data set.  Note that you can't
+        change the disk number, since that would require copying the
+        data."""
+        if name == None: name = self.name
+        if klass == None: klass = self.klass
+        if seq == None: seq = self.seq
+        if 'name' in kwds: name = kwds['name']
+        if 'klass' in kwds: klass = kwds['name']
+        if 'seq' in kwds: seq = kwds['seq']
+        result = self._method(_whoami())(self.desc, name, klass, seq)
+        self.name = name
+        self.klass = klass
+        self.seq = seq
+        return result
+
     def zap(self):
         """Destroy this image or data set."""
         return self._method(_whoami())(self.desc)

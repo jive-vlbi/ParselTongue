@@ -65,6 +65,10 @@ class AIPSData:
         data = self._init(desc)
         return TableList.PGetHigh(data._data.TableList, type)
 
+    def rename(self, desc, name, klass, seq):
+        data = self._init(desc).rename(name, klass, seq)
+        return True                # Return something other than None.
+
     def zap(self, desc):
         self._init(desc).zap()
         return True                # Return something other than None.
