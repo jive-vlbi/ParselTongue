@@ -184,14 +184,14 @@ class _AIPSTableKeywords:
         return
 
     def __getitem__(self, key):
-        value = InfoList.PGet(self._table.IODesc.List, key)
+        value = InfoList.PGet(self._table.IODesc.List, key.upper())
         return _scalarize(value[4])
 
     def __setitem__(self, key, value):
         if int(value) == value:
-            InfoList.PAlwaysPutInt(self._table.Desc.List, key,
+            InfoList.PAlwaysPutInt(self._table.Desc.List, key.upper(),
                                    [1, 1, 1, 1, 1], _vectorize(value))
-            InfoList.PAlwaysPutInt(self._table.IODesc.List, key,
+            InfoList.PAlwaysPutInt(self._table.IODesc.List, key.upper(),
                                    [1, 1, 1, 1, 1], _vectorize(value))
         else:
             raise AssertionError, "not implemented"
@@ -425,7 +425,7 @@ class _AIPSDataKeywords:
         return
 
     def __getitem__(self, key):
-        value = InfoList.PGet(self._data.Desc.List, key)
+        value = InfoList.PGet(self._data.Desc.List, key.upper())
         return _scalarize(value[4])
 
     pass                                # class _AIPSDataKeywords
