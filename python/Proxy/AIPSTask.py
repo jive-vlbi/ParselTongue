@@ -438,8 +438,8 @@ class AIPSMessageLog:
                   + user + '000.' + user + ';'
         return open(ms_name, mode='r+')
 
-    def clear(self, userno):
-        """Clear message log."""
+    def zap(self, userno):
+        """Zap message log."""
 
         ms_file = self._open(userno)
         ms_file.write(struct.pack('i', 0))

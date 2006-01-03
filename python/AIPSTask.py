@@ -365,12 +365,12 @@ class AIPSMessageLog:
             self.userno = AIPS.userno
         return
 
-    def clear(self):
-        """Clear message log."""
+    def zap(self):
+        """Zap message log."""
 
         proxy = AIPS.disks[1].proxy()
         inst = getattr(proxy, self.__class__.__name__)
-        return inst.clear(self.userno)
+        return inst.zap(self.userno)
 
     pass                                # class AIPSMessageLog
 
