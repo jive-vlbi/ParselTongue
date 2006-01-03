@@ -426,6 +426,27 @@ class AIPSTask(Task):
 
         return Task.abort(self, tid, sig)
 
+    pass                                # class AIPSTask
+
+class AIPSMessageLog:
+    def __init__(self):
+        return
+
+    def _open(self, userno):
+        user = ehex(userno, 3, 0)
+        ms_name = os.environ['DA01'] + '/MS' + AIPS.revision \
+                  + user + '000.' + user + ';'
+        return open(ms_name, mode='r+')
+
+    def clear(self, userno):
+        """Clear message log."""
+
+        ms_file = self._open(userno)
+        ms_file.write(struct.pack('i', 0))
+        return True                # Return something other than None.
+
+    pass                                # class AIPSMessageLog
+
 
 # In order to prevent multiple AIPS instances from using the same POPS
 # number, every AIPS instance creates a lock file in /tmp.  These lock

@@ -354,6 +354,27 @@ class AIPSTask(Task):
     pass                                # class AIPSTask
 
 
+class AIPSMessageLog:
+
+    # Default user number.
+    userno = -1
+
+    def __init__(self):
+        # Update default user number.
+        if self.userno == -1:
+            self.userno = AIPS.userno
+        return
+
+    def clear(self):
+        """Clear message log."""
+
+        proxy = AIPS.disks[1].proxy()
+        inst = getattr(proxy, self.__class__.__name__)
+        return inst.clear(self.userno)
+
+    pass                                # class AIPSMessageLog
+
+
 def AIPSList(list):
     """Transform a Python array into an AIPS array.
 
