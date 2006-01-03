@@ -27,6 +27,7 @@ import AIPS
 # The AIPSTask module should always be available.
 import Proxy.AIPSTask
 AIPSTask = Proxy.AIPSTask.AIPSTask()
+AIPSMessageLog = Proxy.AIPSTask.AIPSMessageLog()
 
 # The same goes for the ObitTask module.
 import Proxy.ObitTask
