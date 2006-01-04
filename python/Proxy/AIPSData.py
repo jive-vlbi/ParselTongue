@@ -113,6 +113,10 @@ class AIPSData:
         data.zap_table(type, version)
         return True                # Return something other than None.
 
+    def _getitem_history(self, desc, key):
+        data = self._init(desc)
+        return data.history[key]
+
     pass                           # class AIPSData
 
 
