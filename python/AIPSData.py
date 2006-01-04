@@ -224,6 +224,9 @@ class _AIPSData(object):
     tables = property(_generate_tables,
                       doc='Extension tables for this data set.')
 
+    history = property(lambda self: _AIPSHistory(self),
+                       doc='History table for this data set.')
+
     def table_highver(self, type):
         """Get the highest version of an extension table.
 
@@ -396,6 +399,35 @@ class _AIPSTable(object):
     version = property(_generate_version, doc='Table version.')
 
     pass                                # class _AIPSTable
+
+
+class _AIPSHistoryMethod(_AIPSDataMethod):
+
+    """ This class implements dispatching history oriented function
+    calls to a proxy."""
+
+    def __init__(self, inst, name):
+        _AIPSDataMethod.__init__(self, inst, name)
+
+    def __call__(self, *args):
+        func = self.inst._data._method(self.name + '_history')
+        return func(self.inst._data.desc, *args)
+
+    pass                                # class _AIPSHistoryMethod
+
+
+class _AIPSHistory(object):
+
+    """This class describes an AIPS hostory table."""
+
+    def __init__(self, data):
+        self._data = data
+        return
+
+    def __getitem__(self, key):
+        return _AIPSHistoryMethod(self, '_getitem')(key)
+
+    pass                                # class _AIPSHistory
 
 
 class AIPSCat:
