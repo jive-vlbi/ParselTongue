@@ -278,13 +278,17 @@ class _AIPSTable:
 
     pass                                # class _AIPSTable
 
+
 class _AIPSHistory:
+    """This class is used to access AIPS history tables."""
+
     def __init__(self, data):
         self._err = OErr.OErr()
         self._table = History.History('AIPS HI', data.List, self._err)
         self._table.Open(3, self._err)
         if self._err.isErr:
             raise RuntimeError
+        return
 
     def close(self):
         """Close this history table.
@@ -297,28 +301,33 @@ class _AIPSHistory:
             raise RuntimeError
         return
 
+    # The following functions make an extension table behave as a list
+    # of records.
+
     def __getitem__(self, key):
-        rec = self._table.ReadRec(key + 1, self._err)
-        if not rec:
+        assert(not self._err.isErr)
+        record = self._table.ReadRec(key + 1, self._err)
+        if not record:
             raise IndexError, "list index out of range"
         if self._err.isErr:
             raise RuntimeError
-        return rec
+        return record
 
-    def __setitem__(self, key, rec):
+    def __setitem__(self, key, record):
         msg = 'You are not allowed to rewrite history!'
         raise NotImplementedError, msg
 
-    def append(self, rec):
+    def append(self, record):
         """Append a record to this history table."""
 
         assert(not self._err.isErr)
-        self._table.WriteRec(0, rec, self._err)
+        self._table.WriteRec(0, record, self._err)
         if self._err.isErr:
             raise RuntimeError
         return
 
     pass                                # class _AIPSHistory
+
 
 class _AIPSVisibilityIter(object):
     """This class is used as an iterator over visibilities."""
@@ -692,8 +701,7 @@ class AIPSUVData(_AIPSData):
             raise RuntimeError
         return _AIPSTable(self._data, name, version)
 
-    def history(self):
-        return _AIPSHistory(self._data)
+    history = property(lambda self: _AIPSHistory(self._data))
 
     pass                                # class AIPSUVData
 
