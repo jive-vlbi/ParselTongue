@@ -34,8 +34,17 @@ from ObitTask import *
 from FITSData import *
  
 # Use our own, somewhat restricted, rlcompleter.
-import readline, ptcompleter
+import atexit, readline, ptcompleter
+try:
+    path = os.environ['HOME'] + '/.ParselTongue/history'
+    readline.read_history_file(path)
+except IOError:
+    pass
 readline.parse_and_bind("tab: complete")
+if not os.path.exists(os.path.dirname(path)):
+    os.makedirs(os.path.dirname(path))
+    pass
+atexit.register(readline.write_history_file, path)
 
 # Override help() such that it prints something useful for instances
 # of AIPSTask.
