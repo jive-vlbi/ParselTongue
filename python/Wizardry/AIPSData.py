@@ -51,6 +51,7 @@ def _vectorize(value):
         return [value]
     return value
 
+
 def _rstrip(value):
     """Strip trailing whitespace."""
 
@@ -123,6 +124,8 @@ class _AIPSTableRow:
             pass
         return
 
+    pass                                # class _AIPSTableRow
+
 
 class AIPSTableRow(_AIPSTableRow):
     """This class is used as a template row for an extension table."""
@@ -152,10 +155,12 @@ class AIPSTableRow(_AIPSTableRow):
         return
 
     def update(self):
-        # A row instantiated by the This row cannot be updated.
+        # A row instantiated by the AIPSTableRow class cannot be updated.
         msg =  "%s instance has no attribute 'update'" % \
               self.__class__.__name__
         raise AttributeError, msg
+
+    pass                                # AIPSTableRow
 
 
 class _AIPSTableIter(_AIPSTableRow):
@@ -177,6 +182,9 @@ class _AIPSTableIter(_AIPSTableRow):
         assert(not self._err.isErr)
         return self
 
+    pass                                # class _AIPSTableIter
+
+
 class _AIPSTableKeywords:
     def __init__(self, table, err):
         self._err = err
@@ -196,6 +204,9 @@ class _AIPSTableKeywords:
         else:
             raise AssertionError, "not implemented"
         return
+
+    pass                                # class _AIPSTableKeywords
+
 
 class _AIPSTable:
     """This class is used to access extension tables to an AIPS UV
@@ -427,6 +438,7 @@ class _AIPSVisibilityIter(object):
 
     pass                                # class _AIPSVisibilityIter
 
+
 class _AIPSDataKeywords:
     def __init__(self, data, err):
         self._err = err
@@ -438,6 +450,7 @@ class _AIPSDataKeywords:
         return _scalarize(value[4])
 
     pass                                # class _AIPSDataKeywords
+
 
 class _AIPSData(object):
     """This class is used to access generic AIPS data."""
@@ -558,7 +571,8 @@ class _AIPSData(object):
         self._data.Zap(self._err)
         return
 
-    pass
+    pass                                # class _AIPSData
+
 
 class AIPSImage(_AIPSData):
     """This class is used to access an AIPS image."""
