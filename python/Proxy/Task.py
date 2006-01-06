@@ -33,11 +33,13 @@ class Task:
 
         (pid, tid) = pty.fork()
         if pid == 0:
-            if env:
-                os.execve(path, args, env)
-            else:
-                print path, args
-                os.execv(path, args)
+            try:
+                if env:
+                    os.execve(path, args, env)
+                else:
+                    os.execv(path, args)
+            finally:
+                os._exit(1)
         else:
             fcntl.fcntl(tid, fcntl.F_SETFL, os.O_NONBLOCK)
             self._pid[tid] = pid
