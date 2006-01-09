@@ -17,7 +17,7 @@
 # Obit stuff.
 import Obit
 import OErr, OSystem
-import History, Image, UV, InfoList, TableList
+import History, Image, UV, InfoList, Table, TableList
 
 # Global AIPS defaults.
 import AIPS
@@ -196,13 +196,36 @@ class _AIPSTableKeywords:
         return _scalarize(value[4])
 
     def __setitem__(self, key, value):
-        if int(value) == value:
+        type = InfoList.PGet(self._table.IODesc.List, key.upper())
+        if type[2] in (2, 3, 4):
+            value = int(value)
             InfoList.PAlwaysPutInt(self._table.Desc.List, key.upper(),
                                    [1, 1, 1, 1, 1], _vectorize(value))
             InfoList.PAlwaysPutInt(self._table.IODesc.List, key.upper(),
                                    [1, 1, 1, 1, 1], _vectorize(value))
+        elif type[2] == 9:
+            value = float(value)
+            InfoList.PAlwaysPutFloat(self._table.Desc.List, key.upper(),
+                                     [1, 1, 1, 1, 1], _vectorize(value))
+            InfoList.PAlwaysPutFloat(self._table.IODesc.List, key.upper(),
+                                     [1, 1, 1, 1, 1], _vectorize(value))
+        elif type[2] == 10:
+            value = float(value)
+            InfoList.PAlwaysPutDouble(self._table.Desc.List, key.upper(),
+                                      [1, 1, 1, 1, 1], _vectorize(value))
+            InfoList.PAlwaysPutDouble(self._table.IODesc.List, key.upper(),
+                                      [1, 1, 1, 1, 1], _vectorize(value))
+        elif type[2] == 13:
+            value = str(value)
+            InfoList.PAlwaysPutString(self._table.Desc.List, key.upper(),
+                                      [len(value), 1, 1, 1, 1],
+                                      _vectorize(value))
+            InfoList.PAlwaysPutString(self._table.IODesc.List, key.upper(),
+                                      [len(value), 1, 1, 1, 1],
+                                      _vectorize(value))
         else:
             raise AssertionError, "not implemented"
+        Table.PDirty(self._table)
         return
 
     pass                                # class _AIPSTableKeywords
