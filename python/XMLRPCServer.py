@@ -1,4 +1,4 @@
-# Copyright (C) 2005 Joint Institute for VLBI in Europe
+# Copyright (C) 2005, 2006 Joint Institute for VLBI in Europe
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,10 +23,16 @@ tasks and provide verb-like access to AIPS data on a machine.
 
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 from SocketServer import ThreadingMixIn
-import Proxy.AIPSData
-import Proxy.AIPSTask
 
-class SimpleThreadedXMLRPCServer(ThreadingMixIn, SimpleXMLRPCServer):
+# Global AIPS defaults.
+import AIPS
+
+# Import AIPS modules.
+import Proxy.AIPSTask
+import Proxy.AIPSData
+
+class XMLRPCServer(SimpleXMLRPCServer):
+    allow_reuse_address = True
     pass
 
 class ServerFuncs:
@@ -34,12 +40,25 @@ class ServerFuncs:
         self.AIPSTask = Proxy.AIPSTask.AIPSTask()
         self.AIPSUVData = Proxy.AIPSData.AIPSUVData()
         self.AIPSImage = Proxy.AIPSData.AIPSImage()
-        self.AIPSCat = Proxy.AIPSCat.AIPSCat()
+        self.AIPSCat = Proxy.AIPSData.AIPSCat()
         return
 
-    pass
+    def _dispatch(self, name, args):
+        # For security reasons, SimpleXMLRPCServer in Python
+        # 2.3.5/2.4.1, no longer resolves names with a dot in it.  Se
+        # here we explicitly accept names starting with 'AIPS' and
+        # containing a single dot; that should be safe enough.
+        if name.startswith('AIPS') and name.count('.') == 1:
+            name = name.split('.')
+            inst = getattr(self, name[0])
+            method = getattr(inst, name[1])
+            return method(*args)
+        msg = "object has no attribute '%s'" % name
+        raise AttributeError, msg
+
+    pass                                # class ServerFuncs
 
 
-server = SimpleXMLRPCServer(('', 8000))
+server = XMLRPCServer(('', 8000))
 server.register_instance(ServerFuncs())
 server.serve_forever()
