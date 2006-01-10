@@ -79,6 +79,15 @@ UVDATA
 >>> print imean.inclass
 UVDATA
 
+It also implements the == operator, which checks whether task name and
+inputs match:
+
+>>> imean2 == imean
+False
+>>> imean2.inclass = 'UVDATA'
+>>> imean2 == imean
+True
+
 """
 
 # Global AIPS defaults.
@@ -168,6 +177,19 @@ class AIPSTask(Task):
                 self._max_dict[name] = float(len(AIPS.disks) - 1)
 
         return                          # __init__
+
+    def __eq__(self, other):
+        if self.__class__ != other.__class__:
+            return False
+        if self._name != other._name:
+            return False
+        if self.userno != other.userno:
+            return False
+        for adverb in self._input_list:
+            if self.__dict__[adverb] != other.__dict__[adverb]:
+                return False
+            continue
+        return True
 
     def copy(self):
         task = AIPSTask(self._name, version=self.version)
