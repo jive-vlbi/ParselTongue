@@ -67,7 +67,7 @@ class AIPSData:
 
     def table_highver(self, desc, type):
         data = self._init(desc)
-        return TableList.PGetHigh(data._data.TableList, type)
+        return data.table_highver(type)
 
     def rename(self, desc, name, klass, seq):
         data = self._init(desc).rename(name, klass, seq)
