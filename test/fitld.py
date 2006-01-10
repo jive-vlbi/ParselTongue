@@ -59,5 +59,9 @@ try:
     for row in nxtable:
         assert(sutable[row.source_id - 1].id__no == row.source_id)
 
+    assert(uvdata.table_highver('NX') == 1)
+    uvdata.table('NX', 0).zap()
+    assert(uvdata.table_highver('NX') == 0)
+
 finally:
     uvdata.zap()
