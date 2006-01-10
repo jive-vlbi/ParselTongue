@@ -1,4 +1,4 @@
-# Copyright (C) 2005 Joint Institute for VLBI in Europe
+# Copyright (C) 2005, 2006 Joint Institute for VLBI in Europe
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -69,6 +69,16 @@ It should also work for strings:
 'foobar'
 >>> AIPSList(['foo', 'bar'])
 [None, 'foo', 'bar']
+
+The AIPSTask class implements the copy method:
+
+>>> imean2 = imean.copy()
+>>> print imean2.inclass
+UVDATA
+>>> imean2.inclass = 'SPLIT'
+>>> print imean.inclass
+UVDATA
+
 """
 
 # Global AIPS defaults.
@@ -158,6 +168,14 @@ class AIPSTask(Task):
                 self._max_dict[name] = float(len(AIPS.disks) - 1)
 
         return                          # __init__
+
+    def copy(self):
+        task = AIPSTask(self._name, version=self.version)
+        task.userno = self.userno
+        for adverb in self._input_list:
+            task.__dict__[adverb] = self.__dict__[adverb]
+            continue
+        return task
 
     def defaults(self):
         """Set adverbs to their defaults."""
