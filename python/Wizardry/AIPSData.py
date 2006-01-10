@@ -1,4 +1,4 @@
-# Copyright (C) 2005 Joint Institute for VLBI in Europe
+# Copyright (C) 2005, 2006 Joint Institute for VLBI in Europe
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
