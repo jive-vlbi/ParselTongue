@@ -565,6 +565,14 @@ class _AIPSData(object):
                            newAIPSClass=klass.ljust(6), newAIPSSeq=seq)
         return
 
+    def table_highver(self, name):
+        """Return the latest version of the extension table NAME."""
+
+        if not name.startswith('AIPS '):
+            name = 'AIPS ' + name
+
+        return TableList.PGetHigh(self._data.TableList, name)
+
     def table(self, name, version):
         """Access an extension table attached to this UV data set.
 
