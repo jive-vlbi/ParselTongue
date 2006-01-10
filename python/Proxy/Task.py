@@ -55,16 +55,22 @@ class Task:
         (iwtd, owtd, ewtd) = select.select([tid], [], [], 0.25)
         if tid in iwtd:
             try:
-                messages = os.read(tid, 1024).split('\r\n')
-                return [msg for msg in messages if msg]
+                messages = os.read(tid, 1024)
+                if len(messages) > 0:
+                    messages = messages.split('\r\n')
+                    return [msg for msg in messages if msg]
             except:
-                # If reading failed, it's (probably) because the child
-                # process died.
-                (pid, status) = os.waitpid(self._pid[tid], os.WNOHANG)
-                if pid:
-                    assert(pid == self._pid[tid])
-                    if os.WIFEXITED(status) or os.WIFSIGNALED(status):
-                        self._pid[tid] = 0
+                pass
+
+            pass
+
+        # If reading failed, it's (probably) because the child
+        # process died.
+        (pid, status) = os.waitpid(self._pid[tid], os.WNOHANG)
+        if pid:
+            assert(pid == self._pid[tid])
+            if os.WIFEXITED(status) or os.WIFSIGNALED(status):
+                self._pid[tid] = 0
         return []
 
     def wait(self, tid):
