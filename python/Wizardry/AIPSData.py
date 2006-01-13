@@ -192,37 +192,37 @@ class _AIPSTableKeywords:
         return
 
     def __getitem__(self, key):
-        value = InfoList.PGet(self._table.IODesc.List, key.upper())
+        key = key.upper().ljust(8)
+        value = InfoList.PGet(self._table.IODesc.List, key)
         return _scalarize(value[4])
 
     def __setitem__(self, key, value):
-        type = InfoList.PGet(self._table.IODesc.List, key.upper())
+        key = key.upper().ljust(8)
+        type = InfoList.PGet(self._table.IODesc.List, key)
         if type[2] in (2, 3, 4):
             value = int(value)
-            InfoList.PAlwaysPutInt(self._table.Desc.List, key.upper(),
+            InfoList.PAlwaysPutInt(self._table.Desc.List, key,
                                    [1, 1, 1, 1, 1], _vectorize(value))
-            InfoList.PAlwaysPutInt(self._table.IODesc.List, key.upper(),
+            InfoList.PAlwaysPutInt(self._table.IODesc.List, key,
                                    [1, 1, 1, 1, 1], _vectorize(value))
         elif type[2] == 9:
             value = float(value)
-            InfoList.PAlwaysPutFloat(self._table.Desc.List, key.upper(),
+            InfoList.PAlwaysPutFloat(self._table.Desc.List, key,
                                      [1, 1, 1, 1, 1], _vectorize(value))
-            InfoList.PAlwaysPutFloat(self._table.IODesc.List, key.upper(),
+            InfoList.PAlwaysPutFloat(self._table.IODesc.List, key,
                                      [1, 1, 1, 1, 1], _vectorize(value))
         elif type[2] == 10:
             value = float(value)
-            InfoList.PAlwaysPutDouble(self._table.Desc.List, key.upper(),
+            InfoList.PAlwaysPutDouble(self._table.Desc.List, key,
                                       [1, 1, 1, 1, 1], _vectorize(value))
-            InfoList.PAlwaysPutDouble(self._table.IODesc.List, key.upper(),
+            InfoList.PAlwaysPutDouble(self._table.IODesc.List, key,
                                       [1, 1, 1, 1, 1], _vectorize(value))
         elif type[2] == 13:
-            value = str(value)
-            InfoList.PAlwaysPutString(self._table.Desc.List, key.upper(),
-                                      [len(value), 1, 1, 1, 1],
-                                      _vectorize(value))
-            InfoList.PAlwaysPutString(self._table.IODesc.List, key.upper(),
-                                      [len(value), 1, 1, 1, 1],
-                                      _vectorize(value))
+            value = str(value).ljust(8)
+            InfoList.PAlwaysPutString(self._table.Desc.List, key,
+                                      [8, 1, 1, 1, 1], _vectorize(value))
+            InfoList.PAlwaysPutString(self._table.IODesc.List, key,
+                                      [8, 1, 1, 1, 1], _vectorize(value))
         else:
             raise AssertionError, "not implemented"
         Table.PDirty(self._table)
