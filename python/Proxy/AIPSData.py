@@ -77,36 +77,45 @@ class AIPSData:
         self._init(desc).zap()
         return True                # Return something other than None.
 
-    def header_table(self, desc, type, version):
-        data = self._init(desc)
-        table = data.table(type, version)
-        return table._table.Desc.Dict
-
     def keywords_table(self, desc, type, version):
         data = self._init(desc)
         table = data.table(type, version)
-        return table.keywords
+        try:
+            result = table.keywords
+        finally:
+            table.close()
+            pass
+        return result
 
     def version_table(self, desc, type, version):
         data = self._init(desc)
         table = data.table(type, version)
-        return table.version
-
-    # XXX Deprecated.
-    def getrow_table(self, desc, type, version, rowno):
-        data = self._init(desc)
-        table = data.table(type, version)
-        return table[rowno - 1]._row
+        try:
+            result = table.version
+        finally:
+            table.close()
+            pass
+        return result
 
     def _getitem_table(self, desc, type, version, key):
         data = self._init(desc)
         table = data.table(type, version)
-        return table[key]._dict()
+        try:
+            result = table[key]._dict()
+        finally:
+            table.close()
+            pass
+        return result
 
     def _len_table(self, desc, type, version): 
         data = self._init(desc)
         table = data.table(type, version)
-        return len(table)
+        try:
+            result = len(table)
+        finally:
+            table.close()
+            pass
+        return result
 
     def zap_table(self, desc, type, version):
         data = self._init(desc)
