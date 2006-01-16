@@ -124,7 +124,13 @@ class AIPSData:
 
     def _getitem_history(self, desc, key):
         data = self._init(desc)
-        return data.history[key]
+        history = data.history
+        try:
+            result = history[key]
+        finally:
+            history.close()
+            pass
+        return result
 
     pass                           # class AIPSData
 
