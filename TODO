@@ -6,3 +6,5 @@
 * Alternative POPSDAT.HLP.
 
 * Revive Obit support.
+
+* Memory leak in table access?
