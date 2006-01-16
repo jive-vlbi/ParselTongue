@@ -77,13 +77,15 @@ class ObitTask(AIPSTask):
     # Default version.
     version = 'OBIT'
 
+    # Default user number.
+    userno = -1
+
     # Debugging?
     debug = False
 
     def __init__(self, name):
         AIPSTask.__init__(self, name)
-        if self.userno == 0:
-            self.userno = 1
+        return
 
     def spawn(self):
         """Spawn the task."""
