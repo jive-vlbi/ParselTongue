@@ -1,3 +1,34 @@
+*** Changes in ParselTongue 1.0
+
+* Renaming data sets
+
+It is now possible to rename images and UV data:
+
+>>> uvdata = AIPSUVData('MULTI', 'UVDATA', 1, 1)
+>>> uvdata.rename('N05C2', 'UVDATA', 1, 1)
+
+* History access
+
+You can now access the history table of a data set:
+
+>>> print uvdata.history[6]
+
+will print the 7th record in the history.
+
+* Changing keywords
+
+It is now possible to change non-standard keywords:
+
+>>> uvdata.keywords['OLDFRQ'] = 1.64249000e9
+
+will set the keyword 'OLDFRQ' to 1.6 GHz.  This also works for tables,
+but make sure you close the table explicitly when you're done with it,
+otherwise you'll lose the change:
+
+>>> antable.keywords['ARRNAM'] = 'EVN'
+>>> antable.close()
+
+
 *** Changes in ParselTongue 0.99
 
 * Support for the AIPS TV
