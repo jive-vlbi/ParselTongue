@@ -40,6 +40,9 @@ try:
     uvflg.stokes = 'CROS'
     uvflg.reason = 'TEST'
     uvflg()
+
+    uvflg.stokes = 'RL'
+    uvflg()
     
     print uvdata.tables
     fqtable = uvdata.table('FQ', 0)
@@ -49,10 +52,11 @@ try:
         print row
         continue
     assert (fgtable[0].pflags == [0, 0, 1, 1])
+    assert (fgtable[1].pflags == [0, 0, 1, 0])
 
     uvdata2 = WAIPSUVData(uvdata.name, uvdata.klass, uvdata.disk, uvdata.seq)
     fgtable = uvdata2.table('FG', 0)
-    row = fgtable[0]
+    row = fgtable[1]
     row.ants = [2, 0]
     fgtable.append(row)
     fgtable.close()
@@ -62,7 +66,7 @@ try:
         print row
         continue
     
-    assert (fgtable[1].ants == [2, 0])
+    assert (fgtable[2].ants == [2, 0])
 
 finally:
     uvdata.zap()
