@@ -53,6 +53,10 @@ class AIPSData:
         data = self._init(desc)
         return data.header
 
+    def _len(self, desc):
+        data = self._init(desc)
+        return len(data)
+
     def keywords(self, desc):
         data = self._init(desc)
         return data.keywords
@@ -107,7 +111,7 @@ class AIPSData:
             pass
         return result
 
-    def _len_table(self, desc, type, version): 
+    def _len_table(self, desc, type, version):
         data = self._init(desc)
         table = data.table(type, version)
         try:
