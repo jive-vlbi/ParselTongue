@@ -187,6 +187,9 @@ class _AIPSData(object):
             return self.desc.__dict__[name]
         return _AIPSDataMethod(self, name)
 
+    def __len__(self):
+        return _AIPSDataMethod(self, '_len')()
+
     def copy(self):
         return self.__class__(self.name, self.klass, self.disk, self.seq,
                               self.userno)
