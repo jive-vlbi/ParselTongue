@@ -644,6 +644,9 @@ class AIPSUVData(_AIPSData):
         self._data = UV.newPAUV(name, name, klass, disk, seq, True, self._err)
         if self._err.isErr:
             raise RuntimeError
+        self._antennas = []
+        self._polarizations = []
+        self._sources = []
         return
 
     def __len__(self):
@@ -653,7 +656,6 @@ class AIPSUVData(_AIPSData):
         self._data.Open(3, self._err)
         return _AIPSVisibilityIter(self._data, self._err)
 
-    _antennas = []
     def _generate_antennas(self):
         """Generate the 'antennas' attribute."""
 
@@ -668,7 +670,6 @@ class AIPSUVData(_AIPSData):
     antennas = property(_generate_antennas,
                         doc = 'Antennas in this data set.')
 
-    _polarizations = []
     def _generate_polarizations(self):
         """Generate the 'polarizations' attribute.
 
@@ -689,7 +690,6 @@ class AIPSUVData(_AIPSData):
     polarizations = property(_generate_polarizations,
                              doc='Polarizations in this data set.')
 
-    _sources = []
     def _generate_sources(self):
         """Generate the 'sources' attribute."""
 
