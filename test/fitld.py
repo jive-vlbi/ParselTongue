@@ -39,6 +39,8 @@ try:
     assert(len(uvdata.sources) == 2)
     print 'Stokes:', uvdata.stokes
     assert(len(uvdata.stokes) == 4)
+    print 'Visibilities:', len(uvdata)
+    assert(len(uvdata) == 36033)
 
     assert(uvdata.header.date_obs == '2003-02-25')
 
