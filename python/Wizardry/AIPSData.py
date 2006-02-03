@@ -660,6 +660,10 @@ class AIPSUVData(_AIPSData):
     def __len__(self):
         return self._data.Desc.Dict['nvis']
 
+    def __getitem__(self, name):
+        msg = 'Random visibility access is not possible.'
+        raise NotImplementedError, msg
+
     def __iter__(self):
         self._data.Open(3, self._err)
         return _AIPSVisibilityIter(self._data, self._err)
