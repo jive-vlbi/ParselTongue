@@ -38,5 +38,12 @@ try:
     print 'Visibilities:', count
     print 'Total weight:', weight
 
+    try:
+        print uvdata[1]
+    except NotImplementedError:
+        pass
+    else:
+        raise AssertionError
+
 finally:
     uvdata.zap()
