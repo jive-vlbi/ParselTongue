@@ -60,6 +60,8 @@ try:
         assert(row.time >= start)
     for row in nxtable:
         assert(sutable[row.source_id - 1].id__no == row.source_id)
+    start2 = cltable[0]['time']
+    assert(start2 == start)
 
     assert(uvdata.table_highver('NX') == 1)
     uvdata.table('NX', 0).zap()

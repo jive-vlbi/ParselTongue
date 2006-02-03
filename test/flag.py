@@ -52,7 +52,7 @@ try:
         print row
         continue
     assert (fgtable[0].pflags == [0, 0, 1, 1])
-    assert (fgtable[1].pflags == [0, 0, 1, 0])
+    assert (fgtable[1]['pflags'] == [0, 0, 1, 0])
 
     uvdata2 = WAIPSUVData(uvdata.name, uvdata.klass, uvdata.disk, uvdata.seq)
     fgtable = uvdata2.table('FG', 0)
