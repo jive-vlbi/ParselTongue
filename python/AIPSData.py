@@ -346,6 +346,9 @@ class _AIPSTableRow:
     def __repr__(self):
         return str(self._dict)
 
+    def __getitem__(self, key):
+        return self._dict[key]
+
     pass                                # class _AIPSTableRow
 
 
