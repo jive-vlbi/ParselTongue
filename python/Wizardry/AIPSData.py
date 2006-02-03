@@ -111,6 +111,14 @@ class _AIPSTableRow:
         key = self._findattr(name)
         self._row[key] = _vectorize(value)
         self._dirty = True
+        pass
+
+    def __getitem__(self, name):
+        return self.__getattr__(name)
+
+    def __setitem__(self, name, value):
+        self.__setattr__(name, value)
+        pass
 
     def update(self):
         """Update this row."""
