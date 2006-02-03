@@ -1,3 +1,24 @@
+*** Changes in ParselTongue 1.0.1
+
+* Bug fixes
+
+ParselTongue will now deal gracefully with missing readline support in
+Python.  The AIPSUVData.antennas, AIPSUVData.polarizations and
+AIPSUVData.sources attributes no longer incorrectly cache their
+results.
+
+Obit no longer leaks huge amounts of memory, can now access FG tables
+and now produces CL tables that no longer confuse AIPS.
+
+* New functionality
+
+Dictonary-like access to table rows is now possible, and
+
+>>> uvdata = AIPSUVData('MULTI', 'UVDATA', 1, 1)
+>>> print len(uvdata)
+
+prints the number of visibilities in the data set.
+
 *** Changes in ParselTongue 1.0
 
 * Renaming data sets
