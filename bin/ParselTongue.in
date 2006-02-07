@@ -1,5 +1,15 @@
 #! /bin/sh
 
+# Print version if requested.
+if test $# > 1; then
+  case $1 in
+  --version)
+    echo "ParselTongue @VERSION@"; exit 0 ;;
+  -V)
+    echo "ParselTongue @VERSION@" ;;
+  esac
+fi
+
 # Check whether AIPS is available.
 if test -z "$AIPS_ROOT"; then
     echo "$0: cannot proceed, AIPS_ROOT not defined"

@@ -14,6 +14,7 @@ CLEANFILES = $(bin_SCRIPTS)
 
 edit = sed \
 	-e 's,@datadir\@,$(pkgdatadir),g' \
+	-e 's,@VERSION\@,$(VERSION),g' \
 	-e 's,@PYTHON\@,$(PYTHON),g' \
 	-e 's,@OBIT_PYTHONPATH\@,$(OBIT_PYTHONPATH),g'
 
