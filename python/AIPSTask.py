@@ -111,6 +111,10 @@ class AIPSTask(Task):
     _disk_adverbs = ['indisk', 'outdisk',
                      'in2disk', 'in3disk', 'in4disk', 'out2disk']
 
+    # List of adverbs referring to file names.
+    _file_adverbs = ['infile', 'infile2', 'outfile', 'outprint',
+                     'ofmfile', 'boxfile', 'oboxfile']
+
     # Default version.
     version = os.environ.get('VERSION', 'NEW')
 
@@ -377,8 +381,7 @@ class AIPSTask(Task):
             # pathname.  The backend will split of the direcrory
             # component and use that as an "area".
             attr = self._findattr(name)
-            file_adverbs = ['infile', 'outfile', 'outprint']
-            if attr in file_adverbs and type(value) == str and \
+            if attr in self._file_adverbs and type(value) == str and \
                    os.path.dirname(value):
                 if len(os.path.basename(value)) > self._strlen_dict[attr] - 2:
                     msg = "string '%s' is too long for attribute '%s'" \
