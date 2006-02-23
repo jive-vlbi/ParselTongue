@@ -1,4 +1,4 @@
-# Copyright (C) 2005 Joint Institute for VLBI in Europe
+# Copyright (C) 2005, 2006 Joint Institute for VLBI in Europe
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -122,7 +122,15 @@ class List(list):
     def __init__(self, task, attr, value):
         self._task = task
         self._attr = attr
-        list.extend(self, value)
+        _value = []
+        for item in value:
+            if isinstance(item, list):
+                _value.append(List(task, attr, item))
+            else:
+                _value.append(item)
+                pass
+            continue
+        list.extend(self, _value)
         return
 
     def __setitem__(self, key, item):
