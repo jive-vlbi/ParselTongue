@@ -260,6 +260,10 @@ class _AIPSData(object):
         """Destroy this image or data set."""
         return self._method(_whoami())(self.desc)
 
+    def clrstat(self):
+        """Clear all read and write status flags."""
+        return self._method(_whoami())(self.desc)
+
     def header_table(self, type, version):
         """Get the header of an extension table.
 

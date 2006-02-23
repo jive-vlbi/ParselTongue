@@ -81,6 +81,10 @@ class AIPSData:
         self._init(desc).zap()
         return True                # Return something other than None.
 
+    def clrstat(self, desc):
+        self._init(desc).clrstat()
+        return True                # Return something other than None.
+
     def keywords_table(self, desc, type, version):
         data = self._init(desc)
         table = data.table(type, version)

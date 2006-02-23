@@ -610,6 +610,14 @@ class _AIPSData(object):
         self._data.Zap(self._err)
         return
 
+    def clrstat(self):
+        cno = Obit.AIPSDirFindCNO(self._data.Disk, self._userno,
+                                  self._data.Aname, self._data.Aclass,
+                                  self._data.Otype, self._data.Aseq,
+                                  self._err.me)
+        Obit.AIPSDirStatus(self._data.Disk, self._userno, cno, 4, self._err.me)
+        return
+
     pass                                # class _AIPSData
 
 
@@ -620,6 +628,8 @@ class AIPSImage(_AIPSData):
         self._obit = Image
         if userno == -1:
             userno = AIPS.userno
+            pass
+        self._userno = userno
         self._err = OErr.OErr()
         OSystem.PSetAIPSuser(userno)
         self._data = Image.newPAImage(name, name, klass, disk, seq,
@@ -647,6 +657,7 @@ class AIPSUVData(_AIPSData):
         self._obit = UV
         if userno == -1:
             userno = AIPS.userno
+        self._userno = userno
         self._err = OErr.OErr()
         OSystem.PSetAIPSuser(userno)
         self._data = UV.newPAUV(name, name, klass, disk, seq, True, self._err)
