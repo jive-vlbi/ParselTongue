@@ -1,4 +1,4 @@
-# Copyright (C) 2005 Joint Institute for VLBI in Europe
+# Copyright (C) 2005, 2006 Joint Institute for VLBI in Europe
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,6 +19,9 @@ This module provides support for starting an interactive ParselTongue
 session.
 
 """
+
+# ParselTongue version
+import ptversion
 
 # Global AIPS defaults
 import AIPS
@@ -67,7 +70,7 @@ AIPSTask.isbatch = 0
 # Separate the blurb below from what the Python interpreter spits out.
 print ""
 
-print "Welcome to ParselTongue"
+print "Welcome to ParselTongue", ptversion.version
 while True:
     try:
         input = raw_input("Please enter your AIPS user ID number: ")
