@@ -88,6 +88,15 @@ False
 >>> imean2 == imean
 True
 
+Make sure we handle multi-dimensional arrays correctly:
+
+>>> sad = AIPSTask('sad')
+>>> sad.dowidth[1][1:] = [1, 1, 1]
+>>> sad.dowidth[1]
+[None, 1.0, 1.0, 1.0]
+>>> sad.dowidth[2]
+[None, 0.0, 0.0, 0.0]
+
 """
 
 # Global AIPS defaults.
