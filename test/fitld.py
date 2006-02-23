@@ -67,5 +67,7 @@ try:
     uvdata.table('NX', 0).zap()
     assert(uvdata.table_highver('NX') == 0)
 
+    uvdata.clrstat()
+
 finally:
     uvdata.zap()
