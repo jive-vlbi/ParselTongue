@@ -10,3 +10,18 @@ dist_pythonlib_PYTHON = \
 	ObitTask.py \
 	LocalProxy.py XMLRPCServer.py \
 	ParselTongue.py ptcompleter.py
+pythonlib_DATA = ptversion.py
+
+EXTRA_DIST = ptversion.py.in
+
+# Files that should be removed, but which Automake does not know.
+CLEANFILES = ptversion.py
+
+edit = sed -e 's,@VERSION\@,$(VERSION),g'
+
+## Use chmod -w to prevent people from editing the wrong file by accident.
+ptversion.py: $(srcdir)/ptversion.py.in
+	rm -f ptversion.py ptversion.tmp
+	$(edit) $(srcdir)/ptversion.py.in >ptversion.tmp
+	chmod -w ptversion.tmp
+	mv -f ptversion.tmp ptversion.py
