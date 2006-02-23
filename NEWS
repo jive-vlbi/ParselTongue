@@ -1,3 +1,23 @@
+*** Changes in ParselTongue 1.0.2
+
+* New functionality
+
+CLRSTAT-like functionality is now implemented.  If an AIPS task falls
+over and leaves a data set in a READ or WRITE state, you can use:
+
+>>> uvdata = AIPSUVData('MULTI', 'UVDATA', 1, 1)
+>>> uvdata.clrstat()
+
+to clear all status flags.
+
+* Bug fixes
+
+Setting adverbs that are multi-dimensional arrays (like DOWIDTH for
+SAD) should work correctly now.
+
+Pathnames specified for INFILE2, OFMFILE, BOXFILE and OBOXFILE can now
+be longer than 48 characters, just like INFILE, OUTFILE and OUTPRINT.
+
 *** Changes in ParselTongue 1.0.1
 
 * Bug fixes
