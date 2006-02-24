@@ -209,9 +209,8 @@ Please enter your AIPS user ID number: <userinput>666</userinput>
 </screen>
 
 The first time you do this, &pt; might take some time to get back to
-you as it goes over your <acronym>AIPS</acronym> installation to
-determine what tasks and adverbs are available.
-</para>
+you as it goes over your &aips; installation to determine what tasks
+and adverbs are available.  </para>
 
 </section>
 
@@ -426,7 +425,9 @@ It is good to know that some attributes get special treatment
 <varlistentry>
 <term>
 <varname>infile</varname>, <varname>outfile</varname>,
-<varname>outprint</varname>
+<varname>outprint</varname>, <varname>infile2</varname>,
+<varname>ofmfile</varname>, <varname>boxfile</varname>,
+<varname>oboxfile</varname>
 </term>
 <listitem>
 <para>
@@ -558,7 +559,7 @@ somewhat more complicated interface:
 </programlisting>
 
 here <replaceable>type</replaceable> is the type of the extension
-table as a string (e.g. <literal>'AIPS CL'</literal>) and
+table as a string (e.g. <literal>'CL'</literal>) and
 <replaceable>version</replaceable> is the version to be deleted.
 Using <literal>0</literal> as the <replaceable>version</replaceable>
 deletes the highest version of the given type, wheras using
@@ -566,25 +567,80 @@ deletes the highest version of the given type, wheras using
 
 <screen>
 <prompt>&gt;&gt;&gt;</prompt> <command>uvdata = AIPSUVData('N04C2', 'UVDATA', 1, 1)</command>
-<prompt>&gt;&gt;&gt;</prompt> <command>uvdata.zap_table('AIPS CL', 0)</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>uvdata.zap_table('CL', 0)</command>
 </screen>
 
 deletes the last calibration tables from the UV data set
 <literal>N04C2.UVDATA.1</literal> on disk 1.  Note that plot files
-(<literal>'AIPS PL'</literal>) and slice files (<literal>'AIPS
-SL'</literal>) can also be deleted.  So the following lines
+(<literal>'PL'</literal>) and slice files (<literal>'SL'</literal>)
+can also be deleted.  So the following lines
 
 <screen>
 <prompt>&gt;&gt;&gt;</prompt> <command>imgdata = AIPSImage('MANELBROT', 'MANDL', 1, 1)</command>
-<prompt>&gt;&gt;&gt;</prompt> <command>imgdata.zap_table('AIPS PL', -1)</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>imgdata.zap_table('PL', -1)</command>
 </screen>
 
 can be used to throw away all previously made plots.
 </para>
 
 <para>
+Deleting a complete data set or image is much simpler.  After
+
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>uvdata.zap()</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>imgdata.zap()</command>
+</screen>
+
+the data and image are forever lost.
+</para>
+
+<para>
+Sometimes an &aips; task will fall over and leaves your data in a
+&quot;busy&quot; state.  To recover from this you can use
+
+<screen>
+<prompt>&gt;&gt;&gt;</prompt> <command>uvdata.clrstat()</command>
+<prompt>&gt;&gt;&gt;</prompt> <command>imgdata.clrstat()</command>
+</screen>
+
+but do not do this on data that is being actively used by &aips; or
+&pt;.
+
+</para>
+
+<para>
 The interface to access data is much richer though.
 </para>
+
+</chapter>
+
+<chapter>
+<title>Wizardry</title>
+
+<para>
+&pt; includes a seperate module for manipulating data beyond simple
+inspection of metadata.  It allows full access to &aips; tables, and
+access to visibilities an image pixels.
+</para>
+
+<para>
+The Wizardry functionality has certain limitations.  The most
+important limitation is that access to remote data is not possible;
+only data on the locally visible &aips; disks can be accessed.  The
+reason is that the XML-RPC protocol used by &pt; for remote execution
+and data access is not suitable for transferring big amounts of data.
+</para>
+
+<section>
+<title>Table access</title>
+
+<para>
+Table access in the Wizardry module is similar to normal table access,
+but adds some functionality to change existing tables and create new
+tables.
+</para>
+
+</section>
 
 </chapter>
 
@@ -624,4 +680,4 @@ To stop logging, set <varname>AIPS.log</varname> to
 
 </chapter>
 
- </book>
+</book>
