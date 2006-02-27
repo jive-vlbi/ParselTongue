@@ -648,6 +648,33 @@ class AIPSImage(_AIPSData):
         return pixels
     pixels = property(_pixels)
 
+    def attach_table(self, name, version, **kwds):
+        """Attach an extension table to this image.
+
+        A new extension table is created if the extension table NAME
+        with version VERSION doesn't exist.  If VERSION is 0, a new
+        extension table is created with a version that is one higher
+        than the highest available version."""
+
+        if not name.startswith('AIPS '):
+            name = 'AIPS ' + name
+
+        if version == 0:
+            version = Obit.UVGetHighVer(self._data.me, name) + 1
+
+        no_parms = 0
+        if 'no_parms' in kwds:
+            no_parms = kwds['no_parms']
+        data = Obit.ImageCastData(self._data.me)
+        if name == 'AIPS CC':
+            Obit.TableCC(data, [version], 3, name, no_parms, self._err.me)
+        else:
+            msg = 'Attaching %s tables is not implemented yet' % name
+            raise NotImplementedError, msg
+        if self._err.isErr:
+            raise RuntimeError
+        return _AIPSTable(self._data, name, version)
+
     pass                                # class AIPSImage
 
 class AIPSUVData(_AIPSData):
