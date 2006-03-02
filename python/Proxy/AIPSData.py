@@ -77,8 +77,8 @@ class AIPSData:
         data = self._init(desc).rename(name, klass, seq)
         return True                # Return something other than None.
 
-    def zap(self, desc):
-        self._init(desc).zap()
+    def zap(self, desc, force):
+        self._init(desc).zap(force)
         return True                # Return something other than None.
 
     def clrstat(self, desc):
