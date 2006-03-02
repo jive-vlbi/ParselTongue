@@ -256,9 +256,9 @@ class _AIPSData(object):
         self.seq = seq
         return result
 
-    def zap(self):
+    def zap(self, force=False):
         """Destroy this image or data set."""
-        return self._method(_whoami())(self.desc)
+        return self._method(_whoami())(self.desc, force)
 
     def clrstat(self):
         """Clear all read and write status flags."""

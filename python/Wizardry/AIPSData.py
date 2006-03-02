@@ -606,7 +606,10 @@ class _AIPSData(object):
             raise RuntimeError, msg
         return
 
-    def zap(self):
+    def zap(self, force=False):
+        if force:
+            self.clrstat()
+            pass
         self._data.Zap(self._err)
         return
 
