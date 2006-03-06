@@ -35,6 +35,10 @@ assert(uvdata.exists())
 
 tv = AIPSTV()
 
+# Wait a bit to make sure the address used by the AIPS TV can be
+# reused again.
+time.sleep(30)
+
 try:
     tv.start()
     uvplt = AIPSTask('uvplt')
