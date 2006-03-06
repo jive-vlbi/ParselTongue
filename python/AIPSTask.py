@@ -106,7 +106,7 @@ import AIPS
 from Task import Task, List
 
 # Generic Python stuff.
-import glob, os, pickle, sys
+import glob, os, pickle, signal, sys
 
 
 class AIPSTask(Task):
@@ -330,11 +330,11 @@ class AIPSTask(Task):
             continue
         return
 
-    def abort(self, proxy, tid):
+    def abort(self, proxy, tid, sig=signal.SIGTERM):
         """Abort the task specified by PROXY and TID."""
 
         inst = getattr(proxy, self.__class__.__name__)
-        return inst.abort(tid)
+        return inst.abort(tid, sig)
 
     def go(self):
         """Run the task."""
