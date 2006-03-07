@@ -42,6 +42,11 @@ except Exception, exception:
     if AIPS.debuglog:
         print >>AIPS.debuglog, exception
         pass
+    else:
+        # Print an empty line to make sure the message stands out.
+        print
+        print "Warning: can't import AIPSData;",
+        print "access to local AIPS data won't work"
     pass
 else:
     AIPSImage = Proxy.AIPSData.AIPSImage()
