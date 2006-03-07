@@ -25,7 +25,8 @@ option.
 
 * Bug fixes
 
-ParselTongue will no longer 
+ParselTongue will no longer zap tables from data that's still marked
+as busy (unless you specify force=True of course).
 
 
 *** Changes in ParselTongue 1.0.2
