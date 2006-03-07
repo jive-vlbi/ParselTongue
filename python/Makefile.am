@@ -19,8 +19,10 @@ CLEANFILES = ptversion.py
 
 edit = sed -e 's,@VERSION\@,$(VERSION),g'
 
+## The file below depends on Makefile so that they are rebuilt when
+## the version changes.
 ## Use chmod -w to prevent people from editing the wrong file by accident.
-ptversion.py: $(srcdir)/ptversion.py.in
+ptversion.py: $(srcdir)/ptversion.py.in Makefile
 	rm -f ptversion.py ptversion.tmp
 	$(edit) $(srcdir)/ptversion.py.in >ptversion.tmp
 	chmod -w ptversion.tmp
