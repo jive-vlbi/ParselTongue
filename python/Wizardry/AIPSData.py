@@ -663,7 +663,7 @@ class AIPSImage(_AIPSData):
             name = 'AIPS ' + name
 
         if version == 0:
-            version = Obit.UVGetHighVer(self._data.me, name) + 1
+            version = Obit.ImageGetHighVer(self._data.me, name) + 1
 
         no_parms = 0
         if 'no_parms' in kwds:
