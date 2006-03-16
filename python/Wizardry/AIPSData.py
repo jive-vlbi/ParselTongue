@@ -118,7 +118,7 @@ class _AIPSTableRow:
 
     def __setitem__(self, name, value):
         self.__setattr__(name, value)
-        pass
+        return
 
     def update(self):
         """Update this row."""
@@ -483,49 +483,102 @@ class _AIPSDataKeywords:
     pass                                # class _AIPSDataKeywords
 
 
+class _AIPSDataHeader(object):
+    def __init__(self, data, obit, err):
+        self._err = err
+        self._data = data
+        self._obit = obit
+        return
+
+    _keys = {'object': 'object',
+             'telescop': 'teles',
+             'instrume': 'instrume',
+             'observer': 'observer',
+             'date_obs': 'obsdat',
+             'date_map': 'date',
+             'bunit': 'bunit',
+             'ndim': 'naxis',
+             'naxis': 'inaxes',
+             'epoch': 'epoch',
+             'ctype': 'ctype',
+             'crval': 'crval',
+             'cdelt': 'cdelt',
+             'crpix': 'crpix',
+             'crota': 'crota',
+             # Images
+             'niter': 'niter',
+             'datamin': 'minval',
+             'datamax': 'maxval',
+             'bmaj': 'beamMaj',
+             'bmin': 'beamMin',
+             'bpa': 'beamPA',
+             # UV Data sets
+             'sortord': 'isort',
+             'nrparm': 'nrparm',
+             'ptype': 'ptype',
+             'ncorr': 'ncorr'}
+    _strip = ('object', 'telescop', 'instrume', 'observer', 'bunit',
+              'ptype', 'ctype')
+
+    def __getitem__(self, key):
+        if not key in self._keys:
+            raise KeyError, key
+        if key in self._strip:
+            return _rstrip(self._data.Desc.Dict[self._keys[key]])
+        return self._data.Desc.Dict[self._keys[key]]
+
+    def __setitem__(self, key, value):
+        if not key in self._keys:
+            raise KeyError, key
+        dict = self._data.Desc.Dict
+        dict[self._keys[key]] = value
+        self._data.Desc.Dict = dict
+        self._obit.PUpdateDesc(self._data, self._err)
+        return
+
+    def __getattr__(self, name):
+        if name.startswith('_'):
+            return self.__dict__[name]
+        try:
+            value = self.__getitem__(self, name)
+        except KeyError:
+            msg = "%s instance has no attribute '%s'" \
+                  % (self.__class__.__name__, name)
+            raise AttributeError, msg
+        return value
+
+    def __setattr__(self, name, value):
+        if name.startswith('_'):
+            self.__dict__[name] = value
+            return
+        try:
+            self.__setitem__(name, value)
+        except KeyError:
+            msg = "%s instance has no attribute '%s'" \
+                  % (self.__class__.__name__, name)
+            raise AttributeError, msg
+        return
+
+    def _dict(self):
+        dict = {}
+        for key in self._keys:
+            if self._keys[key] in self._data.Desc.Dict:
+                dict[key] = self._data.Desc.Dict[self._keys[key]]
+                if key in self._strip:
+                    dict[key] = _rstrip(dict[key])
+                    pass
+                pass
+            pass
+        return dict
+
+    pass                                # class _AIPSDataHeader
+
+
 class _AIPSData(object):
     """This class is used to access generic AIPS data."""
 
     def _generate_header(self):
-        header = {}
-        keys = {'object': 'object',
-                'teles': 'telescop',
-                'instrume': 'instrume',
-                'observer': 'observer',
-                'obsdat': 'date_obs',
-                'date': 'date_map',
-                'bunit': 'bunit',
-                'naxis': 'ndim',
-                'inaxes': 'naxis',
-                'epoch': 'epoch',
-                'ctype': 'ctype',
-                'crval': 'crval',
-                'cdelt': 'cdelt',
-                'crpix': 'crpix',
-                'crota': 'crota',
-                # Images
-                'niter': 'niter',
-                'minval': 'datamin',
-                'maxval': 'datamax',
-                'beamMaj': 'bmaj',
-                'beamMin': 'bmin',
-                'beamPA': 'bpa',
-                # UV Data sets
-                'isort': 'sortord',
-                'nrparm': 'nrparm',
-                'ptype': 'ptype',
-                'ncorr': 'ncorr'}
-        strip = ('object', 'telescop', 'instrume', 'observer', 'bunit',
-                 'ptype', 'ctype')
-        for key in keys:
-            if key in self._data.Desc.Dict:
-                header[keys[key]] = self._data.Desc.Dict[key]
-                if keys[key] in strip:
-                    header[keys[key]] = _rstrip(header[keys[key]])
-                    pass
-                pass
-            pass
-        return header
+        return _AIPSDataHeader(self._data, self._obit, self._err)
     header = property(_generate_header,
                       doc = 'Header for this data set.')
 

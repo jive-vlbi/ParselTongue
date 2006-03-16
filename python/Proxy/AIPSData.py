@@ -51,7 +51,7 @@ class AIPSData:
 
     def header(self, desc):
         data = self._init(desc)
-        return data.header
+        return data.header._dict()
 
     def _len(self, desc):
         data = self._init(desc)
