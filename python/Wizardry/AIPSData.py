@@ -540,7 +540,7 @@ class _AIPSDataHeader(object):
         if name.startswith('_'):
             return self.__dict__[name]
         try:
-            value = self.__getitem__(self, name)
+            value = self.__getitem__(name)
         except KeyError:
             msg = "%s instance has no attribute '%s'" \
                   % (self.__class__.__name__, name)
