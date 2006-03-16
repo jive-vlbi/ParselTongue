@@ -1,4 +1,4 @@
-# Copyright (C) 2005 Joint Institute for VLBI in Europe
+# Copyright (C) 2005, 2006 Joint Institute for VLBI in Europe
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -110,12 +110,12 @@ class MinimalMatch:
 
     def __getattr__(self, name):
         attr = self._findattr(name)
-        # Prevent infinite recursion
-        if attr == name:
-            msg = "%s instance has no attribute '%s'" \
-                  % (self.__class__.__name__, name)
-            raise AttributeError, msg
-        return getattr(self, attr)
+        if hasattr(self, attr):
+            return getattr(self, attr)
+
+        msg = "%s instance has no attribute '%s'" \
+              % (self.__class__.__name__, name)
+        raise AttributeError, msg
 
     def __setattr__(self, name, value):
 	attr = self._findattr(name)
