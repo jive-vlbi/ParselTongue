@@ -116,6 +116,10 @@ class AIPSTask(Task):
     # Package.
     _package = 'AIPS'
 
+    # List of adverbs referring to data.
+    _data_adverbs = ['indata', 'outdata',
+                     'in2data', 'in3data', 'in4data', 'out2data']
+
     # List of adverbs referring to disks.
     _disk_adverbs = ['indisk', 'outdisk',
                      'in2disk', 'in3disk', 'in4disk', 'out2disk']
@@ -374,10 +378,20 @@ class AIPSTask(Task):
     def __call__(self):
         return self.go()
 
+    def __getattr__(self, name):
+        if name in self._data_adverbs:
+            class _AIPSData: pass
+            value = _AIPSData()
+            prefix = name.replace('data', '')
+            value.name = Task.__getattr__(self, prefix + 'name')
+            value.klass = Task.__getattr__(self, prefix + 'class')
+            value.disk = Task.__getattr__(self, prefix + 'disk')
+            value.seq = Task.__getattr__(self, prefix + 'seq')
+            return value
+        return Task.__getattr__(self, name)
+
     def __setattr__(self, name, value):
-        data_adverbs = ['indata', 'outdata',
-                        'in2data', 'in3data', 'in4data', 'out2data']
-        if name in data_adverbs:
+        if name in self._data_adverbs:
             prefix = name.replace('data', '')
             Task.__setattr__(self, prefix + 'name', value.name)
             Task.__setattr__(self, prefix + 'class', value.klass)
