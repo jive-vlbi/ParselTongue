@@ -680,7 +680,29 @@ class _AIPSData(object):
 class AIPSImage(_AIPSData):
     """This class is used to access an AIPS image."""
 
-    def __init__(self, name, klass, disk, seq, userno = -1):
+    def __init__(self, *args):
+        if len(args) not in [1, 4, 5]:
+            msg = "__init__() takes 1, 4 or 5 arguments (%d given)" \
+                  % (len(args) + 1)
+            raise TypeError, msg
+
+        if len(args) == 1:
+            name = args[0].name
+            klass = args[0].klass
+            disk = args[0].disk
+            seq = args[0].seq
+            userno = args[0].userno
+        else:
+            name = args[0]
+            klass = args[1]
+            disk = args[2]
+            seq = args[3]
+            userno = -1
+            if len(args) == 5:
+                userno = args[4]
+                pass
+            pass
+        
         self._obit = Image
         if userno == -1:
             userno = AIPS.userno
@@ -736,7 +758,29 @@ class AIPSImage(_AIPSData):
 class AIPSUVData(_AIPSData):
     """This class is used to access an AIPS UV data set."""
 
-    def __init__(self, name, klass, disk, seq, userno = -1):
+    def __init__(self, *args):
+        if len(args) not in [1, 4, 5]:
+            msg = "__init__() takes 1, 4 or 5 arguments (%d given)" \
+                  % (len(args) + 1)
+            raise TypeError, msg
+
+        if len(args) == 1:
+            name = args[0].name
+            klass = args[0].klass
+            disk = args[0].disk
+            seq = args[0].seq
+            userno = args[0].userno
+        else:
+            name = args[0]
+            klass = args[1]
+            disk = args[2]
+            seq = args[3]
+            userno = -1
+            if len(args) == 5:
+                userno = args[4]
+                pass
+            pass
+
         self._obit = UV
         if userno == -1:
             userno = AIPS.userno
