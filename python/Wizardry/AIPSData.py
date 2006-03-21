@@ -577,6 +577,30 @@ class _AIPSDataHeader(object):
 class _AIPSData(object):
     """This class is used to access generic AIPS data."""
 
+    def __init__(self, *args):
+        # Instances can be created by specifying name, class, disk,
+        # sequency number and (optionally) user number explicitly, or
+        # by passing an object that has the appropriate attributes.
+        # This allows the creation of a Wizardry object from its
+        # non-Wizardry counterpart.
+
+        if len(args) not in [1, 4, 5]:
+            msg = "__init__() takes 2, 5 or 6 arguments (%d given)" \
+                  % (len(args) + 1)
+            raise TypeError, msg
+
+        if len(args) == 1:
+            self._init(args[0].name, args[0].klass,
+                       args[0].disk, args[0].seq, args[0].userno)
+        else:
+            userno = -1
+            if len(args) == 5:
+                userno = args[4]
+                pass
+            self._init(args[0], args[1], args[2], args[3], userno)
+            pass
+        return
+
     def _generate_header(self):
         return _AIPSDataHeader(self._data, self._obit, self._err)
     header = property(_generate_header,
@@ -609,6 +633,26 @@ class _AIPSData(object):
         return stokes
     stokes = property(_generate_stokes,
                       doc='Stokes parameters for this data set.')
+
+    def _generate_name(self):
+        return self._data.Aname
+    name = property(_generate_name)
+
+    def _generate_klass(self):
+        return self._data.Aclass
+    klass = property(_generate_klass)
+
+    def _generate_disk(self):
+        return self._data.Disk
+    disk = property(_generate_disk)
+
+    def _generate_seq(self):
+        return self._data.Aseq
+    seq = property(_generate_seq)
+
+    def _generate_userno(self):
+        return self._userno
+    userno = property(_generate_userno)
 
     def rename(self, name=None, klass=None, seq=None):
         """Rename this image or data set.
@@ -680,29 +724,7 @@ class _AIPSData(object):
 class AIPSImage(_AIPSData):
     """This class is used to access an AIPS image."""
 
-    def __init__(self, *args):
-        if len(args) not in [1, 4, 5]:
-            msg = "__init__() takes 1, 4 or 5 arguments (%d given)" \
-                  % (len(args) + 1)
-            raise TypeError, msg
-
-        if len(args) == 1:
-            name = args[0].name
-            klass = args[0].klass
-            disk = args[0].disk
-            seq = args[0].seq
-            userno = args[0].userno
-        else:
-            name = args[0]
-            klass = args[1]
-            disk = args[2]
-            seq = args[3]
-            userno = -1
-            if len(args) == 5:
-                userno = args[4]
-                pass
-            pass
-        
+    def _init(self, name, klass, disk, seq, userno):
         self._obit = Image
         if userno == -1:
             userno = AIPS.userno
@@ -758,29 +780,7 @@ class AIPSImage(_AIPSData):
 class AIPSUVData(_AIPSData):
     """This class is used to access an AIPS UV data set."""
 
-    def __init__(self, *args):
-        if len(args) not in [1, 4, 5]:
-            msg = "__init__() takes 1, 4 or 5 arguments (%d given)" \
-                  % (len(args) + 1)
-            raise TypeError, msg
-
-        if len(args) == 1:
-            name = args[0].name
-            klass = args[0].klass
-            disk = args[0].disk
-            seq = args[0].seq
-            userno = args[0].userno
-        else:
-            name = args[0]
-            klass = args[1]
-            disk = args[2]
-            seq = args[3]
-            userno = -1
-            if len(args) == 5:
-                userno = args[4]
-                pass
-            pass
-
+    def _init(self, name, klass, disk, seq, userno):
         self._obit = UV
         if userno == -1:
             userno = AIPS.userno
