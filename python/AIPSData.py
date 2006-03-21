@@ -1,4 +1,4 @@
-# Copyright (C) 2005 Joint Institute for VLBI in Europe
+# Copyright (C) 2005, 2006 Joint Institute for VLBI in Europe
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -134,7 +134,35 @@ class _AIPSData(object):
 
     """This class describes generic AIPS data."""
 
-    def __init__(self, name, klass, disk, seq, userno = -1):
+    def __init__(self, *args):
+        # Instances can be created by specifying name, class, disk,
+        # sequency number and (optionally) user number explicitly, or
+        # by passing an object that has the appropriate attributes.
+        # This allows the creation of a non-Wizardry object from its
+        # Wizardry counterpart.
+
+        if len(args) not in [1, 4, 5]:
+            msg = "__init__() takes 2, 5 or 6 arguments (%d given)" \
+                  % (len(args) + 1)
+            raise TypeError, msg
+
+        if len(args) == 1:
+            name = args[0].name
+            klass = args[0].klass
+            disk = args[0].disk
+            seq = args[0].seq
+            userno = args[0].userno
+        else:
+            name = args[0]
+            klass = args[1]
+            disk = args[2]
+            seq = args[3]
+            userno = -1
+            if len(args) == 5:
+                userno = args[4]
+                pass
+            pass
+
         if userno == -1:
             userno = AIPS.userno
         disk = AIPS.disks[disk]
