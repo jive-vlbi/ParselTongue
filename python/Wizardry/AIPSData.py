@@ -488,6 +488,7 @@ class _AIPSDataHeader(object):
         self._err = err
         self._data = data
         self._obit = obit
+        self._dict = data.Desc.Dict
         return
 
     _keys = {'object': 'object',
@@ -524,16 +525,13 @@ class _AIPSDataHeader(object):
         if not key in self._keys:
             raise KeyError, key
         if key in self._strip:
-            return _rstrip(self._data.Desc.Dict[self._keys[key]])
-        return self._data.Desc.Dict[self._keys[key]]
+            return _rstrip(self._dict[self._keys[key]])
+        return self._dict[self._keys[key]]
 
     def __setitem__(self, key, value):
         if not key in self._keys:
             raise KeyError, key
-        dict = self._data.Desc.Dict
-        dict[self._keys[key]] = value
-        self._data.Desc.Dict = dict
-        self._obit.PUpdateDesc(self._data, self._err)
+        self._dict[self._keys[key]] = value
         return
 
     def __getattr__(self, name):
@@ -559,17 +557,22 @@ class _AIPSDataHeader(object):
             raise AttributeError, msg
         return
 
-    def _dict(self):
+    def _generate_dict(self):
         dict = {}
         for key in self._keys:
-            if self._keys[key] in self._data.Desc.Dict:
-                dict[key] = self._data.Desc.Dict[self._keys[key]]
+            if self._keys[key] in self._dict:
+                dict[key] = self._dict[self._keys[key]]
                 if key in self._strip:
                     dict[key] = _rstrip(dict[key])
                     pass
                 pass
             pass
         return dict
+
+    def update(self):
+        self._data.Desc.Dict = self._dict
+        self._obit.PUpdateDesc(self._data, self._err)
+        pass
 
     pass                                # class _AIPSDataHeader
 
@@ -601,8 +604,12 @@ class _AIPSData(object):
             pass
         return
 
+    _header = None
     def _generate_header(self):
-        return _AIPSDataHeader(self._data, self._obit, self._err)
+        if not self._header:
+            self._header = _AIPSDataHeader(self._data, self._obit, self._err)
+            pass
+        return self._header
     header = property(_generate_header,
                       doc = 'Header for this data set.')
 
