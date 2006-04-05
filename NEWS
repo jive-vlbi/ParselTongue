@@ -5,7 +5,7 @@
 Modifying headers of images and UV data should work now:
 
 >>> from Wizardry.AIPSData import AIPSUVData as WizAIPSUVData
->>> uvdata = AIPSUVData = AIPSUVData('N05C2', 'UVDATA', 1, 1)
+>>> uvdata = WizAIPSUVData('N05C2', 'UVDATA', 1, 1)
 >>> uvdata.header.date_map = '2006-04-05'
 
 Don't forget to update the header to make the changes permanent:
@@ -16,7 +16,7 @@ It is now possible to construct instances of the Wizardry classes from
 non-Wizardry instances and vice versa:
 
 >>> from Wizardry.AIPSData import AIPSUVData as WizAIPSUVData
->>> data = AIPSUVData = AIPSUVData('N05C2', 'UVDATA', 1, 1)
+>>> data = AIPSUVData('N05C2', 'UVDATA', 1, 1)
 >>> wizdata = WizAIPSUVData(data)
 >>> data2 = AIPSUVData(wizdata)
 
