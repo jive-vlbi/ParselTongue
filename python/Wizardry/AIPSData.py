@@ -569,6 +569,9 @@ class _AIPSDataHeader(object):
             pass
         return dict
 
+    def __str__(self):
+        return str(self._generate_dict())
+
     def update(self):
         self._data.Desc.Dict = self._dict
         self._obit.PUpdateDesc(self._data, self._err)
