@@ -109,7 +109,7 @@ class AIPSData:
         data = self._init(desc)
         table = data.table(type, version)
         try:
-            result = table[key]._dict()
+            result = table[key]._generate_dict()
         finally:
             table.close()
             pass

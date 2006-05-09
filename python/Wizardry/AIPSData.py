@@ -80,9 +80,9 @@ class _AIPSTableRow:
         return
 
     def __str__(self):
-        return str(self._dict())
+        return str(self._generate_dict())
 
-    def _dict(self):
+    def _generate_dict(self):
         dict = {}
         for name in self._fields:
             if name.startswith('_'):
@@ -471,14 +471,44 @@ class _AIPSVisibilityIter(object):
 
 
 class _AIPSDataKeywords:
-    def __init__(self, data, err):
+    def __init__(self, data, obit, err):
         self._err = err
         self._data = data
+        self._obit = obit
         return
 
     def __getitem__(self, key):
-        value = InfoList.PGet(self._data.Desc.List, key.upper())
+        key = key.upper().ljust(8)
+        value = InfoList.PGet(self._data.Desc.List, key)
         return _scalarize(value[4])
+
+    def __setitem__(self, key, value):
+        key = key.upper().ljust(8)
+        type = InfoList.PGet(self._data.Desc.List, key)
+        if type[2] in (2, 3, 4):
+            value = int(value)
+            InfoList.PAlwaysPutInt(self._data.Desc.List, key,
+                                   [1, 1, 1, 1, 1], _vectorize(value))
+        elif type[2] == 9:
+            value = float(value)
+            InfoList.PAlwaysPutFloat(self._data.Desc.List, key,
+                                     [1, 1, 1, 1, 1], _vectorize(value))
+        elif type[2] == 10:
+            value = float(value)
+            InfoList.PAlwaysPutDouble(self._data.Desc.List, key,
+                                      [1, 1, 1, 1, 1], _vectorize(value))
+        elif type[2] == 13:
+            value = str(value).ljust(8)
+            InfoList.PAlwaysPutString(self._data.Desc.List, key,
+                                      [8, 1, 1, 1, 1], _vectorize(value))
+        else:
+            raise AssertionError, "not implemented"
+        self._obit.PDirty(self._data)
+        return
+
+    def update(self):
+        self._obit.PUpdateDesc(self._data, self._err)
+        pass
 
     pass                                # class _AIPSDataKeywords
 
@@ -616,9 +646,15 @@ class _AIPSData(object):
     header = property(_generate_header,
                       doc = 'Header for this data set.')
 
-    def _keywords(self):
-        return _AIPSDataKeywords(self._data, self._err)
-    keywords = property(_keywords)
+    _keywords = None
+    def _generate_keywords(self):
+        if not self._keywords:
+            self._keywords = _AIPSDataKeywords(self._data, self._obit,
+                                               self._err)
+            pass
+        return self._keywords
+    keywords = property(_generate_keywords,
+                        doc = 'Keywords for this data set.')
 
     def _generate_tables(self):
         return TableList.PGetList(self._data.TableList, self._err)
@@ -727,6 +763,10 @@ class _AIPSData(object):
                                   self._err.me)
         Obit.AIPSDirStatus(self._data.Disk, self._userno, cno, 4, self._err.me)
         return
+
+    def update(self):
+        self._obit.PUpdateDesc(self._data, self._err)
+        pass
 
     pass                                # class _AIPSData
 
