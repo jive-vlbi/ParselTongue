@@ -4,8 +4,8 @@ check_SCRIPTS = ParselTest
 
 TESTS = msglog.py \
 	mandl.py imean.py jmfit.py fitld.py fitld2.py kntr.py \
-	convenience.py flag.py history.py keywords.py userno.py \
-	visibilities.py zap.py zap2.py zap3.py \
+	convenience.py flag.py history.py keywords.py keywords2.py \
+	userno.py visibilities.py zap.py zap2.py zap3.py \
 	$(top_srcdir)/python/MinimalMatch.py \
 	$(top_srcdir)/python/Task.py \
 	$(top_srcdir)/python/AIPSTask.py \
