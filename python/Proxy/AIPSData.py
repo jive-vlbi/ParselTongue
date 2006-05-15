@@ -59,7 +59,7 @@ class AIPSData:
 
     def keywords(self, desc):
         data = self._init(desc)
-        return data.keywords
+        return data.keywords._generate_dict()
 
     def stokes(self, desc):
         data = self._init(desc)
