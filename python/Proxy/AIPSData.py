@@ -203,10 +203,18 @@ class AIPSCat:
             return []
 
         catalog = []
-        for slot in xrange(1, num_slots):
-            entry = AIPSDir.PInfo(disk, userno, slot, self.err)
+        for cno in xrange(1, num_slots):
+            entry = AIPSDir.PInfo(disk, userno, cno, self.err)
             if entry:
-                catalog.append('%d %s' % (slot, entry))
+                dict = {}
+                dict['cno'] = cno
+                dict['name'] = entry[0:12].strip()
+                dict['klass'] = entry[13:19].strip()
+                dict['seq'] = int(entry[20:25])
+                dict['type'] = entry[26:28]
+                dict['date'] = entry[29:40]
+                dict['time'] = entry[41:49]
+                catalog.append(dict)
                 pass
             continue
         OSystem.PSetAIPSuser(_userno)
