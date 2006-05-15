@@ -475,11 +475,21 @@ class AIPSCat:
         return
 
     def __repr__(self):
-        # Print something useful if the catalof is empty.
+        # Print something useful if the catalog is empty.
         if len(self.catalog) == 0:
             return 'Empty'
 
-        return ''.join (['%s\n' % entry for entry in self.catalog]).strip()
+        return ''.join(['%s\n' % entry for entry in self.catalog]).strip()
+
+    def __str__(self):
+        # Print something useful if the catalog is empty.
+        if len(self.catalog) == 0:
+            return 'Empty'
+
+        return ''.join(['%3d %-12.12s.%-6.6s. %4d %-2.2s %s %s\n' \
+                        % (entry['cno'], entry['name'], entry['klass'],
+                           entry['seq'], entry['type'], entry['date'],
+                           entry['time']) for entry in self.catalog]).rstrip()
 
 
 # Tests.
