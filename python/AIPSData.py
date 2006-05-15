@@ -114,7 +114,7 @@ class _AIPSDataDesc:
 
 class _AIPSDataHeader:
 
-    """This class describes the header of an AIPS extenstion table."""
+    """This class describes the header of an AIPS image or UV data set."""
 
     def __init__(self, dict):
         self._dict = dict
