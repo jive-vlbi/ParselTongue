@@ -73,6 +73,12 @@ class Task:
                 self._pid[tid] = 0
         return []
 
+    def feed(self, tid, banana):
+        """Feed the task."""
+
+        os.write(tid, banana)
+        pass
+
     def wait(self, tid):
         """Wait for the task to finish."""
 
