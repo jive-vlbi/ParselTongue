@@ -506,6 +506,24 @@ class _AIPSDataKeywords:
         self._obit.PDirty(self._data)
         return
 
+    def _generate_dict(self):
+        dict = {}
+        i = 1
+        while True:
+            try:
+                blob = Obit.makeInfoListBlob()
+                value = Obit.InfoListGetNumber(self._data.Desc.List.me,
+                                               i, blob)
+                dict[value[1]] = _scalarize(value[4])
+            except:
+                break
+            i += 1
+            continue
+        return dict
+
+    def __str__(self):
+        return str(self._generate_dict())
+
     def update(self):
         self._obit.PUpdateDesc(self._data, self._err)
         pass
