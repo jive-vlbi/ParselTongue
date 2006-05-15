@@ -106,7 +106,7 @@ import AIPS
 from Task import Task, List
 
 # Generic Python stuff.
-import glob, os, pickle, signal, sys
+import fcntl, glob, os, pickle, select, signal, sys
 
 
 class AIPSTask(Task):
@@ -322,6 +322,12 @@ class AIPSTask(Task):
             continue
         return [message[1] for message in messages]
 
+    def feed(self, proxy, tid, banana):
+        """Feed the task specified by PROXY and TID with BANANA."""
+
+        inst = getattr(proxy, self.__class__.__name__)
+        return inst.feed(tid, banana)
+
     def wait(self, proxy, tid):
         """Wait for the task specified by PROXY and TID to finish."""
 
@@ -356,6 +362,17 @@ class AIPSTask(Task):
                     elif sys.stdout.isatty():
                         sys.stdout.write(rotator[count % 4])
                         sys.stdout.flush()
+                        pass
+                    events = select.select([sys.stdin.fileno()], [], [], 0)
+                    if sys.stdin.fileno() in events[0]:
+                        flags = fcntl.fcntl(sys.stdin.fileno(), fcntl.F_GETFL)
+                        flags |= os.O_NONBLOCK
+                        fcntl.fcntl(sys.stdin.fileno(), fcntl.F_SETFL, flags)
+                        message = sys.stdin.read(1024)
+                        flags &= ~os.O_NONBLOCK
+                        fcntl.fcntl(sys.stdin.fileno(), fcntl.F_SETFL, flags)
+                        self.feed(proxy, tid, message)
+                        rotator = []
                         pass
                     count += 1
                     continue
