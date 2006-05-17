@@ -17,7 +17,21 @@ try:
     mandl.imsize[1:] = [ 512, 512 ]
     mandl.go()
 
+    mandl.outclass = 'TEMP'
+    mandl.go()
+
+    print AIPSCat(1)
+
+    try:
+        AIPSCat(1).zap(klaas='TEMP')
+    except TypeError:
+        pass
+    else:
+        raise AssertionError
+
+    AIPSCat(1).zap(klass='TEMP')
+
     print AIPSCat(1)
 
 finally:
-    image.zap()
+    AIPSCat(1).zap()
