@@ -470,26 +470,69 @@ class _AIPSHistory(object):
 
 class AIPSCat:
     def __init__(self, disk):
-        proxy = AIPS.disks[disk].proxy()
-        self.catalog = proxy.AIPSCat.cat(disk, AIPS.userno)
+        disks = [disk]
+        if disk == 0:
+            disks = range(1, len(AIPS.disks))
+            pass
+            
+        self._cat = {}
+        for disk in disks:
+            proxy = AIPS.disks[disk].proxy()
+            self._cat[disk] = proxy.AIPSCat.cat(disk, AIPS.userno)
+            continue
         return
 
     def __repr__(self):
-        # Print something useful if the catalog is empty.
-        if len(self.catalog) == 0:
-            return 'Empty'
-
-        return ''.join(['%s\n' % entry for entry in self.catalog]).strip()
+        return repr(self._cat)
 
     def __str__(self):
-        # Print something useful if the catalog is empty.
-        if len(self.catalog) == 0:
-            return 'Empty'
+        s = ''
+        for disk in self._cat:
+            s += 'Catalog on disk %2d\n' % disk
+            s += ' Cat Mapname      Class   Seq  Pt     Last access\n'
+            if len(self._cat[disk]) > 0:
+                s += ''.join([' %3d %-12.12s.%-6.6s. %4d %-2.2s %s %s\n' \
+                              % (entry['cno'], entry['name'], entry['klass'],
+                                 entry['seq'], entry['type'], entry['date'],
+                                 entry['time']) for entry in self._cat[disk]])
+                pass
+            continue
+        return s.strip()
 
-        return ''.join(['%3d %-12.12s.%-6.6s. %4d %-2.2s %s %s\n' \
-                        % (entry['cno'], entry['name'], entry['klass'],
-                           entry['seq'], entry['type'], entry['date'],
-                           entry['time']) for entry in self.catalog]).rstrip()
+    def zap(self, force=False, **kwds):
+        name = None
+        if 'name' in kwds: name = kwds['name']; del kwds['name']
+        klass = None
+        if 'klass' in kwds: klass = kwds['klass']; del kwds['klass']
+        seq = None
+        if 'seq' in kwds: seq = kwds['seq']; del kwds['seq']
+
+        # Make sure we don't zap if the user made a typo.
+        if len(kwds) > 0:
+            keys = ["'%s'" % key for key in kwds.keys()]
+            msg = "unrecognized keyword argument %s" % ', '.join(keys)
+            raise TypeError, msg
+
+        for disk in self._cat:
+            for entry in self._cat[disk]:
+                if name and not entry['name'] == name:
+                    continue
+                if klass and not entry['klass'] == klass:
+                    continue
+                if seq and not entry['seq'] == seq:
+                    continue
+                if entry['type'] == 'MA':
+                    AIPSImage(entry['name'], entry['klass'],
+                              disk, entry['seq']).zap(force)
+                elif entry['type'] == 'UV':
+                    AIPSUVData(entry['name'], entry['klass'],
+                               disk, entry['seq']).zap(force)
+                    pass
+                continue
+            continue
+        return
+
+    pass                                # class AIPSCat
 
 
 # Tests.
