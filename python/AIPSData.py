@@ -77,6 +77,21 @@ def _whoami():
     """Return the name of the function that called us."""
     return sys._getframe(1).f_code.co_name
 
+class _dictify:
+
+    def __init__(self, dict):
+        self._dict = dict
+        self.__dict__.update(dict)
+        return
+
+    def __repr__(self):
+        return str(self._dict)
+
+    def __getitem__(self, key):
+        return self._dict[key]
+
+    pass                                # class _dictify
+
 
 class _AIPSDataMethod:
 
@@ -366,20 +381,9 @@ class _AIPSTableMethod(_AIPSDataMethod):
     pass                                # class _AIPSTableMethod
 
 
-class _AIPSTableRow:
+class _AIPSTableRow(_dictify):
 
     """This class describes a row of an AIPS extenstion table."""
-
-    def __init__(self, dict):
-        self._dict = dict
-        self.__dict__.update(dict)
-        return
-
-    def __repr__(self):
-        return str(self._dict)
-
-    def __getitem__(self, key):
-        return self._dict[key]
 
     pass                                # class _AIPSTableRow
 
@@ -468,8 +472,15 @@ class _AIPSHistory(object):
     pass                                # class _AIPSHistory
 
 
-class AIPSCat:
-    def __init__(self, disk):
+class _AIPSCatEntry(_dictify):
+
+    """This class describes an AIPS catalog entry."""
+
+    pass                                # class _AIPSCatEntry
+
+
+class AIPSCat(object):
+    def __init__(self, disk=0):
         disks = [disk]
         if disk == 0:
             disks = range(1, len(AIPS.disks))
@@ -478,7 +489,8 @@ class AIPSCat:
         self._cat = {}
         for disk in disks:
             proxy = AIPS.disks[disk].proxy()
-            self._cat[disk] = proxy.AIPSCat.cat(disk, AIPS.userno)
+            catalog = proxy.AIPSCat.cat(disk, AIPS.userno)
+            self._cat[disk] = [_AIPSCatEntry(entry) for entry in catalog]
             continue
         return
 
@@ -492,9 +504,9 @@ class AIPSCat:
             s += ' Cat Mapname      Class   Seq  Pt     Last access\n'
             if len(self._cat[disk]) > 0:
                 s += ''.join([' %3d %-12.12s.%-6.6s. %4d %-2.2s %s %s\n' \
-                              % (entry['cno'], entry['name'], entry['klass'],
-                                 entry['seq'], entry['type'], entry['date'],
-                                 entry['time']) for entry in self._cat[disk]])
+                              % (entry.cno, entry.name, entry.klass,
+                                 entry.seq, entry.type, entry.date,
+                                 entry.time) for entry in self._cat[disk]])
                 pass
             continue
         return s.strip()
