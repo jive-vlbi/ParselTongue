@@ -236,6 +236,24 @@ class _AIPSTableKeywords:
         Table.PDirty(self._table)
         return
 
+    def _generate_dict(self):
+        dict = {}
+        i = 1
+        while True:
+            try:
+                blob = Obit.makeInfoListBlob()
+                value = Obit.InfoListGetNumber(self._table.IODesc.List.me,
+                                               i, blob)
+                dict[value[1]] = _scalarize(value[4])
+            except:
+                break
+            i += 1
+            continue
+        return dict
+
+    def __str__(self):
+        return str(self._generate_dict())
+
     pass                                # class _AIPSTableKeywords
 
 
