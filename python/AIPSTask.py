@@ -279,6 +279,7 @@ class AIPSTask(Task):
                 if not url and not proxy:
                     url = AIPS.disks[disk].url
                     proxy = AIPS.disks[disk].proxy()
+                    proxy.__nonzero__ = lambda: True
                     pass
                 if AIPS.disks[disk].url != url:
                     raise RuntimeError, \
