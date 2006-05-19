@@ -1,3 +1,49 @@
+*** Changes in ParselTongue 1.0.5
+
+* New functionality
+
+You no lomger need to guess what keywords are attached to a data set
+or table:
+
+>>> image = AIPSImage('4C39.25', 'ICL001', 1, 1)
+>>> image.keywords
+{'ZENANGLE': 20.997356414794922, 'PARANGLE': -49.165603637695312}
+
+It's also possible to change them now:
+
+>>> from Wizardry.AIPSData import AIPSImage as WizAIPSImage
+>>> image = WizAIPSImage('4C39.25', 'ICL001', 1, 1)
+>>> image.keywords['ZENANGLE'] = 21
+
+Don't forget to update the keywords to make the changes permamnent:
+
+>>> image.keywords.update()
+
+It's now easier to use Wizardry functionality on "normal" datasets,
+since you can convert one into the other:
+
+>>> from Wizardry.AIPSData import AIPSImage as WizAIPSImage
+>>> image = AIPSImage('4C39.25', 'ICL001', 1, 1)
+>>> wiz_image = WizAIPSImage(image)
+>>> image = AIPSImage(wiz_image)
+
+There's also a new AIPSCat class that allows you to access the AIPS
+catalog:
+
+>>> print AIPSCat()
+Catalog on disk  1
+ Cat Mapname      Class   Seq  Pt     Last access
+   1 4C39.25     .ICL001.    1 MA 19-May-2006 09:50:43
+Catalog on disk  2
+ Cat Mapname      Class   Seq  Pt     Last access
+
+It can be used to zap multiple files in one go:
+
+>>> AIPSCat(2).zap(klass='SUBIM')
+
+will zap all files with class 'SUBIM' on AIPS disk 2.
+
+
 *** Changes in ParselTongue 1.0.4
 
 * New functionality
