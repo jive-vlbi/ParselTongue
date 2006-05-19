@@ -52,7 +52,7 @@ class AIPSDisk:
         """Return the proxy through which this AIPS disk can be
            accessed."""
         if self.url:
-            return ServerProxy(self.url)
+            return ServerProxy(self.url, allow_none=True)
         return LocalProxy
 
     pass                                # class AIPSDisk
