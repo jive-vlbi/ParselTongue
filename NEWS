@@ -9,7 +9,7 @@ or table:
 >>> image.keywords
 {'ZENANGLE': 20.997356414794922, 'PARANGLE': -49.165603637695312}
 
-It's also possible to change them now:
+It's also possible to change keywords on data sets now:
 
 >>> from Wizardry.AIPSData import AIPSImage as WizAIPSImage
 >>> image = WizAIPSImage('4C39.25', 'ICL001', 1, 1)
