@@ -180,6 +180,7 @@ class _AIPSData(object):
 
         if userno == -1:
             userno = AIPS.userno
+        self._disk = disk
         disk = AIPS.disks[disk]
         self.desc = _AIPSDataDesc(name, klass, disk.disk, seq, userno)
         self.proxy = disk.proxy()
@@ -191,8 +192,13 @@ class _AIPSData(object):
     def _set_klass(self, klass): self.desc.klass = klass; pass
     klass = property(lambda self: self.desc.klass, _set_klass,
                      doc='Class of this data set.')
-    def _set_disk(self, disk): self.desc.disk = disk; pass
-    disk = property(lambda self: self.desc.disk, _set_disk,
+    def _set_disk(self, disk):
+        self._disk = disk
+        disk = AIPS.disks[disk]
+        self.desc.disk = disk.disk
+        self.proxy = disk.proxy()
+        pass
+    disk = property(lambda self: self._disk, _set_disk,
                     doc='Disk where this data set is stored.')
     def _set_seq(self, seq): self.desc.seq = seq; pass
     seq = property(lambda self: self.desc.seq, _set_seq,
