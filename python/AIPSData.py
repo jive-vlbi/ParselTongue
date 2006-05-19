@@ -528,7 +528,7 @@ class AIPSCat(object):
         # Make sure we don't zap if the user made a typo.
         if len(kwds) > 0:
             keys = ["'%s'" % key for key in kwds.keys()]
-            msg = "unrecognized keyword argument %s" % ', '.join(keys)
+            msg = "zap() got an unexpected keyword argument %s" % keys[0]
             raise TypeError, msg
 
         for disk in self._cat:
