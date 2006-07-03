@@ -795,14 +795,14 @@ class _AIPSData(object):
     def clrstat(self):
         cno = Obit.AIPSDirFindCNO(self._data.Disk, self._userno,
                                   self._data.Aname, self._data.Aclass,
-                                  self._data.Otype, self._data.Aseq,
+                                  self._type, self._data.Aseq,
                                   self._err.me)
         Obit.AIPSDirStatus(self._data.Disk, self._userno, cno, 4, self._err.me)
         return
 
     def update(self):
         self._obit.PUpdateDesc(self._data, self._err)
-        pass
+        return
 
     pass                                # class _AIPSData
 
@@ -812,6 +812,7 @@ class AIPSImage(_AIPSData):
 
     def _init(self, name, klass, disk, seq, userno):
         self._obit = Image
+        self._type = 'MA'
         if userno == -1:
             userno = AIPS.userno
             pass
@@ -868,6 +869,7 @@ class AIPSUVData(_AIPSData):
 
     def _init(self, name, klass, disk, seq, userno):
         self._obit = UV
+        self._type = 'UV'
         if userno == -1:
             userno = AIPS.userno
         self._userno = userno
