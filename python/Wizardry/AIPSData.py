@@ -975,6 +975,8 @@ class AIPSUVData(_AIPSData):
         elif name == 'AIPS SN':
             Obit.TableSN(data, [version], 3, name,
                          no_pol, no_if, self._err.me)
+        elif name == 'AIPS SU':
+            Obit.TableSU(data, [version], 3, name, no_if, self._err.me)
         else:
             msg = 'Attaching %s tables is not implemented yet' % name
             raise NotImplementedError, msg
