@@ -38,9 +38,10 @@ class AIPSData:
 
     def exists(self, desc):
         assert(not self.err.isErr)
-        Obit.AIPSDirFindCNO(desc['disk'], desc['userno'], desc['name'],
-                            desc['klass'], self.type, desc['seq'], self.err.me)
-        if self.err.isErr:
+        cno = Obit.AIPSDirFindCNO(desc['disk'], desc['userno'], desc['name'],
+                                  desc['klass'], self.type,  desc['seq'],
+                                  self.err.me)
+        if cno == -1:
             OErr.PClear(self.err)
             return False
         return True
