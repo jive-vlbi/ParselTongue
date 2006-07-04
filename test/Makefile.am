@@ -5,7 +5,7 @@ check_SCRIPTS = ParselTest
 TESTS = msglog.py \
 	cat.py mandl.py imean.py jmfit.py fitld.py fitld2.py kntr.py \
 	convenience.py flag.py history.py keywords.py keywords2.py \
-	keywords3.py userno.py visibilities.py \
+	keywords3.py userno.py visibilities.py uvcon.py \
 	zap.py zap2.py zap3.py zap4.py \
 	$(top_srcdir)/python/MinimalMatch.py \
 	$(top_srcdir)/python/Task.py \
@@ -13,7 +13,7 @@ TESTS = msglog.py \
 	$(top_srcdir)/python/AIPSData.py
 TESTS_ENVIRONMENT = ./ParselTest
 
-EXTRA_DIST = $(TESTS) template.py ParselTest.in
+EXTRA_DIST = $(TESTS) template.py ParselTest.in VLBA1.UVCON
 
 # Files that should be removed, but which Automake does not know.
 CLEANFILES = $(check_SCRIPTS)
