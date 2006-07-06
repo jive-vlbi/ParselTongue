@@ -992,4 +992,4 @@ class AIPSUVData(_AIPSData):
 
 
 err = OErr.OErr()
-OSystem.OSystem('AIPSData', 1, 0, -1, [], -1, [], True, False, err)
+OSystem.OSystem("", 1, 0, -1, [], -1, [], True, False, err)
