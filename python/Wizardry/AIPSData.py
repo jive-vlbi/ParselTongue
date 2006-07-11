@@ -470,7 +470,10 @@ class _AIPSVisibilityIter(object):
 
     def _get_inttim(self):
         return self._buffer[self._index][self._desc['ilocit']]
-    inttim = property(_get_inttim)
+    def _set_inttim(self, value):
+        self._buffer[self._index][self._desc['ilocit']] = value
+        self._dirty = True
+    inttim = property(_get_inttim, _set_inttim)
 
     def _get_weight(self):
         return self._buffer[self._index][self._desc['ilocw']]
