@@ -106,7 +106,7 @@ import AIPS
 from Task import Task, List
 
 # Generic Python stuff.
-import fcntl, glob, os, pickle, select, signal, sys
+import copy, fcntl, glob, os, pickle, select, signal, sys
 
 
 class AIPSTask(Task):
@@ -186,7 +186,7 @@ class AIPSTask(Task):
                 self._default_dict[adverb] = List(self, adverb, value)
 
         # Initialize all adverbs to their default values.
-        self.__dict__.update(self._default_dict)
+        self.defaults()
 
         # The maximum value for disk numbers is bogus.
         for name in self._disk_adverbs:
@@ -218,7 +218,9 @@ class AIPSTask(Task):
 
     def defaults(self):
         """Set adverbs to their defaults."""
-        self.__dict__.update(self._default_dict)
+        for attr in self._default_dict:
+            self.__dict__[attr] = copy.copy(self._default_dict[attr])
+            continue
         return
 
     def __display_adverbs(self, adverbs):

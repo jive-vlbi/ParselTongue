@@ -116,7 +116,7 @@ ValueError: setting element '0' is prohibited
 from MinimalMatch import MinimalMatch
 
 # Generic Python stuff
-import pydoc, sys
+import copy, pydoc, sys
 
 class List(list):
     def __init__(self, task, attr, value):
@@ -152,7 +152,8 @@ class List(list):
             if key - low < len(seq):
                 self[key] = seq[key - low]
             else:
-                self[key] = self._task._default_dict[self._attr][key]
+                default = self._task._default_dict[self._attr][key]
+                self[key] = copy.copy(default)
                 pass
             continue
         return
