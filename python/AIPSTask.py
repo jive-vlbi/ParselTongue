@@ -362,8 +362,8 @@ class AIPSTask(Task):
                     messages = self.messages(proxy, tid)
                     if messages:
                         log.extend(messages)
-                    elif sys.stdout.isatty():
-                        sys.stdout.write(rotator[count % 4])
+                    elif sys.stdout.isatty() and len(rotator) > 0:
+                        sys.stdout.write(rotator[count % len(rotator)])
                         sys.stdout.flush()
                         pass
                     events = select.select([sys.stdin.fileno()], [], [], 0)
