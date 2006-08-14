@@ -119,6 +119,14 @@ class Popsdat:
                         continue
                     continue
                 pass
+            elif type == 'SCALAR':
+                for scalar in split_line[1:]:
+                    name = scalar.rstrip(',').lower()
+                    if name:
+                        self.default_dict[name] = 0.0
+                        pass
+                    continue
+                pass
             continue
 
     def __init__(self, version):
