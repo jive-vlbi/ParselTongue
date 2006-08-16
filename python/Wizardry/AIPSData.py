@@ -266,6 +266,19 @@ class _AIPSTable:
             name = 'AIPS ' + name
 
         self._err = OErr.OErr()
+
+        if version == 0:
+            version = TableList.PGetHigh(data.TableList, name)
+
+        tables = TableList.PGetList(data.TableList, self._err)
+        if not [version, name] in tables:
+            msg = name + ' table'
+            if version:
+                msg += ' version %d' % version
+                pass
+            msg += ' does not exist'
+            raise IOError, msg
+
         self._table = data.NewTable(3, name, version, self._err)
         self._table.Open(3, self._err)
         if self._err.isErr:
