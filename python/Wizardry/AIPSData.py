@@ -264,6 +264,7 @@ class _AIPSTable:
     def __init__(self, data, name, version):
         if not name.startswith('AIPS '):
             name = 'AIPS ' + name
+            pass
 
         self._err = OErr.OErr()
 
@@ -845,7 +846,13 @@ class AIPSImage(_AIPSData):
         Obit.ImageRead(self._data.me, self._err.me)
         if self._err.isErr:
             raise RuntimeError, "Reading image pixels"
-        shape = (self.header['naxis'][1], self.header['naxis'][0])
+        shape = []
+        for len in self.header['naxis']:
+            if len == 0:
+                break
+            shape.insert(0, len)
+            continue
+        shape = tuple(shape)
         pixels = numarray.array(sequence=self._data.PixBuf,
                                 type=numarray.Float32, shape=shape)
         return pixels
