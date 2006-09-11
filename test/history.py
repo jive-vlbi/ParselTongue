@@ -1,6 +1,7 @@
 from AIPS import AIPS
 from AIPSTask import AIPSTask
 from AIPSData import AIPSUVData
+from Wizardry.AIPSData import AIPSUVData as WizAIPSUVData
 
 import os
 import urllib
@@ -39,6 +40,21 @@ try:
             pass
         continue
     assert(count > 5)
+
+    uvdata = WizAIPSUVData(uvdata)
+    history = uvdata.history
+    history.append('Something new!')
+    history.close()
+
+    uvdata = AIPSUVData(uvdata)
+    seen = 0
+    for record in uvdata.history:
+        print record
+        if record[0:5] == 'Somet':
+            seen = 1
+            pass
+        continue
+    assert(seen)
 
 finally:
     uvdata.zap()
