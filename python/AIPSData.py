@@ -500,6 +500,9 @@ class AIPSCat(object):
             continue
         return
 
+    def __getitem__(self, key):
+        return self._cat[key]
+
     def __repr__(self):
         return repr(self._cat)
 
