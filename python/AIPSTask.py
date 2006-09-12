@@ -128,6 +128,10 @@ class AIPSTask(Task):
     _file_adverbs = ['infile', 'infile2', 'outfile', 'outprint',
                      'ofmfile', 'boxfile', 'oboxfile']
 
+    # List of adverbs referring to image dimensions.
+    _box_adverbs = ['blc', 'trc', 'tblc', 'ttrc', 'pixxy', 'imsize', 'box',
+                    'clbox', 'fldsize', 'pix2xy', 'uvsize']
+
     # Default version.
     version = os.environ.get('VERSION', 'NEW')
 
@@ -188,10 +192,20 @@ class AIPSTask(Task):
         # Initialize all adverbs to their default values.
         self.defaults()
 
-        # The maximum value for disk numbers is bogus.
+        # The maximum value for disk numbers is system-dependent.
         for name in self._disk_adverbs:
             if name in self._max_dict:
                 self._max_dict[name] = float(len(AIPS.disks) - 1)
+                pass
+            continue
+
+        # The maximum image size is system-dependent.
+        for name in self._box_adverbs:
+            if name in self._max_dict:
+                # Assume the default
+                self._max_dict[name] = 32768.0
+                pass
+            continue
 
         return                          # __init__
 
