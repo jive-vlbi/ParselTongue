@@ -128,6 +128,9 @@ class AIPSTask(Task):
     _file_adverbs = ['infile', 'infile2', 'outfile', 'outprint',
                      'ofmfile', 'boxfile', 'oboxfile']
 
+    # List of adverbs referring to channels.
+    _chan_adverbs = ['bchan', 'echan', 'chansel', 'channel']
+
     # List of adverbs referring to image dimensions.
     _box_adverbs = ['blc', 'trc', 'tblc', 'ttrc', 'pixxy', 'imsize', 'box',
                     'clbox', 'fldsize', 'pix2xy', 'uvsize']
@@ -196,6 +199,14 @@ class AIPSTask(Task):
         for name in self._disk_adverbs:
             if name in self._max_dict:
                 self._max_dict[name] = float(len(AIPS.disks) - 1)
+                pass
+            continue
+
+        # The maximum channel is system-dependent.
+        for name in self._chan_adverbs:
+            if name in self._max_dict:
+                # Assume the default
+                self._max_dict[name] = 16384.0
                 pass
             continue
 
