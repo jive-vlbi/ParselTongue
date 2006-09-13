@@ -2,8 +2,18 @@
 
 * New functionality
 
-You no lomger need to guess what keywords are attached to a data set
-or table:
+The so called "random parameters" associated with each visibility can
+now be changed:
+
+>>> for vis in uvdata:
+...   vis.weight *= 2
+...   vis.uvw = [-x for x in vis.uvw]
+...   vis.update()
+
+Changing the raw visibilities themselves is still not possible.
+
+Also, you no lomger need to guess what keywords are attached to a data
+set or table:
 
 >>> image = AIPSImage('4C39.25', 'ICL001', 1, 1)
 >>> image.keywords
