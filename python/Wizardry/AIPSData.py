@@ -429,6 +429,12 @@ class _AIPSVisibilityIter(object):
     def next(self):
         self._index += 1
         if self._index + self._first >= self._len:
+            if self._flush and self._dirty:
+                Obit.UVWrite(self._data.me, self._err.me)
+                if self._err.isErr:
+                    raise RuntimeError
+                self._flush = False
+                self._dirty = False
             raise StopIteration
         if self._index >= self._count:
             self._fill()
@@ -436,7 +442,8 @@ class _AIPSVisibilityIter(object):
 
     def _fill(self):
         if self._flush and self._dirty:
-            Obit.UVWrite(self._data.me, self._err.me)
+            assert(self._first == self._data.Desc.Dict['firstVis'] - 1)
+            Obit.UVRewrite(self._data.me, self._err.me)
             if self._err.isErr:
                 raise RuntimeError
             self._flush = False
@@ -464,16 +471,28 @@ class _AIPSVisibilityIter(object):
         v = self._buffer[self._index][self._desc['ilocv']]
         w = self._buffer[self._index][self._desc['ilocw']]
         return [u, v, w]
-    uvw = property(_get_uvw)
+    def _set_uvw(self, value):
+        self._buffer[self._index][self._desc['ilocu']] = value[0]
+        self._buffer[self._index][self._desc['ilocv']] = value[1]
+        self._buffer[self._index][self._desc['ilocw']] = value[2]
+        self._dirty = True
+    uvw = property(_get_uvw, _set_uvw)
 
     def _get_time(self):
         return self._buffer[self._index][self._desc['iloct']]
-    time = property(_get_time)
+    def _set_time(self, value):
+        self._buffer[self._index][self._desc['iloct']] = value
+        self._dirty = True
+    time = property(_get_time, _set_time)
 
     def _get_baseline(self):
         baseline = int(self._buffer[self._index][self._desc['ilocb']])
         return [baseline / 256, baseline % 256]
-    baseline = property(_get_baseline)
+    def _set_baseline(self, value):
+        baseline = value[0] * 256 + value[1]
+        self._buffer[self._index][self._desc['ilocb']] = baseline
+        self._dirty = True
+    baseline = property(_get_baseline, _set_baseline)
 
     def _get_source(self):
         return self._buffer[self._index][self._desc['ilocsu']]
@@ -491,7 +510,10 @@ class _AIPSVisibilityIter(object):
 
     def _get_weight(self):
         return self._buffer[self._index][self._desc['ilocw']]
-    weight = property(_get_weight)
+    def _set_weight(self, value):
+        self._buffer[self._index][self._desc['ilocw']] = value
+        self._dirty = True
+    weight = property(_get_weight, _set_weight)
 
     def _get_visibility(self):
         visibility = self._buffer[self._index][self._desc['nrparm']:]
