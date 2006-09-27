@@ -53,6 +53,16 @@ It can be used to zap multiple files in one go:
 
 will zap all files with class 'SUBIM' on AIPS disk 2.
 
+ParselTongue can now deal with interactive AIPS tasks.
+
+* Bug fixes
+
+Better limits on disk, box and channel adverbs.
+
+Better support for "experimental" adverbs.
+
+Default values for array adverbs should stay constant now.
+
 
 *** Changes in ParselTongue 1.0.4
 
