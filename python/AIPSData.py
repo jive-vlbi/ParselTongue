@@ -495,7 +495,7 @@ class AIPSCat(object):
         self._cat = {}
         for disk in disks:
             proxy = AIPS.disks[disk].proxy()
-            catalog = proxy.AIPSCat.cat(disk, AIPS.userno)
+            catalog = proxy.AIPSCat.cat(AIPS.disks[disk].disk, AIPS.userno)
             self._cat[disk] = [_AIPSCatEntry(entry) for entry in catalog]
             continue
         return
