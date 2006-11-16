@@ -907,6 +907,8 @@ class AIPSImage(_AIPSData):
             raise RuntimeError
         return _AIPSTable(self._data, name, version)
 
+    history = property(lambda self: _AIPSHistory(self._data))
+
     pass                                # class AIPSImage
 
 class AIPSUVData(_AIPSData):
