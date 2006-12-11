@@ -16,53 +16,215 @@
 </author>
 </bookinfo>
 
-<chapter>
+<chapter id="install">
 <title>Installation</title>
 
 <para>
 
-Note that in order to use &pt;, you need a workstation with a classic
-&aips; installation, <application>Python 2.2</application> or later
-and <application>Obit</application>.  &aips; and
+Note that in order to use &pt;, you need a workstation running a
+UNIX-like operating system with a classic &aips; installation,
+<application>Python 2.2</application> or later and
+<application>Obit</application>.  &aips; and
 <application>Python</application> will be available on most
 astronomer's desktops (if not, please see your local system
 administrator), but <application>Obit</application> probably isn't.  A
 version of <application>Obit</application> that is known to work with
 &pt; is available from <ulink
 url="http://www.radionet-eu.org/rnwiki/ParselTongue">the &pt;
-Wiki</ulink>.
+Wiki</ulink>.  Most ParselTongue users use
+<application>Linux</application>, but people have installed in
+succesfully on Apple laptops running <application>Mac OS
+X</application> too.
 
 </para>
 
-<section>
-<title>Installing <application>Obit</application></title>
+<sect1>
+<title>Prerequisites</title>
 
 <para>
-Installing <application>Obit</application> can be a bit of a pain.  To
-be able to build it, you need <application>GLib 2.0</application> or
-later.  A usable version of <application>GLib</application> is
-probably already installed on any Linux workstation, but its C header
-files might not be installed.  These files are usually part of a
-package called glib2-devel; if it is not installed on your system,
-please contact your system administrator to install this package.
-<application>Obit</application> also needs some
-<application>Python</application> C header files, usually provided by
-the python-devel package.  <application>Obit</application> will use
-<application>PGPlot</application>, <application>CFITSIO</application>
-and <application>FFTW</application> if it finds the appropriate
-libraries on your system, but these are not essential for &pt;.
-<application>Obit</application> will also use
-<application>SWIG</application> if available.  Unfortunately
-different, incompatible versions of <application>SWIG</application>
-exists.  For compiling <application>Obit</application> you need
-<application>SWIG 1.1-883</application>.  More recent versions of
-<application>SWIG</application> (1.3.x) won't work.  This may bite you
-if your system has such a version of <application>SWIG</application>.
-In any case, the right version of SWIG (as well as the wrong ones) can
-be found on <ulink url="http://www.swig.org">the
-<application>SWIG</application> web site</ulink>.
+Building <application>Obit</application> is by far the biggest hurdle.
+Since Obit depends on some other Open Source software packages getting
+the right packages installed before trying to build
+<application>Obit</application> is crucial.  Unfortunately many
+<application>Linux</application> distributions have been "dumbed down"
+and are missing the crucial development packages necessary for
+building your own software.
 
 </para>
+
+<para>
+Essential for building Obit are GLib 2.x and GSL (GNU Scientific
+Library) and of course <application>Python</application>.  Optional
+are CFITSIO, FFTW, PGPLOT, XMLRPC and SWIG.  Of these packages you
+almost certainly don't want to install SWIG.  It is only needed if you
+want to change Obit, and if you install the wrong version Obit will
+fail to compile.  You'll need CFITSIO if you want &pt; to read FITS
+files directly.  The other packages are only useful if you want to use
+Obit itself.  Instructions on how to install the essential packages on
+various popular systems can be found below.
+
+</para>
+
+<sect2>
+<title>SuSE, Redhat, Fedora</title>
+
+<para>
+On these Linux distributions the names of the needed packages are:
+
+<simplelist>
+<member>gcc</member>
+<member>glib2</member>
+<member>glib2-devel</member>
+<member>gsl</member>
+<member>gsl-devel</member>
+<member>python</member>
+<member>python-devel</member>
+</simplelist>
+
+You see see whether these packages are installed with:
+
+<screen>
+<prompt>$</prompt> <command>rpm -q -a</command>
+</screen>
+
+and check whether these packages are present in the list.  If they are
+not installed, install them using the package manager that comes with
+your <application>Linux</application> version.
+
+</para>
+
+</sect2>
+
+<sect2>
+<title>Debian &amp; Ubuntu</title>
+
+<para>
+On these distributions the names of the needed packages are:
+
+<simplelist>
+<member>gcc</member>
+<member>libglib2.0</member>
+<member>libglib2.0-dev</member>
+<member>libgsl0</member>
+<member>libgsl0-dev</member>
+<member>python-2.3 or python-2.4</member>
+<member>python2.3-dev or python-2.4-dev</member>
+</simplelist>
+
+(python-2.5 is probably ok too)
+</para>
+
+<para>
+If you want visibility access from &pt;, you'll also need:
+
+<simplelist>
+<member>python-numarray</member>
+</simplelist>
+</para>
+
+<para>
+You can see whether these packages are installed with:
+
+<screen>
+<prompt>$</prompt> <command>dpkg -l</command>
+</screen>
+
+and check whether these packages are present in the list.  If they are
+not installed you can easily install them with apt-get, e.g.:
+
+<screen>
+<prompt>$</prompt> <command>apt-get libglib2.0-dev</command>
+</screen>
+
+</para>
+
+</sect2>
+
+<sect2>
+<title>Mac OS X</title>
+
+<para>
+You'll need <application>XCode</application>.
+<application>XCode</application> is part of <application>OS
+X</application>, but usually not installed by default.  You can find
+it on the <application>OS X</application> install DVD, and install it
+from there.
+
+</para>
+
+<para>
+The easiest way to install the necessary dependencies is by using
+<application>Fink</application> or
+<application>Darwinports</application>.  Make sure you install a
+version suitable for your version of <application>Mac OS
+X</application>.
+
+</para>
+
+<para>
+For <application>Fink</application> you'll need the following packages:
+
+<simplelist>
+<member>glib2</member>
+<member>glib2-dev</member>
+<member>gsl</member>
+</simplelist>
+
+I'm not sure the Apple version of <application>Python</application> is
+usable for Obit/&pt;.  So I recommend installing:
+
+<simplelist>
+<member>python23 or python24</member>
+</simplelist>
+
+too (python25 is probably ok too).  If you want direct access to
+visibility data, you'll also need:
+
+<simplelist>
+<member>numarray-py23 or numarray-py24</member>
+</simplelist>
+
+</para>
+
+<para>
+To make sure that Obit and &pt; use the Fink version of
+<application>Python</application> make sure you set the PYTHON
+environment variable before running configure:
+
+<screen>
+<prompt>$</prompt> <command>export PYTHON=/sw/bin/python</command>
+</screen>
+
+or
+
+<screen>
+<prompt>$</prompt> <command>setenv PYTHON /sw/bin/python</command>
+</screen>
+
+</para>
+
+<para>
+For OpenDarwin you'll need to install:
+
+<simplelist>
+<member>glib2</member>
+<member>glib2-devel</member>
+<member>gsl</member>
+<member>python24</member>
+<member>numarray</member>
+</simplelist>
+
+and set the PYTHON environment variable to
+<filename>/opt/local/bin/python</filename> instead.
+
+</para>
+
+</sect2>
+
+</sect1>
+
+<sect1>
+<title>Installing <application>Obit</application></title>
 
 <para>
 Once your system has the necessary tools and libraries, building Obit
@@ -79,9 +241,9 @@ If any of these steps fail, there probably is a problem with the
 prerequisites mentioned above.
 </para>
 
-</section>
+</sect1>
 
-<section>
+<sect1>
 <title>Installing &pt;</title>
 
 <para>
@@ -152,7 +314,7 @@ You might want to add these commands to your
 <filename>.profile</filename> or <filename>.login</filename>.
 </para>
 
-</section>
+</sect1>
 
 </chapter>
 
@@ -186,7 +348,7 @@ Again, you might want to add this to your
 find yourself using &pt; regularly.
 </para>
 
-<section>
+<sect1>
 <title>Interactive use</title>
 
 <para>
@@ -212,9 +374,9 @@ The first time you do this, &pt; might take some time to get back to
 you as it goes over your &aips; installation to determine what tasks
 and adverbs are available.  </para>
 
-</section>
+</sect1>
 
-<section>
+<sect1>
 <title>Scripting</title>
 
 <para>
@@ -246,7 +408,7 @@ AIPS.userno = 666
 </programlisting>
 </para>
 
-</section>
+</sect1>
 
 </chapter>
 
@@ -354,7 +516,7 @@ not when some task falls over with a possibly misterious error
 message.
 </para>
 
-<section>
+<sect1>
 <title>Arry-like attributes</title>
 
 <para>
@@ -413,9 +575,9 @@ length
 </screen>
 </para>
 
-</section>
+</sect1>
 
-<section>
+<sect1>
 <title>Special attributes</title>
 
 <para>
@@ -501,7 +663,7 @@ This way you can always inspect them later if the need arises.
 </variablelist>
 </para>
 
-</section>
+</sect1>
 
 
 </chapter>
@@ -631,7 +793,7 @@ reason is that the XML-RPC protocol used by &pt; for remote execution
 and data access is not suitable for transferring big amounts of data.
 </para>
 
-<section>
+<sect1>
 <title>Table access</title>
 
 <para>
@@ -640,14 +802,14 @@ but adds some functionality to change existing tables and create new
 tables.
 </para>
 
-</section>
+</sect1>
 
 </chapter>
 
 <chapter>
 <title>General feautures</title>
 
-<section>
+<sect1>
 <title>Logging</title>
 
 <para>
@@ -676,7 +838,7 @@ value of this attribute; those are lost forever).  </para>
 To stop logging, set <varname>AIPS.log</varname> to
 <constant>None</constant>.  </para>
 
-</section>
+</sect1>
 
 </chapter>
 
