@@ -300,9 +300,9 @@ class _AIPSData(object):
         if 'klass' in kwds: klass = kwds['name']
         if 'seq' in kwds: seq = kwds['seq']
         result = self._method(_whoami())(self.desc, name, klass, seq)
-        self.name = name
-        self.klass = klass
-        self.seq = seq
+        self.name = result[0]
+        self.klass = result[1]
+        self.seq = result[2]
         return result
 
     def zap(self, force=False):

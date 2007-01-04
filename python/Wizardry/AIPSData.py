@@ -17,7 +17,7 @@
 # Obit stuff.
 import Obit
 import OErr, OSystem
-import History, Image, UV, InfoList, Table, TableList
+import AIPSDir, History, Image, UV, InfoList, Table, TableList
 
 # Global AIPS defaults.
 import AIPS
@@ -807,7 +807,19 @@ class _AIPSData(object):
 
         self._obit.PRename(self._data, self._err, newAIPSName=name.ljust(12),
                            newAIPSClass=klass.ljust(6), newAIPSSeq=seq)
-        return
+
+        # If SEQ was zero, we need to check out the assigned sequence
+        # number.  We do this based on the catalog number, so there is
+        # a chance it'll fail if somebody does a RECAT.
+        if seq == 0:
+            cno = self._data.Acno
+            entry = AIPSDir.PInfo(self.disk, self.userno, cno, self._err)
+            if name == entry[0:12].strip() and klass == entry[13:19].strip():
+                seq = int(entry[20:25])
+                pass
+            pass
+
+        return (name, klass, seq)
 
     def table_highver(self, name):
         """Return the latest version of the extension table NAME."""
