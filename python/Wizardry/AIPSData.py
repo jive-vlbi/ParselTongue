@@ -857,6 +857,7 @@ class AIPSImage(_AIPSData):
             pass
         self._userno = userno
         self._err = OErr.OErr()
+        self._dity = False
         OSystem.PSetAIPSuser(userno)
         self._data = Image.newPAImage(name, name, klass, disk, seq,
                                       True, self._err)
@@ -877,6 +878,7 @@ class AIPSImage(_AIPSData):
         shape = tuple(shape)
         pixels = numarray.array(sequence=self._data.PixBuf,
                                 type=numarray.Float32, shape=shape)
+        self._dirty = True
         return pixels
     pixels = property(_pixels)
 
@@ -909,7 +911,16 @@ class AIPSImage(_AIPSData):
 
     history = property(lambda self: _AIPSHistory(self._data))
 
+    def update(self):
+        if self._dirty:
+            Obit.ImageWrite(self._data.me, self._err.me)
+            if self._err.isErr:
+                raise RuntimeError, "Writing image pixels"
+            pass
+        _AIPSData.update(self)
+
     pass                                # class AIPSImage
+
 
 class AIPSUVData(_AIPSData):
     """This class is used to access an AIPS UV data set."""
