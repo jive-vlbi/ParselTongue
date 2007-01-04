@@ -75,8 +75,8 @@ class AIPSData:
         return data.table_highver(type)
 
     def rename(self, desc, name, klass, seq):
-        data = self._init(desc).rename(name, klass, seq)
-        return True                # Return something other than None.
+        data = self._init(desc)
+        return data.rename(name, klass, seq)
 
     def zap(self, desc, force):
         self._init(desc).zap(force)
