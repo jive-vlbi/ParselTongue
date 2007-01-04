@@ -3,6 +3,7 @@ from AIPSTask import AIPSTask
 from AIPSData import AIPSUVData
 from Wizardry.AIPSData import AIPSUVData as WizAIPSUVData
 
+import math
 import os
 import urllib
 
@@ -39,6 +40,8 @@ try:
     antable.keywords['FREQID'] = 1
     antable.keywords['FREQ'] = 4974990000.0
     antable.keywords['IATUTC'] = 32.0
+    antable.keywords['E'] = math.e
+    antable.keywords['OPERATOR'] = 'NRAO'
     antable.close()
 
     antable = uvdata.table('AN', 0)
@@ -47,6 +50,9 @@ try:
     assert (antable.keywords['FREQID'] == 1)
     assert (antable.keywords['FREQ'] == 4974990000.0)
     assert (antable.keywords['IATUTC'] == 32.0)
+    assert(abs(antable.keywords['E'] - math.e) < 1e-7)
+    operator = antable.keywords['OPERATOR']
+    assert (operator.strip() == 'NRAO')
 
 finally:
     uvdata.zap()
