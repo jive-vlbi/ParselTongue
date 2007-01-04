@@ -23,6 +23,9 @@ try:
     assert(image.seq == 8)
     image.rename(klass='APPLE', seq=99)
     assert(image.exists())
+    image.rename(klass='PEAR', seq=0)
+    assert(image.exists())
+    assert(image.seq != 0)
     image.rename('MANDLEBROT', seq=1)
     assert(image.exists())
     try:
