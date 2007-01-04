@@ -37,11 +37,14 @@ try:
     parangle = image.keywords['PARANGLE']
     image.keywords['PARANGLE'] *= 2
     image.keywords['PI'] = math.pi
+    image.keywords['ARRNAM'] = 'EVN'
     image.keywords.update()
 
     image = AIPSImage(image)
     assert(image.keywords['PARANGLE'] == 2 * parangle)
     assert(abs(image.keywords['PI'] - math.pi) < 1e-7)
+    arrnam = image.keywords['ARRNAM']
+    assert(arrnam.strip() == 'EVN')
 
 finally:
     image.zap()
