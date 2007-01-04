@@ -870,7 +870,7 @@ class AIPSImage(_AIPSData):
             raise RuntimeError, "Reading image pixels"
         shape = []
         for len in self.header['naxis']:
-            if len == 0:
+            if len == 1:
                 break
             shape.insert(0, len)
             continue
