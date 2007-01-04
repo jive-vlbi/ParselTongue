@@ -1,3 +1,22 @@
+*** Changes in ParselTongue 1.0.6
+
+* New functionality
+
+It is now possible to change pixel values in an image:
+
+>>> from Wizardry.AIPSData import AIPSImage as WizAIPSImage
+>>> image = WizAIPSImage('4C39.25', 'ICL001', 1, 1)
+>>> image.pixels[0][0] = 0
+>>> image.update()
+
+Adding new keywords now works:
+
+>>> from Wizardry.AIPSData import AIPSImage as WizAIPSImage
+>>> image = WizAIPSImage('4C39.25', 'ICL001', 1, 1)
+>>> image.keywords['PI'] = 3.14159
+>>> image.keywords.update()
+
+
 *** Changes in ParselTongue 1.0.5
 
 * New functionality
