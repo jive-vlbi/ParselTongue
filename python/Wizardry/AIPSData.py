@@ -541,20 +541,29 @@ class _AIPSDataKeywords:
 
     def __setitem__(self, key, value):
         key = key.upper().ljust(8)
-        type = InfoList.PGet(self._data.Desc.List, key)
-        if type[2] in (2, 3, 4):
+        try:
+            _type = InfoList.PGet(self._data.Desc.List, key)[2]
+        except:
+            # New keys are either strings or floats.
+            if type(value) == str:
+                _type = 13
+            else:
+                _type = 9
+                pass
+            pass
+        if _type in (2, 3, 4):
             value = int(value)
             InfoList.PAlwaysPutInt(self._data.Desc.List, key,
                                    [1, 1, 1, 1, 1], _vectorize(value))
-        elif type[2] == 9:
+        elif _type == 9:
             value = float(value)
             InfoList.PAlwaysPutFloat(self._data.Desc.List, key,
                                      [1, 1, 1, 1, 1], _vectorize(value))
-        elif type[2] == 10:
+        elif _type == 10:
             value = float(value)
             InfoList.PAlwaysPutDouble(self._data.Desc.List, key,
                                       [1, 1, 1, 1, 1], _vectorize(value))
-        elif type[2] == 13:
+        elif _type == 13:
             value = str(value).ljust(8)
             InfoList.PAlwaysPutString(self._data.Desc.List, key,
                                       [8, 1, 1, 1, 1], _vectorize(value))
