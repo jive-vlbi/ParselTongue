@@ -127,6 +127,14 @@ class _AIPSTaskParams:
                 break;
 
             self.help_string = self.help_string + line
+            continue
+
+        # Parse EXPLAIN section.
+        for line in input:
+            self.explain_string = self.explain_string + line
+            continue
+
+        pass
 
     def __init__(self, name, version):
         self.default_dict = {}
@@ -136,6 +144,7 @@ class _AIPSTaskParams:
         self.max_dict = {}
         self.strlen_dict = {}
         self.help_string = ''
+        self.explain_string = ''
 
         self.name = name
         if version in os.environ:
@@ -157,6 +166,7 @@ class _AIPSTaskParams:
             self.max_dict = unpickler.load()
             self.strlen_dict = unpickler.load()
             self.help_string = unpickler.load()
+            self.explain_string = unpickler.load()
         except (IOError, EOFError):
             self.__parse(name)
 
@@ -172,6 +182,7 @@ class _AIPSTaskParams:
             pickler.dump(self.max_dict)
             pickler.dump(self.strlen_dict)
             pickler.dump(self.help_string)
+            pickler.dump(self.explain_string)
 
     # Provide a dictionary-like interface to deal with the
     # idiosyncrasies of XML-RPC.

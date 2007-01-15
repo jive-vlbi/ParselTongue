@@ -106,7 +106,7 @@ import AIPS
 from Task import Task, List
 
 # Generic Python stuff.
-import copy, fcntl, glob, os, pickle, select, signal, sys
+import copy, fcntl, glob, os, pickle, pydoc, select, signal, sys
 
 
 class AIPSTask(Task):
@@ -187,6 +187,7 @@ class AIPSTask(Task):
         self._max_dict = params['max_dict']
         self._strlen_dict = params['strlen_dict']
         self._help_string = params['help_string']
+        self._explain_string = params['explain_string']
         for adverb in self._default_dict:
             if type(self._default_dict[adverb]) == list:
                 value = self._default_dict[adverb]
@@ -261,7 +262,18 @@ class AIPSTask(Task):
             continue
 
         return
-        
+
+    def explain(self):
+        """Display more help for this task."""
+
+        if self._explain_string:
+            pydoc.pager(self._help_string +
+                        64 * '-' + '\n' +
+                        self._explain_string)
+            pass
+
+        return
+
     def inputs(self):
         """Display all inputs for this task."""
         self.__display_adverbs(self._input_list)
