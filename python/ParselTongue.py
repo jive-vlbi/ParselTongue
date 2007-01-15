@@ -64,6 +64,9 @@ def help(obj):
         pass
     return
 
+def explain(obj):
+    obj.explain()
+
 # This is not a batch job.
 AIPSTask.isbatch = 0
 
