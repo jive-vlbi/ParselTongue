@@ -166,12 +166,16 @@ class Task(MinimalMatch):
         self._max_dict = {}
         self._strlen_dict = {}
         self._help_string = ''
+        return
 
     def help(self):
         """Display help for this task."""
 
         if self._help_string:
             pydoc.pager(self._help_string)
+            pass
+
+        return
 
     def _validateattr(self, attr, value, default):
         """Check whether VALUE is a valid valid for attribute ATTR."""
@@ -198,6 +202,7 @@ class Task(MinimalMatch):
         # Convert integers into floating point numbers if necessary.
         if type(value) == int and type(default) == float:
             value = float(value)
+            pass
 
         # Check attribute type.
         if type(value) != type(default):
@@ -212,12 +217,14 @@ class Task(MinimalMatch):
                 msg = "value '%s' is out of range for attribute '%s'" \
                       % (value, attr)
                 raise ValueError, msg
+            pass
         if attr in self._max_dict:
             max = self._max_dict[attr]
             if not value <= max:
                 msg = "value '%s' is out of range for attribute '%s'" \
                       % (value, attr)
                 raise ValueError, msg
+            pass
 
         # Check string length.
         if attr in self._strlen_dict:
@@ -225,6 +232,7 @@ class Task(MinimalMatch):
                 msg = "string '%s' is too long for attribute '%s'" \
                       % (value, attr)
                 raise ValueError, msg
+            pass
 
         return value
 
@@ -235,6 +243,8 @@ class Task(MinimalMatch):
         if hasattr(self, attr):
             value = self._validateattr(attr, value, getattr(self, attr))
         self.__dict__[attr] = value
+
+        return
 
 
 # Tests.
