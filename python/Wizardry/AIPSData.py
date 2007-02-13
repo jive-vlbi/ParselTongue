@@ -902,7 +902,7 @@ class AIPSImage(_AIPSData):
         shape = []
         for len in self.header['naxis']:
             if len == 1:
-                break
+                continue
             shape.insert(0, len)
             continue
         shape = tuple(shape)
