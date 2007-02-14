@@ -623,7 +623,7 @@ class _AIPSDataHeader(object):
              'bunit': 'bunit',
              'ndim': 'naxis',
              'naxis': 'inaxes',
-             'epoch': 'epoch',
+             'epoch': 'equinox',
              'ctype': 'ctype',
              'crval': 'crval',
              'cdelt': 'cdelt',
