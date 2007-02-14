@@ -90,6 +90,9 @@ class _dictify:
     def __getitem__(self, key):
         return self._dict[key]
 
+    def __iter__(self):
+        return self._dict.iterkeys()
+
     pass                                # class _dictify
 
 
@@ -505,6 +508,9 @@ class AIPSCat(object):
 
     def __repr__(self):
         return repr(self._cat)
+
+    def __iter__(self):
+        return self._cat.iterkeys()
 
     def __str__(self):
         s = ''
