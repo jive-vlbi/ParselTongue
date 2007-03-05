@@ -4,7 +4,7 @@ check_SCRIPTS = ParselTest
 
 TESTS = msglog.py \
 	cat.py mandl.py imean.py jmfit.py fitld.py fitld2.py kntr.py \
-	convenience.py flag.py history.py history2.py keywords.py \
+	convenience.py flag.py history.py history2.py indxr.py keywords.py \
 	keywords2.py keywords3.py pixels.py userno.py visibilities.py \
 	uvcon.py zap.py zap2.py zap3.py zap4.py \
 	$(top_srcdir)/python/MinimalMatch.py \
