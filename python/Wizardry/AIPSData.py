@@ -750,6 +750,8 @@ class _AIPSData(object):
                         doc = 'Keywords for this data set.')
 
     def _generate_tables(self):
+        # Reopen the file to make sure the list of tables is updated.
+        self._data.Open(3,self._err)
         return TableList.PGetList(self._data.TableList, self._err)
     tables = property(_generate_tables,
                       doc = 'Tables attached to this data set.')
