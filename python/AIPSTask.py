@@ -147,6 +147,11 @@ class AIPSTask(Task):
     # Default to batch mode.
     isbatch = 32000
 
+	# Process information after spawning
+	tid = 0
+	proxy = None
+	log = []
+
     def __init__(self, name, **kwds):
         Task.__init__(self)
         self._name = name
@@ -389,8 +394,7 @@ class AIPSTask(Task):
     def go(self):
         """Run the task."""
 
-        (proxy, tid) = self.spawn()
-        log = []
+        (self.proxy, self.tid) = self.spawn()
         count = 0
         rotator = ['|\b', '/\b', '-\b', '\\\b']
         try:
