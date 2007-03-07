@@ -77,24 +77,6 @@ def _whoami():
     """Return the name of the function that called us."""
     return sys._getframe(1).f_code.co_name
 
-class _dictify:
-
-    def __init__(self, dict):
-        self._dict = dict
-        self.__dict__.update(dict)
-        return
-
-    def __repr__(self):
-        return str(self._dict)
-
-    def __getitem__(self, key):
-        return self._dict[key]
-
-    def __iter__(self):
-        return self._dict.iterkeys()
-
-    pass                                # class _dictify
-
 
 class _AIPSDataMethod:
 
@@ -130,20 +112,17 @@ class _AIPSDataDesc:
     pass                                # class _AIPSDataDesc
 
 
-class _AIPSDataHeader:
+class _dictify(dict):
+
+    def __getattr__(self, item):
+        return self[item]
+
+    pass                                # class _dictify
+
+
+class _AIPSDataHeader(_dictify):
 
     """This class describes the header of an AIPS image or UV data set."""
-
-    def __init__(self, dict):
-        self._dict = dict
-        self.__dict__.update(dict)
-        return
-
-    def __repr__(self):
-        return str(self._dict)
-
-    def __getitem__(self, key):
-        return self._dict[key]
 
     pass                                # class _AIPSDataHeader
 
