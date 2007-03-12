@@ -147,11 +147,6 @@ class AIPSTask(Task):
     # Default to batch mode.
     isbatch = 32000
 
-	# Process information after spawning
-	tid = 0
-	proxy = None
-	log = []
-
     def __init__(self, name, **kwds):
         Task.__init__(self)
         self._name = name
@@ -313,6 +308,7 @@ class AIPSTask(Task):
 
         # Figure out what proxy to use for running the task, and
         # translate the related disk numbers.
+
         url = None
         proxy = None
         for adverb in self._disk_adverbs:
@@ -394,7 +390,8 @@ class AIPSTask(Task):
     def go(self):
         """Run the task."""
 
-        (self.proxy, self.tid) = self.spawn()
+        (proxy, tid) = self.spawn()
+        log = []
         count = 0
         rotator = ['|\b', '/\b', '-\b', '\\\b']
         try:
