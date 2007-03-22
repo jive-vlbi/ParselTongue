@@ -527,8 +527,7 @@ class _AIPSVisibilityIter(object):
     def _get_visibility(self):
         visibility = self._buffer[self._index][self._desc['nrparm']:]
         inaxes = self._desc['inaxes']
-        shape = (inaxes[self._desc['jlocif']], inaxes[self._desc['jlocf']],
-                 inaxes[self._desc['jlocs']], inaxes[self._desc['jlocc']])
+        shape = (inaxes[3], inaxes[2], inaxes[1], inaxes[0])
         visibility.setshape(shape)
         return visibility
     visibility = property(_get_visibility)
