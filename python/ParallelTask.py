@@ -73,43 +73,5 @@ class ParallelTask(Task):
 			self.tasklist[current].go()
 		return
 
-	def rftcopy(self,inname1,inclass1,inseq1,indisk1,intype1,rhost):
-		"""
-		Copies data from one AIPS repository to another on the remote rhost,
-		by converting first to a FITS file, transporting via ssh, and then
-		importing the result into the remote AIPS client. FITS transport
-		implies a substantial conversion overhead, which is required once on
-		each end, but has the advantage of automatically adjusting to the
-		correct byte-endianness.  If you are quite sure that the remote
-		client is on a machine with the same endian convention, use the
-		rcopy() method instead.
-
-		The transport step also assumes that an RSA/DSA keypair has been
-		established between client and server to permit SSH logins without a
-		password.
-		"""
-		
-		# N.B. parameters to specify source and destination files:
-		# two sets of INNAME, INCLASS, INSEQ, INDISK, INTYPE
-
-		fitswrite = AIPSTask('FITTP')
-		fitswrite.inname = inname1
-		fitswrite.inclass = inclass1
-		fitswrite.inseq = inseq1
-		fitswrite.indisk = indisk1
-		fitswrite.intype = intype1
-		if len(inname1) > 37 :
-			# truncated so that outfile is not longer than 48 total
-			# characters, due to AIPS being a retarded 70's child...
-			inname1 = inname1[0:37]
-		outname = "/tmp/" + inname1 + ".fits"
-		fitswrite.outfile = "'" + outname # again with the retarded AIPS
-
-		command_string = "scp " + outname + " " + rhost + ":/tmp"
-		os.system(command_string)
-		fitsimport = AIPSTask('FITLD')
-		import_data_into_aips_via_xmlrpc()
-		return
-
-
 	pass                                # class ParallelTask
+

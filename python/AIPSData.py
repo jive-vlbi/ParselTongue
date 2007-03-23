@@ -63,7 +63,7 @@ import AIPS
 # Generic Python stuff.
 import sys
 
-# This code is way to clever.  Instead of implementing each and every
+# This code is way too clever.  Instead of implementing each and every
 # function call provided by a proxy, class _Method implements a
 # callable object that invokes a named method of a proxy, passing a
 # description of the AIPS data it should operate on as the first
@@ -154,7 +154,7 @@ class _AIPSData(object):
 
     def __init__(self, *args):
         # Instances can be created by specifying name, class, disk,
-        # sequency number and (optionally) user number explicitly, or
+        # sequence number and (optionally) user number explicitly, or
         # by passing an object that has the appropriate attributes.
         # This allows the creation of a non-Wizardry object from its
         # Wizardry counterpart.
@@ -188,6 +188,50 @@ class _AIPSData(object):
         self.desc = _AIPSDataDesc(name, klass, disk.disk, seq, userno)
         self.proxy = disk.proxy()
         return
+
+	def rftcopy(self,oclass,oseq,odisk,rhost):
+		""" Copies data from one AIPS repository to another on the remote
+		rhost, by converting first to a FITS file, transporting via ssh, and
+		then importing the result into the remote AIPS client. FITS
+		transport implies a substantial conversion overhead, which is
+		required once on each end, but has the advantage of automatically
+		adjusting to the correct byte-endianness.  If you are quite sure
+		that the remote client is on a machine with the same endian
+		convention, use the rcopy() method instead.
+
+		The transport step also assumes that an RSA/DSA keypair has been
+		established between client and server to permit SSH logins without a
+		password.
+		"""
+
+		# N.B. parameters to specify source and destination files:
+		# two sets of INNAME, INCLASS, INSEQ, INDISK, INTYPE
+
+		fitswrite = AIPSTask('FITTP')
+		fitswrite.inname = inname
+		fitswrite.inclass = inclass
+		fitswrite.inseq = inseq
+		fitswrite.indisk = indisk
+		fitswrite.intype = intype
+		if len(inname) > 37 :
+			# truncated so that outfile is not longer than 48 total
+			# characters, due to AIPS being a retarded 70's child...
+			inname = inname[0:37]
+		outname = "/tmp/" + inname + ".fits"
+		fitswrite.outfile = "'" + outname # again with the retarded AIPS
+
+		command_string = "scp " + outname + " " + rhost + ":/tmp"
+		os.system(command_string)
+
+		fitsimport = AIPSTask('FITLD')
+		fitsimport.infile = fitswrite.outfile
+		# any reason the filename should be different on the remote system?
+		fitsimport.outname = inname
+		fitsimport.outdisk = odisk
+		fitsimport.outclass = oclass
+		fitsimport.outseq = oseq
+		fitsimport.optype = "  " # does this really need to be two spaces?
+		return
 
     def _set_name(self, name): self.desc.name = name; pass
     name = property(lambda self: self.desc.name, _set_name,
