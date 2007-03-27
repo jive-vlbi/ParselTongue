@@ -77,6 +77,52 @@ def _whoami():
     """Return the name of the function that called us."""
     return sys._getframe(1).f_code.co_name
 
+def rftcopy(AIPSDataLocal,AIPSDataRemote):
+	"""
+	Copies data from one AIPS repository to another on a remote host.
+
+	Takes two AIPSData objects as arguments. The first refers to the data
+	store on the local host. The second is a "fake" object that is filled in
+	by rftcopy.  Works by converting first to a FITS file, transporting via
+	ssh, and then importing the result into the remote AIPS client. FITS
+	transport implies a substantial conversion overhead, which is required
+	once on each end, but has the advantage of automatically adjusting to
+	the correct byte-endianness.  If you are quite sure that the remote
+	client is on a machine with the same endian convention, use the rcopy()
+	method instead.
+
+	The transport step also assumes that an RSA/DSA keypair has been
+	established between client and server to permit SSH logins without a
+	password.
+	"""
+
+	# N.B. parameters to specify source and destination files:
+	# two sets of INNAME, INCLASS, INSEQ, INDISK, INTYPE
+
+	fitswrite = AIPSTask('FITTP')
+	fitswrite.inname = AIPSDataLocal.name
+	fitswrite.inclass = AIPSDataLocal.klass
+	fitswrite.inseq = AIPSDataLocal.seq
+	fitswrite.indisk = AIPSDataLocal._disk
+	if len(inname) > 37 :
+		# truncated so that outfile is not longer than 48 total
+		# characters, due to AIPS being a retarded 70's child...
+		inname = inname[0:37]
+	outname = "/tmp/" + inname + ".fits"
+	fitswrite.outfile = outname
+
+	command_string = "scp " + outname + " " + rhost + ":/tmp"
+	os.system(command_string)
+
+	fitsimport = AIPSTask('FITLD')
+	fitsimport.infile = fitswrite.outfile
+	# any reason the filename should be different on the remote system?
+	fitsimport.outname = AIPSDataRemote.name
+	fitsimport.outdisk = AIPSDataRemote._disk
+	fitsimport.outclass = AIPSDataRemote.klass
+	fitsimport.outseq = AIPSDataRemote.seq
+	return
+
 class _dictify:
 
     def __init__(self, dict):
@@ -188,50 +234,6 @@ class _AIPSData(object):
         self.desc = _AIPSDataDesc(name, klass, disk.disk, seq, userno)
         self.proxy = disk.proxy()
         return
-
-	def rftcopy(self,oclass,oseq,odisk,rhost):
-		""" Copies data from one AIPS repository to another on the remote
-		rhost, by converting first to a FITS file, transporting via ssh, and
-		then importing the result into the remote AIPS client. FITS
-		transport implies a substantial conversion overhead, which is
-		required once on each end, but has the advantage of automatically
-		adjusting to the correct byte-endianness.  If you are quite sure
-		that the remote client is on a machine with the same endian
-		convention, use the rcopy() method instead.
-
-		The transport step also assumes that an RSA/DSA keypair has been
-		established between client and server to permit SSH logins without a
-		password.
-		"""
-
-		# N.B. parameters to specify source and destination files:
-		# two sets of INNAME, INCLASS, INSEQ, INDISK, INTYPE
-
-		fitswrite = AIPSTask('FITTP')
-		fitswrite.inname = inname
-		fitswrite.inclass = inclass
-		fitswrite.inseq = inseq
-		fitswrite.indisk = indisk
-		fitswrite.intype = intype
-		if len(inname) > 37 :
-			# truncated so that outfile is not longer than 48 total
-			# characters, due to AIPS being a retarded 70's child...
-			inname = inname[0:37]
-		outname = "/tmp/" + inname + ".fits"
-		fitswrite.outfile = "'" + outname # again with the retarded AIPS
-
-		command_string = "scp " + outname + " " + rhost + ":/tmp"
-		os.system(command_string)
-
-		fitsimport = AIPSTask('FITLD')
-		fitsimport.infile = fitswrite.outfile
-		# any reason the filename should be different on the remote system?
-		fitsimport.outname = inname
-		fitsimport.outdisk = odisk
-		fitsimport.outclass = oclass
-		fitsimport.outseq = oseq
-		fitsimport.optype = "  " # does this really need to be two spaces?
-		return
 
     def _set_name(self, name): self.desc.name = name; pass
     name = property(lambda self: self.desc.name, _set_name,
