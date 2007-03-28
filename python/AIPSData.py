@@ -59,9 +59,11 @@ True
 
 # Global AIPS defaults.
 import AIPS
+from AIPSTask import *
 
 # Generic Python stuff.
 import sys
+import re
 
 # This code is way too clever.  Instead of implementing each and every
 # function call provided by a proxy, class _Method implements a
@@ -77,7 +79,7 @@ def _whoami():
     """Return the name of the function that called us."""
     return sys._getframe(1).f_code.co_name
 
-def rftcopy(AIPSDataLocal,AIPSDataRemote):
+def rftcopy(AIPSDataSource,AIPSDataTarget):
 	"""
 	Copies data from one AIPS repository to another on a remote host.
 
@@ -96,31 +98,32 @@ def rftcopy(AIPSDataLocal,AIPSDataRemote):
 	password.
 	"""
 
-	# N.B. parameters to specify source and destination files:
-	# two sets of INNAME, INCLASS, INSEQ, INDISK, INTYPE
-
+	# write out a temporary FITS file
 	fitswrite = AIPSTask('FITTP')
-	fitswrite.inname = AIPSDataLocal.name
-	fitswrite.inclass = AIPSDataLocal.klass
-	fitswrite.inseq = AIPSDataLocal.seq
-	fitswrite.indisk = AIPSDataLocal._disk
-	if len(inname) > 37 :
-		# truncated so that outfile is not longer than 48 total
-		# characters, due to AIPS being a retarded 70's child...
-		inname = inname[0:37]
+	fitswrite.indata = AIPSDataSource
+	# truncate so that outfile is not longer than 48 total
+	# characters, due to AIPS being a retarded 70's child...
+	inname = fitswrite.inname[0:37]
 	outname = "/tmp/" + inname + ".fits"
 	fitswrite.outfile = outname
+	fitswrite.go()
 
+	# extract the target hostname from the proxy url
+	hostpattern = "http://(.*):[0-9]+"
+	match = re.search(hostpattern,AIPS.disks[AIPSDataTarget.disk].url)
+	rhost = match.group(1)
 	command_string = "scp " + outname + " " + rhost + ":/tmp"
 	os.system(command_string)
 
+	# and import the temporary FITS file at the other end
 	fitsimport = AIPSTask('FITLD')
-	fitsimport.infile = fitswrite.outfile
-	# any reason the filename should be different on the remote system?
-	fitsimport.outname = AIPSDataRemote.name
-	fitsimport.outdisk = AIPSDataRemote._disk
-	fitsimport.outclass = AIPSDataRemote.klass
-	fitsimport.outseq = AIPSDataRemote.seq
+	fitsimport.infile = outname
+	fitsimport.outdata = AIPSDataTarget
+	fitsimport.go()
+
+	# clean up /tmp on both machines
+	os.system("rm " + outname)
+	os.system("ssh " + rhost + " rm " + outname)
 	return
 
 class _dictify:
