@@ -95,7 +95,8 @@ def rftcopy(AIPSDataSource,AIPSDataTarget):
 
 	The transport step also assumes that an RSA/DSA keypair has been
 	established between client and server to permit SSH logins without a
-	password.
+	password, and that ssh is available on the user's path (and really,
+	shouldn't it be, here in the 21st century?)
 	"""
 
 	# write out a temporary FITS file
@@ -122,9 +123,26 @@ def rftcopy(AIPSDataSource,AIPSDataTarget):
 	fitsimport.go()
 
 	# clean up /tmp on both machines
-	os.system("rm " + outname)
-	os.system("ssh " + rhost + " rm " + outname)
+	os.remove(outname)
+	returnval = os.system("ssh " + rhost + " rm " + outname)
+	# os.system return values are encoded in the same way as those of
+	# os.wait(): 16-bits, with the low 8 encoding the signal number, if any,
+	# and the high 8 encoding the return value of the command
+	if (returnval >> 8) != 0 :
+		print "ssh was unable to remove the temporary file from the remote
+		filesystem. You'll probably want to do this manually before moving
+		on...\n"
 	return
+
+def rcopy(AIPSDataSource,AIPSDataTarget):
+	"""
+	Copies data from one AIPS repository to another on a remote host.
+
+	This function is like rftcopy above, but there is no export/import
+	to/from FITS. The relevant file is copied directly from one data
+	repository to the other, and the AIPS catalogue on the target machine is
+	fixed up appropriately.
+	"""
 
 class _dictify:
 
