@@ -62,6 +62,23 @@ class AIPSTV(object):
         self._socket.close()
         return
 
+    def running(self):
+        """Check if the AIPS TV server is running."""
+
+        # Check by opening a connection to the TV.
+        try:
+            self._open();
+        except:
+            return False
+
+        self._close()
+        return True
+
+    def exists(self):
+        """Alias for AIPSTV.running()."""
+
+        return self.running()
+
     def start(self):
         """Start the AIPS TV server."""
 
