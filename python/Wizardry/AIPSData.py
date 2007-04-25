@@ -611,6 +611,12 @@ class _AIPSDataHeader(object):
         self._data = data
         self._obit = obit
         self._dict = data.Desc.Dict
+        for key in self._strip:
+            if self._keys[key] in self._dict:
+                value = _rstrip(self._dict[self._keys[key]])
+                self._dict[self._keys[key]] = value
+                pass
+            continue
         return
 
     _keys = {'object': 'object',
@@ -646,8 +652,6 @@ class _AIPSDataHeader(object):
     def __getitem__(self, key):
         if not key in self._keys:
             raise KeyError, key
-        if key in self._strip:
-            return _rstrip(self._dict[self._keys[key]])
         return self._dict[self._keys[key]]
 
     def __setitem__(self, key, value):
@@ -684,11 +688,8 @@ class _AIPSDataHeader(object):
         for key in self._keys:
             if self._keys[key] in self._dict:
                 dict[key] = self._dict[self._keys[key]]
-                if key in self._strip:
-                    dict[key] = _rstrip(dict[key])
-                    pass
                 pass
-            pass
+            continue
         return dict
 
     def __str__(self):
