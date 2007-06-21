@@ -582,16 +582,8 @@ class _AIPSDataKeywords:
 
     def _generate_dict(self):
         dict = {}
-        i = 1
-        while True:
-            try:
-                blob = Obit.makeInfoListBlob()
-                value = Obit.InfoListGetNumber(self._data.Desc.List.me,
-                                               i, blob)
-                dict[value[1]] = _scalarize(value[4])
-            except:
-                break
-            i += 1
+        for key in self._data.Desc.List.Dict:
+            dict[key] = _scalarize(self._data.Desc.List.Dict[key][2])
             continue
         return dict
 
