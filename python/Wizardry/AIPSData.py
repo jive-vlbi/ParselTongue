@@ -882,7 +882,7 @@ class AIPSImage(_AIPSData):
             pass
         self._userno = userno
         self._err = OErr.OErr()
-        self._dity = False
+        self._dirty = False
         OSystem.PSetAIPSuser(userno)
         self._data = Image.newPAImage(name, name, klass, disk, seq,
                                       True, self._err)
