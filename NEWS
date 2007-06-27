@@ -16,6 +16,9 @@ Adding new keywords now works:
 >>> image.keywords['PI'] = 3.14159
 >>> image.keywords.update()
 
+In addition to help() there is now also explain() which gives a
+verbose explanation of most AIPS tasks.
+
 * Bug fixes
 
 Rename operations that specify zero as the new sequence number, now
