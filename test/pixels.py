@@ -32,10 +32,12 @@ assert(image.exists())
 
 try:
     image = WizAIPSImage(image)
+    image.squeeze()
     image.pixels[0][0] = 0
     image.update()
 
     image = WizAIPSImage(image)
+    image.squeeze()
     assert(image.pixels[0][0] == 0)
 
 finally:
