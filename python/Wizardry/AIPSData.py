@@ -883,6 +883,7 @@ class AIPSImage(_AIPSData):
         self._userno = userno
         self._err = OErr.OErr()
         self._dirty = False
+        self._squeezed = False
         OSystem.PSetAIPSuser(userno)
         self._data = Image.newPAImage(name, name, klass, disk, seq,
                                       True, self._err)
@@ -896,7 +897,7 @@ class AIPSImage(_AIPSData):
             raise RuntimeError, "Reading image pixels"
         shape = []
         for len in self.header['naxis']:
-            if len == 1:
+            if self._squeezed and len == 1:
                 continue
             shape.insert(0, len)
             continue
@@ -906,6 +907,13 @@ class AIPSImage(_AIPSData):
         self._dirty = True
         return pixels
     pixels = property(_pixels)
+
+    def squeeze(self):
+        """Remove degenerate dimensions from image."""
+
+        self._squeezed = True
+        return
+        
 
     def attach_table(self, name, version, **kwds):
         """Attach an extension table to this image.
