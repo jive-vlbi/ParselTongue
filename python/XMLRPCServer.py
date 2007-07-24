@@ -21,6 +21,20 @@ tasks and provide verb-like access to AIPS data on a machine.
 
 """
 
+import sys
+import xmlrpclib
+# Stolen shamelessly from Thomas Bellman, on the Python-list, June 2006.
+# WARNING: Dirty hack below.
+# Replace the dumps() function in xmlrpclib with one that by default
+# handles None, so SimpleXMLRPCServer can return None.
+class _xmldumps(object):
+	def __init__(self, dumps):
+		self.__dumps = (dumps,)
+	def __call__(self, *args, **kwargs):
+		kwargs.setdefault('allow_none', 1)
+		return self.__dumps[0](*args, **kwargs)
+xmlrpclib.dumps = _xmldumps(xmlrpclib.dumps)
+
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 from SocketServer import ThreadingMixIn
 
@@ -58,7 +72,15 @@ class ServerFuncs:
 
     pass                                # class ServerFuncs
 
-
-server = XMLRPCServer(('', 8000))
+# This bit of unpleasantness comes about from the ugly hack that is the
+# _xmldumps class above. Python 2.5 supports the "allow_none" attribute for
+# SimpleXMLRPCServer objects, whereas Python 2.1 t/m 2.4 require the
+# _xmldumps redefinition above. However, these versions will break if
+# "allow_none" is passed to the constructor, and the _xmldumps hack doesn't
+# work with Python 2.5. So...
+if sys.hexversion >= 0x020500f0 :
+	server = XMLRPCServer(('', 8000), allow_none = 1)
+else :
+	server = XMLRPCServer(('', 8000))
 server.register_instance(ServerFuncs())
 server.serve_forever()
