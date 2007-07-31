@@ -59,11 +59,13 @@ True
 
 # Global AIPS defaults.
 import AIPS
+from AIPSTask import *
 
 # Generic Python stuff.
 import sys
+import re
 
-# This code is way to clever.  Instead of implementing each and every
+# This code is way too clever.  Instead of implementing each and every
 # function call provided by a proxy, class _Method implements a
 # callable object that invokes a named method of a proxy, passing a
 # description of the AIPS data it should operate on as the first
@@ -77,6 +79,86 @@ def _whoami():
     """Return the name of the function that called us."""
     return sys._getframe(1).f_code.co_name
 
+def rftcopy(AIPSDataSource,AIPSDataTarget):
+	"""
+	Copies data from one AIPS repository to another on a remote host.
+
+	Takes two AIPSData objects as arguments. The first refers to the data
+	store on the local host. The second is a "fake" object that is filled in
+	by rftcopy.  Works by converting first to a FITS file, transporting via
+	ssh, and then importing the result into the remote AIPS client. FITS
+	transport implies a substantial conversion overhead, which is required
+	once on each end, but has the advantage of automatically adjusting to
+	the correct byte-endianness.  If you are quite sure that the remote
+	client is on a machine with the same endian convention, use the rcopy()
+	method instead.
+
+	The transport step also assumes that an RSA/DSA keypair has been
+	established between client and server to permit SSH logins without a
+	password, and that ssh is available on the user's path (and really,
+	shouldn't it be, here in the 21st century?)
+	"""
+
+	# write out a temporary FITS file
+	fitswrite = AIPSTask('FITTP')
+	fitswrite.indata = AIPSDataSource
+	# truncate so that outfile is not longer than 48 total
+	# characters, due to AIPS being a retarded 70's child...
+	inname = fitswrite.inname[0:37]
+	outname = "/tmp/" + inname + ".fits"
+	fitswrite.outfile = outname
+	fitswrite.go()
+
+	# extract the target hostname from the proxy url
+	hostpattern = "http://(.*):[0-9]+"
+	match = re.search(hostpattern,AIPS.disks[AIPSDataTarget.disk].url)
+	rhost = match.group(1)
+	command_string = "scp " + outname + " " + rhost + ":/tmp"
+	os.system(command_string)
+
+	# and import the temporary FITS file at the other end
+	fitsimport = AIPSTask('FITLD')
+	fitsimport.infile = outname
+	fitsimport.outdata = AIPSDataTarget
+	fitsimport.go()
+
+	# clean up /tmp on both machines
+	os.remove(outname)
+	returnval = os.system("ssh " + rhost + " rm " + outname)
+	# os.system return values are encoded in the same way as those of
+	# os.wait(): 16-bits, with the low 8 encoding the signal number, if any,
+	# and the high 8 encoding the return value of the command
+	if (returnval >> 8) != 0 :
+		print "Unable to remove temporary file from the remote filesystem."
+	return
+
+def rcopy(AIPSDataSource,AIPSDataTarget):
+	"""
+	Copies data from one AIPS repository to another on a remote host.
+
+	This function is like rftcopy above, but there is no export/import
+	to/from FITS. The relevant file is copied directly from one data
+	repository to the other, and the AIPS catalogue on the target machine is
+	fixed up appropriately.
+	"""
+
+class _dictify:
+
+    def __init__(self, dict):
+        self._dict = dict
+        self.__dict__.update(dict)
+        return
+
+    def __repr__(self):
+        return str(self._dict)
+
+    def __getitem__(self, key):
+        return self._dict[key]
+
+    def __iter__(self):
+        return self._dict.iterkeys()
+
+    pass                                # class _dictify
 
 class _AIPSDataMethod:
 
@@ -133,7 +215,7 @@ class _AIPSData(object):
 
     def __init__(self, *args):
         # Instances can be created by specifying name, class, disk,
-        # sequency number and (optionally) user number explicitly, or
+        # sequence number and (optionally) user number explicitly, or
         # by passing an object that has the appropriate attributes.
         # This allows the creation of a non-Wizardry object from its
         # Wizardry counterpart.
@@ -468,6 +550,9 @@ class _AIPSCatEntry(_dictify):
 
 
 class AIPSCat(object):
+
+    """This class describes an entire AIPS catalogue."""
+
     def __init__(self, disk=0):
         disks = [disk]
         if disk == 0:
@@ -506,6 +591,9 @@ class AIPSCat(object):
         return s.strip()
 
     def zap(self, force=False, **kwds):
+
+        """Removes a catalogue entry."""
+
         name = None
         if 'name' in kwds: name = kwds['name']; del kwds['name']
         klass = None
