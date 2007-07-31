@@ -850,6 +850,7 @@ class _AIPSData(object):
         return
 
     def zap(self, force=False):
+		"""Removes the data object from the AIPS catalogue."""
         if force:
             self.clrstat()
             pass
@@ -857,6 +858,7 @@ class _AIPSData(object):
         return
 
     def clrstat(self):
+		"""Reset file 'busy' status in the AIPS catalogue."""
         cno = Obit.AIPSDirFindCNO(self._data.Disk, self._userno,
                                   self._data.Aname, self._data.Aclass,
                                   self._type, self._data.Aseq,
@@ -865,6 +867,7 @@ class _AIPSData(object):
         return
 
     def update(self):
+		"""Synchronise the data object with the AIPS catalogue entry."""
         self._obit.PUpdateDesc(self._data, self._err)
         return
 

@@ -308,6 +308,7 @@ class AIPSTask(Task):
 
         # Figure out what proxy to use for running the task, and
         # translate the related disk numbers.
+
         url = None
         proxy = None
         for adverb in self._disk_adverbs:

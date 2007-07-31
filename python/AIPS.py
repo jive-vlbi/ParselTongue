@@ -15,7 +15,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 """
-
 This module provides the AIPSDisk class and serves as a container for
 several AIPS-related defaults.  It provides some basic infrastructure
 used by the AIPSTask and AIPSData modules.
