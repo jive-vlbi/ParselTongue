@@ -82,5 +82,7 @@ if sys.hexversion >= 0x020500f0 :
 	server = XMLRPCServer(('', 8000), allow_none = 1)
 else :
 	server = XMLRPCServer(('', 8000))
-server.register_instance(ServerFuncs())
-server.serve_forever()
+
+if __name__ == "__main__" :
+	server.register_instance(ServerFuncs())
+	server.serve_forever()
