@@ -35,44 +35,22 @@ from AIPSData import *
 from AIPSTV import *
 from ObitTask import *
 from FITSData import *
-from AIPSUtil import ehex
-
-# Separate the blurb below from what the Python interpreter spits out.
-print ""
-
-print "Welcome to ParselTongue", ptversion.version
-while True:
-    try:
-        input = raw_input("Please enter your AIPS user ID number: ")
-        AIPS.userno = int(input)
-    except KeyboardInterrupt:
-        print ""
-        print "AIPS user ID number is not set"
-        break
-    except:
-        print "That is not a valid AIPS user ID number"
-        continue
-    else:
-        break
  
 # Use our own, somewhat restricted, rlcompleter.  Don't fall over if
 # readline isn't available though.
 try:
     import atexit, readline, ptcompleter
-    try:
-		# use the history file of the specified user ID. note that switching
-		# user IDs by setting AIPS.userno manually will not result in a
-		# different history file being used!
-		suffix = ehex(AIPS.userno,3,0)
-		path = os.environ['HOME'] + '/.ParselTongue/history.' + suffix
-		readline.read_history_file(path)
-    except IOError:
-        pass
-    readline.parse_and_bind("tab: complete")
-    if not os.path.exists(os.path.dirname(path)):
-        os.makedirs(os.path.dirname(path))
-        pass
-    atexit.register(readline.write_history_file, path)
+    if __name__ == "__main__" :
+		try:
+			path = os.environ['HOME'] + '/.ParselTongue/history'
+			readline.read_history_file(path)
+		except IOError:
+			pass
+		readline.parse_and_bind("tab: complete")
+		if not os.path.exists(os.path.dirname(path)):
+			os.makedirs(os.path.dirname(path))
+			pass
+		atexit.register(readline.write_history_file, path)
 except:
     pass
 
@@ -91,5 +69,24 @@ def explain(obj):
     obj.explain()
     return
 
-# This is not a batch job.
-AIPSTask.isbatch = 0
+if __name__ == "__main__" :
+	# This is not a batch job.
+	AIPSTask.isbatch = 0
+
+	# Separate the blurb below from what the Python interpreter spits out.
+	print ""
+
+	print "Welcome to ParselTongue", ptversion.version
+	while True:
+		try:
+			input = raw_input("Please enter your AIPS user ID number: ")
+			AIPS.userno = int(input)
+		except KeyboardInterrupt:
+			print ""
+			print "AIPS user ID number is not set"
+			break
+		except:
+			print "That is not a valid AIPS user ID number"
+			continue
+		else:
+			break
