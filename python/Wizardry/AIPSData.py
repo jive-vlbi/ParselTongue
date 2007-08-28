@@ -47,7 +47,7 @@ def _vectorize(value):
     If VALUE is a scalar, return a list consisting of that scalar.
     Otherwise return VALUE."""
 
-    if type (value) != list:
+    if type(value) != list:
         return [value]
     return value
 
@@ -55,7 +55,7 @@ def _vectorize(value):
 def _rstrip(value):
     """Strip trailing whitespace."""
 
-    if type (value) == list:
+    if type(value) == list:
         return [str.rstrip()  for str in value]
     return value.rstrip()
 
@@ -156,6 +156,9 @@ class AIPSTableRow(_AIPSTableRow):
             elif type == 13:
                 # String.
                 self._row[field] = ''
+            elif type == 14:
+                # Boolean.
+                self._row[field] = repeat * [False]
             else:
                 msg =  "Unimplemented type %d for field %s" % (type, field)
                 raise AssertionError, msg
@@ -240,6 +243,12 @@ class _AIPSTableKeywords:
                                       [8, 1, 1, 1, 1], _vectorize(value))
             InfoList.PAlwaysPutString(self._table.IODesc.List, key,
                                       [8, 1, 1, 1, 1], _vectorize(value))
+        elif _type == 14:
+            value = bool(value)
+            InfoList.PAlwaysPutBoolean(self._table.Desc.List, key,
+                                      [1, 1, 1, 1, 1], _vectorize(value))
+            InfoList.PAlwaysPutBoolean(self._table.IODesc.List, key,
+                                      [1, 1, 1, 1, 1], _vectorize(value))
         else:
             raise AssertionError, "not implemented"
         Table.PDirty(self._table)
@@ -575,6 +584,10 @@ class _AIPSDataKeywords:
             value = str(value).ljust(8)
             InfoList.PAlwaysPutString(self._data.Desc.List, key,
                                       [8, 1, 1, 1, 1], _vectorize(value))
+        elif _type == 14:
+            value = bool(value)
+            InfoList.PAlwaysPutBoolean(self._table.Desc.List, key,
+                                      [1, 1, 1, 1, 1], _vectorize(value))
         else:
             raise AssertionError, "not implemented"
         self._obit.PDirty(self._data)
@@ -935,6 +948,11 @@ class AIPSImage(_AIPSData):
         data = Obit.ImageCastData(self._data.me)
         if name == 'AIPS CC':
             Obit.TableCC(data, [version], 3, name, no_parms, self._err.me)
+        elif name == 'AIPS PS':
+            Obit.TablePS(data, [version], 3, name, self._err.me)
+        elif name == 'AIPS SN':
+            Obit.TableSN(data, [version], 3, name,
+                         kwds['no_pol'], kwds['no_if'], self._err.me)
         else:
             msg = 'Attaching %s tables is not implemented yet' % name
             raise NotImplementedError, msg
@@ -1065,6 +1083,11 @@ class AIPSUVData(_AIPSData):
                          no_pol, no_if, kwds['no_term'], self._err.me)
         elif name == 'AIPS FQ':
             Obit.TableFQ(data, [version], 3, name, no_if, self._err.me)
+        elif name == 'AIPS NI':
+            Obit.TableNI(data, [version], 3, name,
+                         kwds['num_coef'], self._err.me)
+        elif name == 'AIPS PS':
+            Obit.TablePS(data, [version], 3, name, self._err.me)
         elif name == 'AIPS SN':
             Obit.TableSN(data, [version], 3, name,
                          no_pol, no_if, self._err.me)
