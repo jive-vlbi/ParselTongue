@@ -65,7 +65,6 @@ class _AIPSTableRow:
 
     def __init__(self, table, fields, rownum, err):
         self._err = err
-        self._dirty = False
         self._table = table
         self._fields = fields
         self._rownum = rownum
@@ -110,7 +109,6 @@ class _AIPSTableRow:
             return
         key = self._findattr(name)
         self._row[key] = _vectorize(value)
-        self._dirty = True
         pass
 
     def __getitem__(self, name):
@@ -123,13 +121,10 @@ class _AIPSTableRow:
     def update(self):
         """Update this row."""
 
-        if self._dirty:
-            assert(not self._err.isErr)
-            self._table.WriteRow(self._rownum + 1, self._row, self._err)
-            if self._err.isErr:
-                raise RuntimeError
-            self._dirty = False
-            pass
+        assert(not self._err.isErr)
+        self._table.WriteRow(self._rownum + 1, self._row, self._err)
+        if self._err.isErr:
+            raise RuntimeError
         return
 
     pass                                # class _AIPSTableRow
