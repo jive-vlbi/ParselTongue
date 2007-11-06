@@ -20,16 +20,10 @@ farming out jobs in parallel to a cluster whose individual nodes run XML-RPC
 servers. Assumptions inherent in the current implementation:
 
 	1. All data has been copied to disks visible to the remote AIPS client,
-	and are present in the appropriate AIPS disk catalogue. This currently
-	also implies that the remote node has been chosen for each job prior to
-	insertion in the parallel queue.
+	and are present in the appropriate AIPS disk catalogue.
 
 	2. An XML-RPC server must already be running on each of the intended
 	computational nodes. (duh)
-
-	3. Transport of files is performed via ssh's RSA/DSA authentication,
-	which necessitates a keypair and a valid .authorized_hosts file on each
-	cluster node.
 """
 
 from Task import Task
@@ -38,16 +32,13 @@ class ParallelTask(Task):
 	"""Our container class for AIPSTask objects. Also contains methods for
 	despatching and monitoring tasks, a la the go() method in AIPSTask"""
 
-	proxy_list = [] # this list of available URLs must be manually set atm
-	proxy_index = 0 # points to the next available proxy
-
 	def __init__(self):
 		self.tasklist = []
-		self.current = -1  # index of last task to be despatched
+		self.current = 0  # index of last task to be despatched
 
 	def queue(self,task):
 		try:
-			if !(isinstance(task,AIPSTask)):
+			if not isinstance(task,AIPSTask):
 				raise TypeError
 		except TypeError:
 			print 'Argument is not an AIPSTask'
@@ -56,12 +47,14 @@ class ParallelTask(Task):
 			self.tasklist.append(task)
 			return len(self.tasklist)
 
-	def runnext(self):
+	def runnext(self,next=1):
 		"""
-		Run the next member of the task queue.
+		Run next number of jobs in the task queue
 		"""
-		self.current += 1
-		self.tasklist[current].go()
+		while next > 0 :
+			self.tasklist[current].go()
+			self.current += 1
+			next -= 1
 		return
 
 	def runqueue(self):
@@ -69,9 +62,8 @@ class ParallelTask(Task):
 		Run the remainder of the task queue.
 		"""
 		while self.current <= len(self.tasklist) :
-			self.current += 1
 			self.tasklist[current].go()
+			self.current += 1
 		return
 
 	pass                                # class ParallelTask
-

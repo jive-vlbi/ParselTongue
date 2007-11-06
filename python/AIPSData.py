@@ -79,7 +79,7 @@ def _whoami():
     """Return the name of the function that called us."""
     return sys._getframe(1).f_code.co_name
 
-def rftcopy(AIPSDataSource,AIPSDataTarget):
+def rftscopy(AIPSDataSource,AIPSDataTarget):
 	"""
 	Copies data from one AIPS repository to another on a remote host.
 
@@ -141,24 +141,6 @@ def rcopy(AIPSDataSource,AIPSDataTarget):
 	repository to the other, and the AIPS catalogue on the target machine is
 	fixed up appropriately.
 	"""
-
-class _dictify:
-
-    def __init__(self, dict):
-        self._dict = dict
-        self.__dict__.update(dict)
-        return
-
-    def __repr__(self):
-        return str(self._dict)
-
-    def __getitem__(self, key):
-        return self._dict[key]
-
-    def __iter__(self):
-        return self._dict.iterkeys()
-
-    pass                                # class _dictify
 
 class _AIPSDataMethod:
 

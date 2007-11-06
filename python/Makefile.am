@@ -9,7 +9,7 @@ dist_pythonlib_PYTHON = \
 	FITS.py FITSData.py \
 	ObitTask.py \
 	LocalProxy.py XMLRPCServer.py \
-	ParselTongue.py ptcompleter.py
+	ParselTongue.py ptcompleter.py ParallelTask.py
 pythonlib_DATA = ptversion.py
 
 EXTRA_DIST = ptversion.py.in
