@@ -424,13 +424,19 @@ class AIPSTask(Task):
 
             self.wait(proxy, tid)
         finally:
-            if AIPS.log:
-                for message in log:
-                    AIPS.log.write('%s\n' % message)
-                    continue
-                AIPS.log.flush()
-                pass
-            pass
+			if self._log:
+				for message in log:
+					self._log.write('%s\n' % message)
+					continue
+				self._log.flush()
+				pass
+			elif AIPS.log:
+				for message in log:
+					AIPS.log.write('%s\n' % message)
+					continue
+				AIPS.log.flush()
+				pass
+			pass
         return
 
     def __call__(self):

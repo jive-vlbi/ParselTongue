@@ -26,15 +26,18 @@ servers. Assumptions inherent in the current implementation:
 	computational nodes. (duh)
 """
 
+import os, sys
 from Task import Task
+from AIPSTask import AIPSTask
 
 class ParallelTask(Task):
 	"""Our container class for AIPSTask objects. Also contains methods for
 	despatching and monitoring tasks, a la the go() method in AIPSTask"""
 
 	def __init__(self):
-		self.tasklist = []
-		self.current = 0  # index of last task to be despatched
+		Task.__init__(self)
+		self._tasklist = []
+		self._current = 0  # index of last task to be despatched
 
 	def queue(self,task):
 		try:
@@ -44,16 +47,25 @@ class ParallelTask(Task):
 			print 'Argument is not an AIPSTask'
 			return
 		else:
-			self.tasklist.append(task)
-			return len(self.tasklist)
+			self._tasklist.append(task)
+			return len(self._tasklist)
 
 	def runnext(self,next=1):
 		"""
 		Run next number of jobs in the task queue
 		"""
+		try:
+			if (self._current + next) > len(self._tasklist) :
+				raise IndexError
+		except IndexError:
+			print "Error in runnext:",
+			print "run queue has fewer than %d tasks remaining." % next
+			return
 		while next > 0 :
-			self.tasklist[current].go()
-			self.current += 1
+			if (os.fork()) == 0 :
+				self._tasklist[self._current].go()
+				sys.exit(0)
+			self._current += 1
 			next -= 1
 		return
 
@@ -61,9 +73,11 @@ class ParallelTask(Task):
 		"""
 		Run the remainder of the task queue.
 		"""
-		while self.current <= len(self.tasklist) :
-			self.tasklist[current].go()
-			self.current += 1
+		while self._current < len(self._tasklist) :
+			if (os.fork()) == 0 :
+				self._tasklist[self._current].go()
+				sys.exit(0)
+			self._current += 1
 		return
 
 	pass                                # class ParallelTask
