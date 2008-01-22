@@ -14,9 +14,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-import AIPS
+from AIPS import *
 from AIPSTask import *
-import sys
+from AIPSData import *
+import sys, re
 
 def rdiskappend(proxyname,remotedisk):
 	"""Appends proxyname to the global proxy list, and adds the correct
@@ -31,26 +32,30 @@ def rdiskappend(proxyname,remotedisk):
 	# unsightly).
 
 	i = 0
+	proxyfound = False
 	for proxy in AIPS.proxies :
 		if proxy == proxyname :
 			proxyid = i
+			proxyfound = True
 			break
 		i = i + 1
 
-	if not proxyid :
+	if not proxyfound :
 		AIPS.proxies.append(proxyname)
 		proxyid = len(AIPS.proxies) - 1
 	
 	rdisk = AIPSDisk(AIPS.proxies[proxyid],remotedisk)
 
-	j = 0
-	for disk in AIPS.disks :
-		if rdisk == disk :
+	j = 1 # First disk entry in AIPS.disks is always None!
+	diskfound = False
+	for disk in AIPS.disks[1:] :
+		if (rdisk.url == disk.url) and (rdisk.disk == disk.disk) :
 			diskid = j
+			diskfound = True
 			break
 		j = j + 1
 
-	if not diskid :
+	if not diskfound :
 		AIPS.disks.append(rdisk)
 		diskid = len(AIPS.disks) - 1
 
