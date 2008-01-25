@@ -153,6 +153,7 @@ class AIPSTask(Task):
         self._input_list = []
         self._output_list = []
         self._message_list = []
+        self._log = ""
 
         # Optional arguments.
         if 'version' in kwds:
@@ -424,13 +425,14 @@ class AIPSTask(Task):
 
             self.wait(proxy, tid)
         finally:
-			if self._log:
+			if os.path.isfile(self._log):
+				logfile = open(self._log,'a')
 				for message in log:
-					self._log.write('%s\n' % message)
+					logfile.write('%s\n' % message)
 					continue
-				self._log.flush()
+				logfile.flush()
 				pass
-			elif AIPS.log:
+			else :  # use AIPS.log
 				for message in log:
 					AIPS.log.write('%s\n' % message)
 					continue

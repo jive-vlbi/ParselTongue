@@ -88,6 +88,8 @@ def rftscopy(AIPSDataSource,AIPSDataTarget):
 	# characters, due to AIPS being a retarded 70's child...
 	inname = fitswrite.inname[0:37]
 	outname = "/tmp/" + inname + ".fits"
+	if os.path.exists(outname) :
+		os.remove(outname)
 	fitswrite.outfile = outname
 	fitswrite.go()
 
