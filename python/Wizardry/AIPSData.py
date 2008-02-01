@@ -251,16 +251,12 @@ class _AIPSTableKeywords:
 
     def _generate_dict(self):
         dict = {}
-        i = 1
-        while True:
-            try:
-                blob = Obit.makeInfoListBlob()
-                value = Obit.InfoListGetNumber(self._table.IODesc.List.me,
-                                               i, blob)
-                dict[value[1]] = _scalarize(value[4])
-            except:
-                break
-            i += 1
+        for key in self._table.IODesc.List.Dict:
+            if self._table.IODesc.List.Dict[key][0] == 13:
+                dict[key] = self._table.IODesc.List.Dict[key][2][0]
+            else:
+                dict[key] = _scalarize(self._table.IODesc.List.Dict[key][2])
+                pass
             continue
         return dict
 
@@ -591,7 +587,11 @@ class _AIPSDataKeywords:
     def _generate_dict(self):
         dict = {}
         for key in self._data.Desc.List.Dict:
-            dict[key] = _scalarize(self._data.Desc.List.Dict[key][2])
+            if self._data.Desc.List.Dict[key][0] == 13:
+                dict[key] = self._data.Desc.List.Dict[key][2][0]
+            else:
+                dict[key] = _scalarize(self._data.Desc.List.Dict[key][2])
+                pass
             continue
         return dict
 
