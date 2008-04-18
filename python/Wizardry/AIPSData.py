@@ -510,6 +510,13 @@ class _AIPSVisibilityIter(object):
         self._dirty = True
     source = property(_get_source, _set_source)
 
+    def _get_freqsel(self):
+        return self._buffer[self._index][self._desc['ilocfq']]
+    def _set_freqsel(self, value):
+        self._buffer[self._index][self._desc['ilocfq']] = value
+        self._dirty = True
+    freqsel = property(_get_freqsel, _set_freqsel)
+
     def _get_inttim(self):
         return self._buffer[self._index][self._desc['ilocit']]
     def _set_inttim(self, value):
