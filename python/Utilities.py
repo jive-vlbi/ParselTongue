@@ -17,6 +17,7 @@
 from AIPS import *
 from AIPSTask import *
 from AIPSData import *
+import socket
 import sys, re
 
 def rdiskappend(proxyname,remotedisk):
@@ -68,20 +69,15 @@ def rftscopy(AIPSDataSource,AIPSDataTarget):
 
 	# Takes two AIPSData objects as arguments. The first refers to the data
 	# store on the local host. The second is a "fake" object that is filled
-	# in by rftscopy.  Works by converting first to a FITS file, transporting
-	# via ssh, and then importing the result into the remote AIPS client.
+	# in by rftscopy.  Works by converting first to a FITS file,
+	# transporting via the FileTransport server and the transporter client
+	# method, and then importing the result into the remote AIPS client.
 	# FITS transport implies a substantial conversion overhead, which is
 	# required once on each end, but has the advantage of automatically
 	# adjusting to the correct byte-endianness.  If you are quite sure that
 	# the remote client is on a machine with the same endian convention, use
-	# the rcopy() method instead.
+	# the rcopy() method instead. (which I haven't implemented yet...)
 
-	# The transport step also assumes that an RSA/DSA keypair has been
-	# established between client and server to permit SSH logins without a
-	# password, and that ssh is available on the user's path (and really,
-	# shouldn't it be, here in the 21st century?)
-
-	# write out a temporary FITS file
 	fitswrite = AIPSTask('FITTP')
 	fitswrite.indata = AIPSDataSource
 	# truncate so that outfile is not longer than 48 total
@@ -97,22 +93,35 @@ def rftscopy(AIPSDataSource,AIPSDataTarget):
 	hostpattern = "http://(.*):[0-9]+"
 	match = re.search(hostpattern,AIPS.disks[AIPSDataTarget.disk].url)
 	rhost = match.group(1)
-	command_string = "scp " + outname + " " + rhost + ":/tmp"
-	os.system(command_string)
+
+	# beam me over, scotty
+	remotename = transporter(outname,rhost)
 
 	# and import the temporary FITS file at the other end
 	fitsimport = AIPSTask('FITLD')
-	fitsimport.infile = outname
+	fitsimport.infile = remotename
 	fitsimport.outdata = AIPSDataTarget
 	fitsimport.go()
 
-	# clean up /tmp on both machines
-	os.remove(outname)
-	returnval = os.system("ssh " + rhost + " rm " + outname)
-	# os.system return values are encoded in the same way as those of
-	# os.wait(): 16-bits, with the low 8 encoding the signal number, if any,
-	# and the high 8 encoding the return value of the command
-	if (returnval >> 8) != 0 :
-		print "Unable to remove temporary file from the remote filesystem."
+	# clean up /tmp on the localhost
+	# os.remove(outname)
 	return 0
 
+def transporter(file,server,port=8001) :
+	"""
+	Sends the named file to a tmp directory on server, returning the name of
+	the file on the remote system.
+	"""
+
+	input = open(file,'r')
+	out = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	out.connect((server,port))
+
+	while True:
+		buffer = input.read(65536)
+		if not buffer : break
+		out.sendall(buffer)
+	remote_filename = out.recv(1024)
+
+	out.close()
+	return remote_filename
