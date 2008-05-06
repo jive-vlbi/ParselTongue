@@ -1,11 +1,11 @@
 ## Process this file with automake to create Makefile.in.
 
-bin_SCRIPTS = ParselTongue ParselTongueServer TVServer
+bin_SCRIPTS = ParselTongue ParselTongueServer ParselFileServer TVServer
 
-EXTRA_DIST = ParselTongue.in ParselTongueServer.in TVServer
+EXTRA_DIST = ParselTongue.in ParselTongueServer.in ParselFileServer.in TVServer
 
 # Files that should be removed, but which Automake does not know.
-CLEANFILES = ParselTongue ParselTongueServer
+CLEANFILES = ParselTongue ParselTongueServer ParselFileServer
 
 
 ## ------------- ##
@@ -34,3 +34,10 @@ ParselTongueServer: $(srcdir)/ParselTongueServer.in Makefile
 	chmod +x ParselTongueServer.tmp
 	chmod -w ParselTongueServer.tmp
 	mv -f ParselTongueServer.tmp ParselTongueServer
+
+ParselFileServer: $(srcdir)/ParselFileServer.in Makefile
+	rm -f ParselFileServer ParselFileServer.tmp
+	$(edit) $(srcdir)/ParselFileServer.in >ParselFileServer.tmp
+	chmod +x ParselFileServer.tmp
+	chmod -w ParselFileServer.tmp
+	mv -f ParselFileServer.tmp ParselFileServer
