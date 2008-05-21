@@ -59,11 +59,9 @@ True
 
 # Global AIPS defaults.
 import AIPS
-from AIPSTask import *
 
 # Generic Python stuff.
 import sys
-import re
 
 # This code is way too clever.  Instead of implementing each and every
 # function call provided by a proxy, class _Method implements a
@@ -78,6 +76,7 @@ import re
 def _whoami():
     """Return the name of the function that called us."""
     return sys._getframe(1).f_code.co_name
+
 
 class _AIPSDataMethod:
 

@@ -91,11 +91,11 @@ True
 Make sure we handle multi-dimensional arrays correctly:
 
 >>> sad = AIPSTask('sad')
->>> sad.dowidth[1][1:] = [1, 1, 1]
+>>> sad.dowidth[1][1:] = [2, 2, 2]
 >>> sad.dowidth[1]
-[None, 1.0, 1.0, 1.0]
+[None, 2.0, 2.0, 2.0]
 >>> sad.dowidth[2]
-[None, 0.0, 0.0, 0.0]
+[None, 1.0, 1.0, 1.0]
 
 """
 
@@ -309,7 +309,6 @@ class AIPSTask(Task):
 
         # Figure out what proxy to use for running the task, and
         # translate the related disk numbers.
-
         url = None
         proxy = None
         for adverb in self._disk_adverbs:
@@ -433,11 +432,12 @@ class AIPSTask(Task):
 				logfile.flush()
 				pass
 			else :  # use AIPS.log
-				for message in log:
-					AIPS.log.write('%s\n' % message)
-					continue
-				AIPS.log.flush()
-				pass
+				if AIPS.log:
+					for message in log:
+						AIPS.log.write('%s\n' % message)
+						continue
+					AIPS.log.flush()
+					pass
 			pass
         return
 

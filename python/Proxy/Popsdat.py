@@ -30,6 +30,11 @@ class Popsdat:
         """Determine default values and string lengths for all AIPS
         tasks by parsing POPSDAT.HLP."""
 
+        # POPSDAT.HLP contains some POPS statements that set default
+        # values for arrays and strings.  Parse those statements first
+        # such that we can use those default values below.
+        self.__parse_statements()
+
         input = open(self.path)
 
         for line in input:
@@ -50,15 +55,21 @@ class Popsdat:
             if type == 1:               # Float
                 self.default_dict[name] = float(split_line[3])
             elif type == 2:             # Array of floats.
+                if name in self.default_dict:
+                    value = [self.default_dict[name]]
+                else:
+                    value = [0.0]
+                    pass
+
                 dimensions = int(split_line[3])
                 if dimensions == 1:     # Vector of floats.
                     length = int(float(split_line[4]))
-                    self.default_dict[name] = [None] + length * [0.0]
+                    self.default_dict[name] = [None] + length * value
                 elif dimensions == 2:   # Matrix of floats.
                     dimy = int(float(split_line[4]))
                     dimx = int(float(split_line[5]))
                     self.default_dict[name] = [None] \
-                                              + dimx * [[None] + dimy * [0.0]]
+                                              + dimx * [[None] + dimy * value]
                 else:
                     msg = "Cannot handle float arrays of dimension %d" \
                           % dimension
@@ -68,13 +79,19 @@ class Popsdat:
             elif type == 6:             # End of adverbs.
                 break
             elif type == 7:             # Array of characters.
+                if name in self.default_dict:
+                    value = self.default_dict[name]
+                else:
+                    value = ''
+                    pass
+
                 dimensions = int(split_line[3])
                 self.strlen_dict[name] = int(float(split_line[4]))
                 if dimensions == 1:     # String
-                    self.default_dict[name] = ''
+                    self.default_dict[name] = value
                 elif dimensions == 2:   # Vector of strings.
                     length = int(float(split_line[5]))
-                    self.default_dict[name] = [None] + length * ['']
+                    self.default_dict[name] = [None] + length * [value]
                 else:
                     msg = "Cannot handle character arrays of dimension %d" \
                           % dimension
@@ -127,6 +144,48 @@ class Popsdat:
                         pass
                     continue
                 pass
+            continue
+
+    def __parse_statements(self):
+        """Parse statements in POPSDAT.HLP."""
+
+        input = open(self.path)
+
+        for line in input:
+            # Statements follow the adverbs.
+            if line.startswith('QUITPOPS'):
+                break;
+            continue
+
+        for line in input:
+            if line.startswith('*'):
+                break
+            continue
+
+        for line in input:
+            if line.startswith('*'):
+                break
+
+            # If we have multiple statements on a line, split them.
+            split_line = line.strip().split(';')
+            for statement in split_line:
+                if not statement:
+                    continue
+
+                # Parse statement.  This really only parses
+                # assignments, but that's all we care about (for now).
+                words = statement.strip().split('=')
+                name = words[0].strip().lower()
+                value = words[1].strip()
+                if value.startswith("'"):
+                    value = value.strip("'")
+                else:
+                    value = float(value)
+                    pass
+
+                # Set temporary default value.  The permanent default
+                # value will be set later.
+                self.default_dict[name] = value
             continue
 
     def __init__(self, version):

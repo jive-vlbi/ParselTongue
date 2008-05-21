@@ -47,7 +47,7 @@ def _vectorize(value):
     If VALUE is a scalar, return a list consisting of that scalar.
     Otherwise return VALUE."""
 
-    if type (value) != list:
+    if type(value) != list:
         return [value]
     return value
 
@@ -55,7 +55,7 @@ def _vectorize(value):
 def _rstrip(value):
     """Strip trailing whitespace."""
 
-    if type (value) == list:
+    if type(value) == list:
         return [str.rstrip()  for str in value]
     return value.rstrip()
 
@@ -65,7 +65,6 @@ class _AIPSTableRow:
 
     def __init__(self, table, fields, rownum, err):
         self._err = err
-        self._dirty = False
         self._table = table
         self._fields = fields
         self._rownum = rownum
@@ -110,7 +109,6 @@ class _AIPSTableRow:
             return
         key = self._findattr(name)
         self._row[key] = _vectorize(value)
-        self._dirty = True
         pass
 
     def __getitem__(self, name):
@@ -123,13 +121,10 @@ class _AIPSTableRow:
     def update(self):
         """Update this row."""
 
-        if self._dirty:
-            assert(not self._err.isErr)
-            self._table.WriteRow(self._rownum + 1, self._row, self._err)
-            if self._err.isErr:
-                raise RuntimeError
-            self._dirty = False
-            pass
+        assert(not self._err.isErr)
+        self._table.WriteRow(self._rownum + 1, self._row, self._err)
+        if self._err.isErr:
+            raise RuntimeError
         return
 
     pass                                # class _AIPSTableRow
@@ -156,6 +151,9 @@ class AIPSTableRow(_AIPSTableRow):
             elif type == 13:
                 # String.
                 self._row[field] = ''
+            elif type == 14:
+                # Boolean.
+                self._row[field] = repeat * [False]
             else:
                 msg =  "Unimplemented type %d for field %s" % (type, field)
                 raise AssertionError, msg
@@ -240,6 +238,12 @@ class _AIPSTableKeywords:
                                       [8, 1, 1, 1, 1], _vectorize(value))
             InfoList.PAlwaysPutString(self._table.IODesc.List, key,
                                       [8, 1, 1, 1, 1], _vectorize(value))
+        elif _type == 14:
+            value = bool(value)
+            InfoList.PAlwaysPutBoolean(self._table.Desc.List, key,
+                                      [1, 1, 1, 1, 1], _vectorize(value))
+            InfoList.PAlwaysPutBoolean(self._table.IODesc.List, key,
+                                      [1, 1, 1, 1, 1], _vectorize(value))
         else:
             raise AssertionError, "not implemented"
         Table.PDirty(self._table)
@@ -247,16 +251,12 @@ class _AIPSTableKeywords:
 
     def _generate_dict(self):
         dict = {}
-        i = 1
-        while True:
-            try:
-                blob = Obit.makeInfoListBlob()
-                value = Obit.InfoListGetNumber(self._table.IODesc.List.me,
-                                               i, blob)
-                dict[value[1]] = _scalarize(value[4])
-            except:
-                break
-            i += 1
+        for key in self._table.IODesc.List.Dict:
+            if self._table.IODesc.List.Dict[key][0] == 13:
+                dict[key] = self._table.IODesc.List.Dict[key][2][0]
+            else:
+                dict[key] = _scalarize(self._table.IODesc.List.Dict[key][2])
+                pass
             continue
         return dict
 
@@ -510,6 +510,13 @@ class _AIPSVisibilityIter(object):
         self._dirty = True
     source = property(_get_source, _set_source)
 
+    def _get_freqsel(self):
+        return self._buffer[self._index][self._desc['ilocfq']]
+    def _set_freqsel(self, value):
+        self._buffer[self._index][self._desc['ilocfq']] = value
+        self._dirty = True
+    freqsel = property(_get_freqsel, _set_freqsel)
+
     def _get_inttim(self):
         return self._buffer[self._index][self._desc['ilocit']]
     def _set_inttim(self, value):
@@ -575,6 +582,10 @@ class _AIPSDataKeywords:
             value = str(value).ljust(8)
             InfoList.PAlwaysPutString(self._data.Desc.List, key,
                                       [8, 1, 1, 1, 1], _vectorize(value))
+        elif _type == 14:
+            value = bool(value)
+            InfoList.PAlwaysPutBoolean(self._table.Desc.List, key,
+                                      [1, 1, 1, 1, 1], _vectorize(value))
         else:
             raise AssertionError, "not implemented"
         self._obit.PDirty(self._data)
@@ -583,7 +594,11 @@ class _AIPSDataKeywords:
     def _generate_dict(self):
         dict = {}
         for key in self._data.Desc.List.Dict:
-            dict[key] = _scalarize(self._data.Desc.List.Dict[key][2])
+            if self._data.Desc.List.Dict[key][0] == 13:
+                dict[key] = self._data.Desc.List.Dict[key][2][0]
+            else:
+                dict[key] = _scalarize(self._data.Desc.List.Dict[key][2])
+                pass
             continue
         return dict
 
@@ -938,6 +953,11 @@ class AIPSImage(_AIPSData):
         data = Obit.ImageCastData(self._data.me)
         if name == 'AIPS CC':
             Obit.TableCC(data, [version], 3, name, no_parms, self._err.me)
+        elif name == 'AIPS PS':
+            Obit.TablePS(data, [version], 3, name, self._err.me)
+        elif name == 'AIPS SN':
+            Obit.TableSN(data, [version], 3, name,
+                         kwds['no_pol'], kwds['no_if'], self._err.me)
         else:
             msg = 'Attaching %s tables is not implemented yet' % name
             raise NotImplementedError, msg
@@ -1068,6 +1088,11 @@ class AIPSUVData(_AIPSData):
                          no_pol, no_if, kwds['no_term'], self._err.me)
         elif name == 'AIPS FQ':
             Obit.TableFQ(data, [version], 3, name, no_if, self._err.me)
+        elif name == 'AIPS NI':
+            Obit.TableNI(data, [version], 3, name,
+                         kwds['num_coef'], self._err.me)
+        elif name == 'AIPS PS':
+            Obit.TablePS(data, [version], 3, name, self._err.me)
         elif name == 'AIPS SN':
             Obit.TableSN(data, [version], 3, name,
                          no_pol, no_if, self._err.me)

@@ -62,7 +62,7 @@ def rdiskappend(proxyname,remotedisk):
 
 	return diskid
 
-def rftscopy(AIPSDataSource,AIPSDataTarget):
+def rftscp(AIPSDataSource,AIPSDataTarget):
 	"""
 	Copies data from one AIPS repository to another on a remote host.
 	"""
@@ -107,7 +107,7 @@ def rftscopy(AIPSDataSource,AIPSDataTarget):
 	# os.remove(outname)
 	return 0
 
-def transporter(file,server,port=8001) :
+def transport(file,server,port=8001) :
 	"""
 	Sends the named file to a tmp directory on server, returning the name of
 	the file on the remote system.
