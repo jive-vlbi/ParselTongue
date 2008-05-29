@@ -95,7 +95,7 @@ def rftscp(AIPSDataSource,AIPSDataTarget):
 	rhost = match.group(1)
 
 	# beam me over, scotty
-	remotename = transporter(outname,rhost)
+	remotename = transport(outname,rhost)
 
 	# and import the temporary FITS file at the other end
 	fitsimport = AIPSTask('FITLD')
