@@ -84,7 +84,7 @@ class ParallelTask(Task):
 		"""
 		Display the remaining queued tasks
 		"""
-		ind = self._current
+		index = self._current
 		while index < len(self._tasklist) :
 			print "AIPS task %s" % self._tasklist[index]._name
 			for adverb in self._input_list :
