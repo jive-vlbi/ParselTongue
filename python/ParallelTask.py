@@ -87,7 +87,7 @@ class ParallelTask(Task):
 		index = self._current
 		while index < len(self._tasklist) :
 			print "AIPS task %s" % self._tasklist[index]._name
-			for adverb in self._input_list :
+			for adverb in self._tasklist[index]._input_list :
 				if self.__dict__[adverb] == '':
 					print "    '%s': ''" % adverb
 				else:
