@@ -91,7 +91,7 @@ class ParallelTask(Task):
 				if self._tasklist[index].__dict__[adverb] == '':
 					print "    '%s': ''" % adverb
 				else:
-					value = PythonList(self._tasklist[index].__dict__[adverb])
+					value = AIPSTask.PythonList(self._tasklist[index].__dict__[adverb])
 					print "    '%s': %s" % (adverb, value)
 					pass
 				continue
