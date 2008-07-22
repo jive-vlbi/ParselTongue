@@ -27,18 +27,23 @@ import SocketServer
 class FileServer(SocketServer.ForkingMixIn, SocketServer.TCPServer) : pass
 
 class FileWriter(SocketServer.BaseRequestHandler) :
-	def handle(self) :
-		copy = open(os.tempnam("/tmp"),"w")
-		self.request.send(copy.name)
-		while True:
-			data = self.request.recv(4096)
-			if not data : break
-			copy.write(data)
-		copy.close()
+    def __init__(self,tmpdir = "/tmp") :
+        self.dir = tmpdir
+    def handle(self) :
+        copy = open(os.tempnam(self.dir),"w")
+        self.request.send(copy.name)
+        while True:
+            data = self.request.recv(4096)
+            if not data : break
+            copy.write(data)
+        copy.close()
 
 if __name__ == "__main__" :
-	try :
-		server = FileServer(('',8001),FileWriter)
-		server.serve_forever()
-	except(KeyboardInterrupt) :
-		print "FileServer exiting. Later!"
+    try :
+        if (len(sys.argv) > 1) :
+            server = FileServer(('',8001),FileWriter(sys.argv[1]))
+        else :
+            server = FileServer(('',8001),FileWriter)
+        server.serve_forever()
+    except(KeyboardInterrupt) :
+        print "FileServer exiting. Later!"

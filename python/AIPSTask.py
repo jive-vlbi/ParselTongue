@@ -391,6 +391,7 @@ class AIPSTask(Task):
         """Run the task."""
 
         (proxy, tid) = self.spawn()
+        print "tid: %d" % tid
         log = []
         count = 0
         rotator = ['|\b', '/\b', '-\b', '\\\b']
