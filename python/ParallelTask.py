@@ -44,7 +44,7 @@ class ParallelTask :
 class ParallelQueue :
     """
     Our container class for ParallelTask objects. Also contains methods for
-    despatching and monitoring tasks, a la the go() method in AIPSTask
+    despatching and monitoring tasks.
     """
 
     def __init__(self):
