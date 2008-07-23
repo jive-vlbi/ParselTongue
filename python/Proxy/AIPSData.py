@@ -37,6 +37,9 @@ class AIPSData:
         return
 
     def exists(self, desc):
+        """Checks that this instance of AIPSData refers to a dataset that is
+        actually present in the AIPS catalogue."""
+
         assert(not self.err.isErr)
         cno = Obit.AIPSDirFindCNO(desc['disk'], desc['userno'], desc['name'],
                                   desc['klass'], self.type,  desc['seq'],
@@ -51,6 +54,7 @@ class AIPSData:
         return True                # Return something other than None.
 
     def header(self, desc):
+        """Returns the data header."""
         data = self._init(desc)
         return data.header._generate_dict()
 
@@ -71,18 +75,23 @@ class AIPSData:
         return data.tables
 
     def table_highver(self, desc, type):
+        """Returns the highest version number of the specified table type."""
         data = self._init(desc)
         return data.table_highver(type)
 
     def rename(self, desc, name, klass, seq):
+        """Renames the data set."""
         data = self._init(desc)
         return data.rename(name, klass, seq)
 
     def zap(self, desc, force):
+        """Removes the data set from the AIPS catalogue."""
         self._init(desc).zap(force)
         return True                # Return something other than None.
 
     def clrstat(self, desc):
+        """Unsets the 'busy' state in the AIPS catalogue. Useful should an
+		AIPS task die mid-step."""
         self._init(desc).clrstat()
         return True                # Return something other than None.
 
@@ -127,6 +136,7 @@ class AIPSData:
         return result
 
     def zap_table(self, desc, type, version):
+        """Remove the specified version of the indicated table type."""
         data = self._init(desc)
         data.zap_table(type, version)
         return True                # Return something other than None.

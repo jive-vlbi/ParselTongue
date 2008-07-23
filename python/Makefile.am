@@ -8,8 +8,8 @@ dist_pythonlib_PYTHON = \
 	AIPS.py AIPSUtil.py AIPSTask.py AIPSData.py AIPSTV.py \
 	FITS.py FITSData.py \
 	ObitTask.py \
-	LocalProxy.py XMLRPCServer.py \
-	ParselTongue.py ptcompleter.py
+	LocalProxy.py XMLRPCServer.py FileServer.py \
+	ParselTongue.py ptcompleter.py ParallelTask.py Utilities.py
 pythonlib_DATA = ptversion.py
 
 EXTRA_DIST = ptversion.py.in

@@ -63,7 +63,7 @@ import AIPS
 # Generic Python stuff.
 import sys
 
-# This code is way to clever.  Instead of implementing each and every
+# This code is way too clever.  Instead of implementing each and every
 # function call provided by a proxy, class _Method implements a
 # callable object that invokes a named method of a proxy, passing a
 # description of the AIPS data it should operate on as the first
@@ -133,7 +133,7 @@ class _AIPSData(object):
 
     def __init__(self, *args):
         # Instances can be created by specifying name, class, disk,
-        # sequency number and (optionally) user number explicitly, or
+        # sequence number and (optionally) user number explicitly, or
         # by passing an object that has the appropriate attributes.
         # This allows the creation of a non-Wizardry object from its
         # Wizardry counterpart.
@@ -468,6 +468,9 @@ class _AIPSCatEntry(_dictify):
 
 
 class AIPSCat(object):
+
+    """This class describes an entire AIPS catalogue."""
+
     def __init__(self, disk=0):
         disks = [disk]
         if disk == 0:
@@ -506,6 +509,9 @@ class AIPSCat(object):
         return s.strip()
 
     def zap(self, force=False, **kwds):
+
+        """Removes a catalogue entry."""
+
         name = None
         if 'name' in kwds: name = kwds['name']; del kwds['name']
         klass = None

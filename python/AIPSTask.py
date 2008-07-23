@@ -153,6 +153,7 @@ class AIPSTask(Task):
         self._input_list = []
         self._output_list = []
         self._message_list = []
+        self._log = ""
 
         # Optional arguments.
         if 'version' in kwds:
@@ -390,6 +391,7 @@ class AIPSTask(Task):
         """Run the task."""
 
         (proxy, tid) = self.spawn()
+        print "tid: %d" % tid
         log = []
         count = 0
         rotator = ['|\b', '/\b', '-\b', '\\\b']
@@ -423,13 +425,21 @@ class AIPSTask(Task):
 
             self.wait(proxy, tid)
         finally:
-            if AIPS.log:
-                for message in log:
-                    AIPS.log.write('%s\n' % message)
-                    continue
-                AIPS.log.flush()
-                pass
-            pass
+			if os.path.isfile(self._log):
+				logfile = open(self._log,'a')
+				for message in log:
+					logfile.write('%s\n' % message)
+					continue
+				logfile.flush()
+				pass
+			else :  # use AIPS.log
+				if AIPS.log:
+					for message in log:
+						AIPS.log.write('%s\n' % message)
+						continue
+					AIPS.log.flush()
+					pass
+			pass
         return
 
     def __call__(self):
