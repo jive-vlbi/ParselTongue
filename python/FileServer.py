@@ -27,13 +27,12 @@ import SocketServer
 class FileServer(SocketServer.ForkingMixIn, SocketServer.TCPServer) : pass
 
 class FileWriter(SocketServer.BaseRequestHandler) :
-    def __init__(self,tmpdir = "/tmp") :
-        self.dir = tmpdir
+    dir = "/tmp"
     def handle(self) :
         copy = open(os.tempnam(self.dir),"w")
         self.request.send(copy.name)
         while True:
-            data = self.request.recv(4096)
+            data = self.request.recv(65536)
             if not data : break
             copy.write(data)
         copy.close()

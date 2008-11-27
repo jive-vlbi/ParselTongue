@@ -28,7 +28,7 @@ servers. Assumptions inherent in the current implementation:
 
 import os, sys
 from Task import Task
-import AIPSTask
+from AIPSTask import *
 import AIPS
 
 class ParallelTask :
@@ -53,7 +53,7 @@ class ParallelQueue :
 
     def queue(self,task):
         try:
-            if not isinstance(task,AIPSTask.AIPSTask):
+            if not isinstance(task,AIPSTask):
                 raise TypeError
         except TypeError:
             print 'Argument is not an AIPSTask'
@@ -72,7 +72,7 @@ class ParallelQueue :
                 anydone = True
         return anydone
 
-    def runqueue(self):
+    def go(self):
         """
         Run the remainder of the task queue.
         """
@@ -91,9 +91,9 @@ class ParallelQueue :
                 message = task.task.messages(task.proxy,task.tid)
                 if (message) : 
                     for note in message :
-                        task.task._log.write('%s\n' % note)
+                        task.task.log.write('%s\n' % note)
                         continue
-                    task.task._log.flush()
+                    task.task.log.flush()
         else :
             j = len(self._tasklist) - 1
             while (j >= 0) : 
@@ -101,24 +101,6 @@ class ParallelQueue :
                     self._tasklist[j].task.wait(self._tasklist[j].proxy,self._tasklist[j].tid)
                     del self._tasklist[j]
                 j = j - 1
-        return
-
-    def listqueue(self,verbose=1):
-        """
-        Display the remaining queued tasks
-        """
-        index = self._current
-        while index < len(self._tasklist) :
-            print "AIPS task %s" % self._tasklist[index].task._name
-            for adverb in self._tasklist[index].task._input_list :
-                if self._tasklist[index].task.__dict__[adverb] == '':
-                    print "    '%s': ''" % adverb
-                else:
-                    value = AIPSTask.PythonList(self._tasklist[index].task.__dict__[adverb])
-                    print "    '%s': %s" % (adverb, value)
-                    pass
-                continue
-            index += 1
         return
 
     pass                                # class ParallelTask

@@ -62,21 +62,19 @@ def rdiskappend(proxyname,remotedisk):
 
 	return diskid
 
-def rftscp(AIPSDataSource,AIPSDataTarget):
+def rcopy(AIPSDataSource,AIPSDataTarget):
 	"""
 	Copies data from one AIPS repository to another on a remote host.
 	"""
 
 	# Takes two AIPSData objects as arguments. The first refers to the data
 	# store on the local host. The second is a "fake" object that is filled
-	# in by rftscopy.  Works by converting first to a FITS file,
+	# in by rcopy.  Works by converting first to a FITS file,
 	# transporting via the FileTransport server and the transporter client
 	# method, and then importing the result into the remote AIPS client.
 	# FITS transport implies a substantial conversion overhead, which is
 	# required once on each end, but has the advantage of automatically
-	# adjusting to the correct byte-endianness.  If you are quite sure that
-	# the remote client is on a machine with the same endian convention, use
-	# the rcopy() method instead. (which I haven't implemented yet...)
+	# adjusting to the correct byte-endianness.
 
 	fitswrite = AIPSTask('FITTP')
 	fitswrite.indata = AIPSDataSource

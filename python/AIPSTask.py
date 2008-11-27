@@ -14,90 +14,88 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""
 
-This module provides the AIPSTask class.  It adapts the Task class from
-the Task module to be able to run classic AIPS tasks:
+# This module provides the AIPSTask class.  It adapts the Task class from
+# the Task module to be able to run classic AIPS tasks:
+# 
+# >>> imean = AIPSTask('imean')
+# 
+# The resulting class instance has all associated adverbs as attributes:
+# 
+# >>> print imean.ind
+# 0.0
+# >>> imean.ind = 1
+# >>> print imean.indisk
+# 1.0
+# >>> imean.indi = 2.0
+# >>> print imean.ind
+# 2.0
+# 
+# It also knows the range for these attributes:
+# 
+# >>> imean.ind = -1
+# Traceback (most recent call last):
+#   ...
+# ValueError: value '-1.0' is out of range for attribute 'indisk'
+# >>> imean.ind = 10.0
+# Traceback (most recent call last):
+#   ...
+# ValueError: value '10.0' is out of range for attribute 'indisk'
+# 
+# >>> imean.inc = 'UVDATA'
+# 
+# >>> print imean.inclass
+# UVDATA
+# 
+# >>> imean.blc[1:] = [128, 128]
+# >>> print imean.blc
+# [None, 128.0, 128.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+# 
+# >>> imean.blc = AIPSList([256, 256])
+# >>> print imean.blc
+# [None, 256.0, 256.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+# 
+# It doesn't hurt to apply AIPSList to a scalar:
+# >>> AIPSList(1)
+# 1
+# 
+# And it works on matrices (lists of lists) too:
+# >>> AIPSList([[1,2],[3,4],[5,6]])
+# [None, [None, 1, 2], [None, 3, 4], [None, 5, 6]]
+# 
+# It should also work for strings:
+# >>> AIPSList('foobar')
+# 'foobar'
+# >>> AIPSList(['foo', 'bar'])
+# [None, 'foo', 'bar']
+# 
+# The AIPSTask class implements the copy method:
+# 
+# >>> imean2 = imean.copy()
+# >>> print imean2.inclass
+# UVDATA
+# >>> imean2.inclass = 'SPLIT'
+# >>> print imean.inclass
+# UVDATA
+# 
+# It also implements the == operator, which checks whether task name and
+# inputs match:
+# 
+# >>> imean2 == imean
+# False
+# >>> imean2.inclass = 'UVDATA'
+# >>> imean2 == imean
+# True
+# 
+# Make sure we handle multi-dimensional arrays correctly:
+# 
+# >>> sad = AIPSTask('sad')
+# >>> sad.dowidth[1][1:] = [2, 2, 2]
+# >>> sad.dowidth[1]
+# [None, 2.0, 2.0, 2.0]
+# >>> sad.dowidth[2]
+# [None, 1.0, 1.0, 1.0]
 
->>> imean = AIPSTask('imean')
-
-The resulting class instance has all associated adverbs as attributes:
-
->>> print imean.ind
-0.0
->>> imean.ind = 1
->>> print imean.indisk
-1.0
->>> imean.indi = 2.0
->>> print imean.ind
-2.0
-
-It also knows the range for these attributes:
-
->>> imean.ind = -1
-Traceback (most recent call last):
-  ...
-ValueError: value '-1.0' is out of range for attribute 'indisk'
->>> imean.ind = 10.0
-Traceback (most recent call last):
-  ...
-ValueError: value '10.0' is out of range for attribute 'indisk'
-
->>> imean.inc = 'UVDATA'
-
->>> print imean.inclass
-UVDATA
-
->>> imean.blc[1:] = [128, 128]
->>> print imean.blc
-[None, 128.0, 128.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-
->>> imean.blc = AIPSList([256, 256])
->>> print imean.blc
-[None, 256.0, 256.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-
-It doesn't hurt to apply AIPSList to a scalar:
->>> AIPSList(1)
-1
-
-And it works on matrices (lists of lists) too:
->>> AIPSList([[1,2],[3,4],[5,6]])
-[None, [None, 1, 2], [None, 3, 4], [None, 5, 6]]
-
-It should also work for strings:
->>> AIPSList('foobar')
-'foobar'
->>> AIPSList(['foo', 'bar'])
-[None, 'foo', 'bar']
-
-The AIPSTask class implements the copy method:
-
->>> imean2 = imean.copy()
->>> print imean2.inclass
-UVDATA
->>> imean2.inclass = 'SPLIT'
->>> print imean.inclass
-UVDATA
-
-It also implements the == operator, which checks whether task name and
-inputs match:
-
->>> imean2 == imean
-False
->>> imean2.inclass = 'UVDATA'
->>> imean2 == imean
-True
-
-Make sure we handle multi-dimensional arrays correctly:
-
->>> sad = AIPSTask('sad')
->>> sad.dowidth[1][1:] = [2, 2, 2]
->>> sad.dowidth[1]
-[None, 2.0, 2.0, 2.0]
->>> sad.dowidth[2]
-[None, 1.0, 1.0, 1.0]
-
-"""
 
 # Global AIPS defaults.
 import AIPS
@@ -147,13 +145,15 @@ class AIPSTask(Task):
     # Default to batch mode.
     isbatch = 32000
 
+    # This should be set to a file object...
+    log = open("/dev/null",'a')
+
     def __init__(self, name, **kwds):
         Task.__init__(self)
         self._name = name
         self._input_list = []
         self._output_list = []
         self._message_list = []
-        self._log = ""
 
         # Optional arguments.
         if 'version' in kwds:
@@ -391,8 +391,7 @@ class AIPSTask(Task):
         """Run the task."""
 
         (proxy, tid) = self.spawn()
-        print "tid: %d" % tid
-        log = []
+        loglist = []
         count = 0
         rotator = ['|\b', '/\b', '-\b', '\\\b']
         try:
@@ -400,7 +399,7 @@ class AIPSTask(Task):
                 while not self.finished(proxy, tid):
                     messages = self.messages(proxy, tid)
                     if messages:
-                        log.extend(messages)
+                        loglist.extend(messages)
                     elif sys.stdout.isatty() and len(rotator) > 0:
                         sys.stdout.write(rotator[count % len(rotator)])
                         sys.stdout.flush()
@@ -425,21 +424,20 @@ class AIPSTask(Task):
 
             self.wait(proxy, tid)
         finally:
-			if os.path.isfile(self._log):
-				logfile = open(self._log,'a')
-				for message in log:
-					logfile.write('%s\n' % message)
-					continue
-				logfile.flush()
-				pass
-			else :  # use AIPS.log
-				if AIPS.log:
-					for message in log:
-						AIPS.log.write('%s\n' % message)
-						continue
-					AIPS.log.flush()
-					pass
-			pass
+                    if self.log:
+                        for message in loglist:
+                            self.log.write('%s\n' % message)
+                            continue
+                        self.log.flush()
+                        pass
+                    else :  # use AIPS.log
+                        if AIPS.log:
+                            for message in loglist:
+                                AIPS.log.write('%s\n' % message)
+                                continue
+                            AIPS.log.flush()
+                            pass
+                    pass
         return
 
     def __call__(self):
