@@ -193,8 +193,13 @@ class _AIPSTaskParams:
 class AIPSTask(Task):
 
     # List of adverbs referring to file names.
+    # some new for 31DEC08
+    # O.W.  07 Nov 2008
     _file_adverbs = ['infile', 'infile2', 'outfile', 'outprint',
-                     'ofmfile', 'boxfile', 'oboxfile']
+                     'ofmfile', 'boxfile', 'oboxfile',
+                     'intext', 'outtext', 'datain', 'dataout', 'calin',
+                     'inlist', 'data2in'
+                     ]
 
     def __init__(self):
         Task.__init__(self)

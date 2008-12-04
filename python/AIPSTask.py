@@ -123,8 +123,13 @@ class AIPSTask(Task):
                      'in2disk', 'in3disk', 'in4disk', 'out2disk']
 
     # List of adverbs referring to file names.
+    # some new for 31DEC08
+    # O.W.  07 Nov 2008
     _file_adverbs = ['infile', 'infile2', 'outfile', 'outprint',
-                     'ofmfile', 'boxfile', 'oboxfile']
+                     'ofmfile', 'boxfile', 'oboxfile',
+                     'intext', 'outtext', 'datain', 'dataout', 'calin',
+                     'inlist', 'data2in'
+                     ]
 
     # List of adverbs referring to channels.
     _chan_adverbs = ['bchan', 'echan', 'chansel', 'channel']
