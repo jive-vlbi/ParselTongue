@@ -73,7 +73,7 @@ ac_cv_numpy=`$PYTHON conftest_numpy.py 2>/dev/null`
 ])
 
 if test "$ac_cv_numpy" != found; then
-  AC_MSG_ERROR([NumPy is not available])
+  AC_MSG_WARN([NumPy is not available])
 fi
 
 if test "$with_numpy" = yes -a "$ac_cv_numpy" = found; then
