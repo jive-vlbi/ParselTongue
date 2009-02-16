@@ -537,7 +537,10 @@ class _AIPSVisibilityIter(object):
         shape = (inaxes[3], inaxes[2], inaxes[1], inaxes[0])
         visibility.setshape(shape)
         return visibility
-    visibility = property(_get_visibility)
+    def _set_visibility(self, value):
+        self._buffer[self._index][self._desc['nrparm']:] = value.getflat()
+        self._dirty = True
+    visibility = property(_get_visibility, _set_visibility)
 
     pass                                # class _AIPSVisibilityIter
 
