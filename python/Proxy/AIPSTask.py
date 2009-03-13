@@ -153,36 +153,7 @@ class _AIPSTaskParams:
             self.version = os.environ['AIPS_ROOT'] + '/' + version
             pass
 
-        path = os.environ['HOME'] + '/.ParselTongue/' \
-               + os.path.basename(self.version) + '/' \
-               + name.lower() + '.pickle'
-
-        try:
-            unpickler = pickle.Unpickler(open(path))
-            self.default_dict = unpickler.load()
-            self.input_list = unpickler.load()
-            self.output_list = unpickler.load()
-            self.min_dict = unpickler.load()
-            self.max_dict = unpickler.load()
-            self.strlen_dict = unpickler.load()
-            self.help_string = unpickler.load()
-            self.explain_string = unpickler.load()
-        except (IOError, EOFError):
-            self.__parse(name)
-
-            # Make sure the directory exists.
-            if not os.path.exists(os.path.dirname(path)):
-                os.makedirs(os.path.dirname(path))
-
-            pickler = pickle.Pickler(open(path, mode='w'))
-            pickler.dump(self.default_dict)
-            pickler.dump(self.input_list)
-            pickler.dump(self.output_list)
-            pickler.dump(self.min_dict)
-            pickler.dump(self.max_dict)
-            pickler.dump(self.strlen_dict)
-            pickler.dump(self.help_string)
-            pickler.dump(self.explain_string)
+        self.__parse(name)
 
     # Provide a dictionary-like interface to deal with the
     # idiosyncrasies of XML-RPC.
