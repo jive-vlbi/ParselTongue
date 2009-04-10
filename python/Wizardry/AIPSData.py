@@ -498,22 +498,44 @@ class _AIPSVisibilityIter(object):
         baseline = int(self._buffer[self._index][self._desc['ilocb']])
         return [baseline / 256, baseline % 256]
     def _set_baseline(self, value):
-        baseline = value[0] * 256 + value[1]
+        baseline = value[0] * 256 + value[1] + (self.subarray - 1) * 0.01
         self._buffer[self._index][self._desc['ilocb']] = baseline
         self._dirty = True
     baseline = property(_get_baseline, _set_baseline)
 
+    def _get_subarray(self):
+        ilocb = self._buffer[self._index][self._desc['ilocb']]
+        return int((ilocb - int(ilocb)) * 100 + 0.5) + 1
+    def _set_subarray(self, value):
+        baseline = int(self._buffer[self._index][self._desc['ilocb']])
+        ilocb = baseline + (value - 1) * 0.01
+        self._buffer[self._index][self._desc['ilocb']] = ilocb
+        self._dirty = True
+    subarray = property(_get_subarray, _set_subarray)
+
     def _get_source(self):
-        return self._buffer[self._index][self._desc['ilocsu']]
+	rnd_indx = self._desc['ilocsu']
+	if rnd_indx == -1:
+		raise KeyError, 'Random Parameter not present'
+        return self._buffer[self._index][rnd_indx]
     def _set_source(self, value):
-        self._buffer[self._index][self._desc['ilocsu']] = value
+	rnd_indx = self._desc['ilocsu']
+	if rnd_indx == -1:
+		raise KeyError, 'Random Parameter not present'
+        self._buffer[self._index][rnd_indx] = value
         self._dirty = True
     source = property(_get_source, _set_source)
 
     def _get_freqsel(self):
-        return self._buffer[self._index][self._desc['ilocfq']]
+	rnd_indx = self._desc['ilocfq']
+	if rnd_indx == -1:
+		raise KeyError, 'Random Parameter not present'
+        return self._buffer[self._index][rnd_indx]
     def _set_freqsel(self, value):
-        self._buffer[self._index][self._desc['ilocfq']] = value
+	rnd_indx = self._desc['ilocfq']
+	if rnd_indx == -1:
+		raise KeyError, 'Random Parameter not present'
+        self._buffer[self._index][rnd_indx] = value
         self._dirty = True
     freqsel = property(_get_freqsel, _set_freqsel)
 
@@ -524,12 +546,18 @@ class _AIPSVisibilityIter(object):
         self._dirty = True
     inttim = property(_get_inttim, _set_inttim)
 
-    def _get_weight(self):
-        return self._buffer[self._index][self._desc['ilocw']]
-    def _set_weight(self, value):
-        self._buffer[self._index][self._desc['ilocw']] = value
+    def _get_corrid(self):
+	rnd_indx = self._desc['ilocid']
+	if rnd_indx == -1:
+		raise KeyError, 'Random Parameter not present'
+        return self._buffer[self._index][rnd_indx]
+    def _set_corrid(self, value):
+	rnd_indx = self._desc['ilocid']
+	if rnd_indx == -1:
+		raise KeyError, 'Random Parameter not present'
+        self._buffer[self._index][rnd_indx] = value
         self._dirty = True
-    weight = property(_get_weight, _set_weight)
+    corrid = property(_get_corrid, _set_corrid)
 
     def _get_visibility(self):
         visibility = self._buffer[self._index][self._desc['nrparm']:]

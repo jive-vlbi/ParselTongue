@@ -29,14 +29,15 @@ fitld.go()
 try:
     uvdata = WizAIPSUVData(name, 'UVDATA', 1, 1, AIPS.userno)
     count = 0
-    weight = 0
+    inttim = 0
     for vis in uvdata:
-        weight += vis.weight
+        inttim += vis.inttim
         count += 1
         continue
     assert(len(uvdata) == count)
+    assert(inttim == 144132.0)
     print 'Visibilities:', count
-    print 'Total weight:', weight
+    print 'Total inttim:', inttim
 
     try:
         print uvdata[1]
