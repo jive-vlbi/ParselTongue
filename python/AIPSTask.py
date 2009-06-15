@@ -435,13 +435,12 @@ class AIPSTask(Task):
                             continue
                         self.log.flush()
                         pass
-                    else :  # use AIPS.log
-                        if AIPS.log:
-                            for message in loglist:
-                                AIPS.log.write('%s\n' % message)
-                                continue
-                            AIPS.log.flush()
-                            pass
+		    if AIPS.log:
+                        for message in loglist:
+                            AIPS.log.write('%s\n' % message)
+                            continue
+                        AIPS.log.flush()
+                        pass
                     pass
         return
 
