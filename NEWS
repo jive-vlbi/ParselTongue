@@ -1,3 +1,18 @@
+*** Changes in ParselTongue 1.1.2
+
+* Changed functionality
+
+The choice between numarray and NumPy is now made at runtime.  If both
+modules are available, we prefer numarray but allow people to override
+the choice by letting them set the NUMERIX environment variable. So
+
+$ export NUMERIX=numpy
+$ ParselTongue
+
+will use NumPy if both numarray and NumPy are available.  This matches
+the behaviour of PyFITS.
+
+
 *** Changes in ParselTongue 1.0.6
 
 * New functionality
