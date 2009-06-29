@@ -110,7 +110,7 @@ class MinimalMatch:
 
     def __getattr__(self, name):
         attr = self._findattr(name)
-        if hasattr(self, attr):
+        if name != attr:
             return getattr(self, attr)
 
         msg = "%s instance has no attribute '%s'" \
