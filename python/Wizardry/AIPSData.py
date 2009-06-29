@@ -22,13 +22,39 @@ import AIPSDir, History, Image, UV, InfoList, Table, TableList
 # Global AIPS defaults.
 import AIPS
 
-# Fail gracefully if numarray isn't available.
+# Select numarray or NumPy, fail gracefully if neither is available.
+try:
+    numerix = os.environ['NUMERIX']
+except:
+    numerix = 'numarray'
+    pass
+
 try:
     import numarray
+    numarraystatus = True
 except:
+    numarraystatus = False
     numarray = None
     pass
 
+try:
+    import numpy.numarray
+    numpystatus = True
+except:
+    numpystatus = False
+    pass
+
+if numarraystatus and numpystatus:
+    # Both numarray and NumPy are available.  Let the NUMERIX
+    # environment variable decide which one we use.
+    if numerix == 'numpy':
+        numarray = numpy.numarray
+        pass
+    pass
+elif numpystatus:
+    # Use NumPy if that's all we have
+    numarray = numpy.numarray
+    pass
 
 def _scalarize(value):
     """Scalarize a value.
@@ -418,7 +444,7 @@ class _AIPSVisibilityIter(object):
     def __init__(self, data, err):
         # Give an early warning we're not going to succeed.
         if not numarray:
-            msg = 'Numerical Python (numarray) not available'
+            msg = 'Numerical Python (numarray or NumPy) not available'
             raise NotImplementedError, msg
 
         self._err = err
@@ -467,7 +493,7 @@ class _AIPSVisibilityIter(object):
         self._first = self._data.Desc.Dict['firstVis'] - 1
         self._count = self._data.Desc.Dict['numVisBuff']
         count = InfoList.PGet(self._data.List, "nVisPIO")[4][0]
-        self._buffer.setshape((count, -1))
+        self._buffer.shape = (count, -1)
         self._index = 0
         return
 
@@ -563,7 +589,7 @@ class _AIPSVisibilityIter(object):
         visibility = self._buffer[self._index][self._desc['nrparm']:]
         inaxes = self._desc['inaxes']
         shape = (inaxes[3], inaxes[2], inaxes[1], inaxes[0])
-        visibility.setshape(shape)
+        visibility.shape = shape
         return visibility
     def _set_visibility(self, value):
         self._buffer[self._index][self._desc['nrparm']:] = value.getflat()
