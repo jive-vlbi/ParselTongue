@@ -454,7 +454,6 @@ class _AIPSVisibilityIter(object):
         self._len = self._desc['nvis']
         self._first = 0
         self._count = 0
-        self._dirty = False
         self._flush = False
         return
 
@@ -464,25 +463,23 @@ class _AIPSVisibilityIter(object):
     def next(self):
         self._index += 1
         if self._index + self._first >= self._len:
-            if self._flush and self._dirty:
+            if self._flush:
                 Obit.UVWrite(self._data.me, self._err.me)
                 if self._err.isErr:
                     raise RuntimeError
                 self._flush = False
-                self._dirty = False
             raise StopIteration
         if self._index >= self._count:
             self._fill()
         return self
 
     def _fill(self):
-        if self._flush and self._dirty:
+        if self._flush:
             assert(self._first == self._data.Desc.Dict['firstVis'] - 1)
             Obit.UVRewrite(self._data.me, self._err.me)
             if self._err.isErr:
                 raise RuntimeError
             self._flush = False
-            self._dirty = False
             pass
         Obit.UVRead(self._data.me, self._err.me)
         if self._err.isErr:
@@ -510,14 +507,12 @@ class _AIPSVisibilityIter(object):
         self._buffer[self._index][self._desc['ilocu']] = value[0]
         self._buffer[self._index][self._desc['ilocv']] = value[1]
         self._buffer[self._index][self._desc['ilocw']] = value[2]
-        self._dirty = True
     uvw = property(_get_uvw, _set_uvw)
 
     def _get_time(self):
         return self._buffer[self._index][self._desc['iloct']]
     def _set_time(self, value):
         self._buffer[self._index][self._desc['iloct']] = value
-        self._dirty = True
     time = property(_get_time, _set_time)
 
     def _get_baseline(self):
@@ -526,7 +521,6 @@ class _AIPSVisibilityIter(object):
     def _set_baseline(self, value):
         baseline = value[0] * 256 + value[1] + (self.subarray - 1) * 0.01
         self._buffer[self._index][self._desc['ilocb']] = baseline
-        self._dirty = True
     baseline = property(_get_baseline, _set_baseline)
 
     def _get_subarray(self):
@@ -536,7 +530,6 @@ class _AIPSVisibilityIter(object):
         baseline = int(self._buffer[self._index][self._desc['ilocb']])
         ilocb = baseline + (value - 1) * 0.01
         self._buffer[self._index][self._desc['ilocb']] = ilocb
-        self._dirty = True
     subarray = property(_get_subarray, _set_subarray)
 
     def _get_source(self):
@@ -549,7 +542,6 @@ class _AIPSVisibilityIter(object):
 	if rnd_indx == -1:
 		raise KeyError, 'Random Parameter not present'
         self._buffer[self._index][rnd_indx] = value
-        self._dirty = True
     source = property(_get_source, _set_source)
 
     def _get_freqsel(self):
@@ -562,14 +554,12 @@ class _AIPSVisibilityIter(object):
 	if rnd_indx == -1:
 		raise KeyError, 'Random Parameter not present'
         self._buffer[self._index][rnd_indx] = value
-        self._dirty = True
     freqsel = property(_get_freqsel, _set_freqsel)
 
     def _get_inttim(self):
         return self._buffer[self._index][self._desc['ilocit']]
     def _set_inttim(self, value):
         self._buffer[self._index][self._desc['ilocit']] = value
-        self._dirty = True
     inttim = property(_get_inttim, _set_inttim)
 
     def _get_corrid(self):
@@ -582,7 +572,6 @@ class _AIPSVisibilityIter(object):
 	if rnd_indx == -1:
 		raise KeyError, 'Random Parameter not present'
         self._buffer[self._index][rnd_indx] = value
-        self._dirty = True
     corrid = property(_get_corrid, _set_corrid)
 
     def _get_visibility(self):
@@ -593,7 +582,6 @@ class _AIPSVisibilityIter(object):
         return visibility
     def _set_visibility(self, value):
         self._buffer[self._index][self._desc['nrparm']:] = value.getflat()
-        self._dirty = True
     visibility = property(_get_visibility, _set_visibility)
 
     pass                                # class _AIPSVisibilityIter
@@ -957,7 +945,6 @@ class AIPSImage(_AIPSData):
             pass
         self._userno = userno
         self._err = OErr.OErr()
-        self._dirty = False
         self._squeezed = False
         OSystem.PSetAIPSuser(userno)
         self._data = Image.newPAImage(name, name, klass, disk, seq,
@@ -979,7 +966,6 @@ class AIPSImage(_AIPSData):
         shape = tuple(shape)
         pixels = numarray.array(sequence=self._data.PixBuf,
                                 type=numarray.Float32, shape=shape)
-        self._dirty = True
         return pixels
     pixels = property(_pixels)
 
@@ -1025,11 +1011,10 @@ class AIPSImage(_AIPSData):
     history = property(lambda self: _AIPSHistory(self._data))
 
     def update(self):
-        if self._dirty:
-            Obit.ImageWrite(self._data.me, self._err.me)
-            if self._err.isErr:
-                raise RuntimeError, "Writing image pixels"
-            pass
+        Obit.ImageWrite(self._data.me, self._err.me)
+        if self._err.isErr:
+            raise RuntimeError, "Writing image pixels"
+        pass
         _AIPSData.update(self)
 
     pass                                # class AIPSImage
