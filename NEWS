@@ -12,6 +12,40 @@ $ ParselTongue
 will use NumPy if both numarray and NumPy are available.  This matches
 the behaviour of PyFITS.
 
+While it somewhat violates the AIPS philosophy, it is now also
+possible to change raw visibilities.  For example:
+
+>>> for vis in uvdata:
+>>>     vis.visibility[0][0][0][2] = 0.0
+>>>     vis.update()
+
+will change the weight of the first spectral channel of the first IF
+of the first polarisation to 0.0.
+
+
+*** Changes in ParselTongue 1.1.1
+
+* New functionality
+
+ParselTongue can now use either numarray or NumPy as its underlying
+array implementation to give access to visibilities and image pixels.
+The default is to use numarray; if you want to use NumPy you'll need
+to specifify --with-numpy when configuring ParselTongue.
+
+It is now possible to log the output of an individual task:
+
+>>> mandl = AIPSTask('MANDL')
+>>> mandl.log = open('mandl1.log','a')
+
+ParselTongue now has same low-level functionality to run tasks in
+parallel.  To make this new functionality useful there is a new
+ParselFileServer which assists in moving data between AIPS
+installations.  For more information, see The Codex ParselTongue
+<http://www.jive.nl/parseltongue/codex.html>.
+
+The Codex ParselTongue now also documents the way to run "external"
+AIPS tasks.
+
 
 *** Changes in ParselTongue 1.0.6
 
