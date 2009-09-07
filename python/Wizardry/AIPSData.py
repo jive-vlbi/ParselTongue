@@ -441,7 +441,7 @@ class _AIPSHistory:
 class _AIPSVisibilityIter(object):
     """This class is used as an iterator over visibilities."""
 
-    def __init__(self, data, err):
+    def __init__(self, data, err, index = -1):
         # Give an early warning we're not going to succeed.
         if not numarray:
             msg = 'Numerical Python (numarray or NumPy) not available'
@@ -455,6 +455,13 @@ class _AIPSVisibilityIter(object):
         self._first = 0
         self._count = 0
         self._flush = False
+        if index > -1:
+            self._fill()
+            while index > self._count:
+                index -= self._count
+                self._fill()
+                continue
+            self._index = index
         return
 
     def __len__(self):
@@ -1037,17 +1044,22 @@ class AIPSUVData(_AIPSData):
         self._antennas = []
         self._polarizations = []
         self._sources = []
+        self._open = False
         return
 
     def __len__(self):
         return self._data.Desc.Dict['nvis']
 
     def __getitem__(self, name):
-        msg = 'Random visibility access is not possible.'
-        raise NotImplementedError, msg
+        if not self._open:
+            self._data.Open(3, self._err)
+            pass
+        return _AIPSVisibilityIter(self._data, self._err, name)
 
     def __iter__(self):
-        self._data.Open(3, self._err)
+        if not self._open:
+            self._data.Open(3, self._err)
+            pass
         return _AIPSVisibilityIter(self._data, self._err)
 
     def _generate_antennas(self):

@@ -23,21 +23,17 @@ if uvdata.exists():
 fitld = AIPSTask('fitld')
 fitld.infile = file
 fitld.outdata = uvdata
+fitld.douvcomp = 0
 fitld.msgkill = 2
 fitld.go()
 
 try:
     uvdata = WizAIPSUVData(name, 'UVDATA', 1, 1, AIPS.userno)
-    count = 0
-    inttim = 0
-    for vis in uvdata:
-        inttim += vis.inttim
-        count += 1
-        continue
-    assert(len(uvdata) == count)
-    assert(inttim == 144132.0)
-    print 'Visibilities:', count
-    print 'Total inttim:', inttim
+    assert(uvdata[3].baseline == [1, 1])
+    assert(uvdata[4].baseline == [1, 4])
+    assert(uvdata[3].baseline == [1, 1])
+    assert(uvdata[2167].baseline == [2, 4])
+    assert(uvdata[3].baseline == [1, 1])
 
 finally:
     uvdata.zap()
