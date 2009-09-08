@@ -456,12 +456,32 @@ class _AIPSVisibilityIter(object):
         self._count = 0
         self._flush = False
         if index > -1:
-            self._fill()
-            while index > self._count:
-                index -= self._count
+            shape = len(self._data.VisBuf) / 4
+            self._buffer = numarray.array(sequence=self._data.VisBuf,
+                                          type=numarray.Float32, shape=shape)
+            self._first = self._data.Desc.Dict['firstVis'] - 1
+            self._count = self._data.Desc.Dict['numVisBuff']
+            count = InfoList.PGet(self._data.List, "nVisPIO")[4][0]
+            self._buffer.shape = (count, -1)
+
+            if self._first < 0:
                 self._fill()
-                continue
-            self._index = index
+                pass
+
+            if index < self._first:
+                self._data.Open(3, self._err)
+                self._open = True
+                self._first = 0
+                self._count = 0
+                self._fill()
+                pass
+
+            while index >= self._first + self._count:
+                self._fill()
+                pass
+
+            self._index = index - self._first
+            pass
         return
 
     def __len__(self):
@@ -1053,12 +1073,14 @@ class AIPSUVData(_AIPSData):
     def __getitem__(self, name):
         if not self._open:
             self._data.Open(3, self._err)
+            self._open = True
             pass
         return _AIPSVisibilityIter(self._data, self._err, name)
 
     def __iter__(self):
         if not self._open:
             self._data.Open(3, self._err)
+            self._open = True
             pass
         return _AIPSVisibilityIter(self._data, self._err)
 
