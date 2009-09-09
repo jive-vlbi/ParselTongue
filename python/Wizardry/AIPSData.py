@@ -451,7 +451,6 @@ class _AIPSVisibility(object):
         self._data = data
         self._index = -1
         self._desc = self._data.Desc.Dict
-        self._len = self._desc['nvis']
         self._first = 0
         self._count = 0
         self._flush = False
@@ -483,9 +482,6 @@ class _AIPSVisibility(object):
             self._index = index - self._first
             pass
         return
-
-    def __len__(self):
-        return self._len
 
     def _fill(self):
         if self._flush:
@@ -604,6 +600,7 @@ class _AIPSVisibility(object):
 class _AIPSVisibilityIter(_AIPSVisibility):
     def __init__(self, data, err):
         _AIPSVisibility.__init__(self, data, err, -1)
+        self._len = self._desc['nvis']
         return
 
     def next(self):
