@@ -438,10 +438,10 @@ class _AIPSHistory:
     pass                                # class _AIPSHistory
 
 
-class _AIPSVisibilityIter(object):
+class _AIPSVisibility(object):
     """This class is used as an iterator over visibilities."""
 
-    def __init__(self, data, err, index = -1):
+    def __init__(self, data, err, index):
         # Give an early warning we're not going to succeed.
         if not numarray:
             msg = 'Numerical Python (numarray or NumPy) not available'
@@ -486,19 +486,6 @@ class _AIPSVisibilityIter(object):
 
     def __len__(self):
         return self._len
-
-    def next(self):
-        self._index += 1
-        if self._index + self._first >= self._len:
-            if self._flush:
-                Obit.UVWrite(self._data.me, self._err.me)
-                if self._err.isErr:
-                    raise RuntimeError
-                self._flush = False
-            raise StopIteration
-        if self._index >= self._count:
-            self._fill()
-        return self
 
     def _fill(self):
         if self._flush:
@@ -610,6 +597,27 @@ class _AIPSVisibilityIter(object):
     def _set_visibility(self, value):
         self._buffer[self._index][self._desc['nrparm']:] = value.getflat()
     visibility = property(_get_visibility, _set_visibility)
+
+    pass                                # class _AIPSVisibility
+
+
+class _AIPSVisibilityIter(_AIPSVisibility):
+    def __init__(self, data, err):
+        _AIPSVisibility.__init__(self, data, err, -1)
+        return
+
+    def next(self):
+        self._index += 1
+        if self._index + self._first >= self._len:
+            if self._flush:
+                Obit.UVWrite(self._data.me, self._err.me)
+                if self._err.isErr:
+                    raise RuntimeError
+                self._flush = False
+            raise StopIteration
+        if self._index >= self._count:
+            self._fill()
+        return self
 
     pass                                # class _AIPSVisibilityIter
 
@@ -1075,7 +1083,7 @@ class AIPSUVData(_AIPSData):
             self._data.Open(3, self._err)
             self._open = True
             pass
-        return _AIPSVisibilityIter(self._data, self._err, name)
+        return _AIPSVisibility(self._data, self._err, name)
 
     def __iter__(self):
         if not self._open:
