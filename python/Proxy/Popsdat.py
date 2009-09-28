@@ -202,19 +202,4 @@ class Popsdat:
         path = os.environ['HOME'] + '/.ParselTongue/' \
                + os.path.basename(self.version) + '/' + 'popsdat.pickle'
 
-        try:
-            unpickler = pickle.Unpickler(open(path))
-            self.default_dict = unpickler.load()
-            self.strlen_dict = unpickler.load()
-            self.verb_dict = unpickler.load()
-        except IOError, EOFError:
-            self.__parse()
-
-            # Make sure the directory exists.
-            if not os.path.exists(os.path.dirname(path)):
-                os.makedirs(os.path.dirname(path))
-
-            pickler = pickle.Pickler(open(path, mode='w'))
-            pickler.dump(self.default_dict)
-            pickler.dump(self.strlen_dict)
-            pickler.dump(self.verb_dict)
+        self.__parse()
