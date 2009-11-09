@@ -88,7 +88,7 @@ class MinimalMatch:
             return name
 
         match_attr = None
-        if name in self.__dict__:
+        if name in self.__dict__ or name in self.__class__.__dict__:
             match_attr = name
         else:
             for dict in self.__dict__, self.__class__.__dict__:
