@@ -228,7 +228,7 @@ class AIPSTask(Task):
             raise AssertionError, type(value)
         return value
 
-    def spawn(self, name, version, userno, msgkill, isbatch, input_dict):
+    def spawn(self, name, version, userno, msgkill, isbatch, tv, input_dict):
         """Start the task."""
 
         params = _AIPSTaskParams(name, version)
@@ -262,7 +262,13 @@ class AIPSTask(Task):
                     pass
                 continue
             # Send output to the TV running on this machine.
-            env['TVDEV' + ehex(ntvdev, 2, 0)] = 'sssin:localhost'
+            env['TVDEV'] = 'TVDEV01'
+            env['TVDEV' + ehex(ntvdev, 2, 0)] = tv
+            if tv.find(':') == -1:
+                print "lock"
+                env['TVLOK'] = 'TVLOK01'
+                env['TVLOK' + ehex(ntvdev, 2, 0)] = tv.replace('DEV', 'LOK')
+                pass
 
             td_name = os.environ['DA00'] + '/TD' + AIPS.revision + '000004;'
             td_file = open(td_name, mode='r+b')

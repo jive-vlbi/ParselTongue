@@ -26,9 +26,12 @@ import os, socket, struct, time
 
 
 class AIPSTV(object):
-    def __init__(self, host='localhost'):
-        self.host = host
-        self.port = socket.getservbyname('sssin', 'tcp')
+    def __init__(self, host=None):
+        if host:
+            port = socket.getservbyname('sssin', 'tcp')
+            self._domain = socket.AF_INET
+            self._address = (host, port)
+            pass
         self._lock_pid = 0
         self._server_pid = 0
         return
@@ -50,8 +53,8 @@ class AIPSTV(object):
     def _open(self):
         """Open connection to the AIPS TV server."""
 
-        self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self._socket.connect((self.host, self.port))
+        self._socket = socket.socket(self._domain, socket.SOCK_STREAM)
+        self._socket.connect(self._address)
         self._send(11)
         return
 
@@ -89,7 +92,13 @@ class AIPSTV(object):
         # Create an environment for the AIPS TV processes.
         env = os.environ.copy()
         env['TVDEV'] = 'TVDEV01'
-        env['TVDEV01'] = 'sssin:localhost'
+        if self._domain == socket.AF_INET:
+            env['TVDEV01'] = 'sssin:localhost'
+        else:
+            env['TVLOK'] = 'TVLOK01'
+            env['TVDEV01'] = self._address
+            env['TVLOK01'] = self._address.replace('DEV', 'LOK')
+            pass
 
         # Start the AIPS TV lock daemon.
         file = env['LOAD'] + '/TVSERV.EXE'
@@ -137,4 +146,19 @@ class AIPSTV(object):
 
         return
 
+    def __str__(self):
+        if self._domain == socket.AF_INET:
+            return "sssin:localhost"
+        else:
+            return self._address
+
     pass                                # Class AIPSTV
+
+try:
+    port = socket.getservbyname('sssin', 'tcp')
+    AIPSTV._domain = socket.AF_INET
+    AIPSTV._address = ('localhost', port)
+except:
+    AIPSTV._domain = socket.AF_UNIX
+    AIPSTV._address = '/tmp/PTDEV'
+    pass

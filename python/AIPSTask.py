@@ -98,7 +98,7 @@
 
 
 # Global AIPS defaults.
-import AIPS
+import AIPS, AIPSTV
 
 # Generic Task implementation.
 from Task import Task, List
@@ -149,6 +149,9 @@ class AIPSTask(Task):
 
     # Default to batch mode.
     isbatch = 32000
+
+    # Default tv
+    tv = AIPSTV.AIPSTV()
 
     # This should be set to a file object...
     log = open("/dev/null",'a')
@@ -337,8 +340,8 @@ class AIPSTask(Task):
                   "Unable to determine where to execute task"
 
         inst = getattr(proxy, self.__class__.__name__)
-        tid = inst.spawn(self._name, self.version, self.userno,
-                         self.msgkill, self.isbatch, input_dict)
+        tid = inst.spawn(self._name, self.version, self.userno, self.msgkill,
+                         self.isbatch, str(self.tv), input_dict)
 
         self._message_list = []
         return (proxy, tid)
