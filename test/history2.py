@@ -24,7 +24,7 @@ if image.exists():
 assert(not image.exists())
 
 fitld = AIPSTask('fitld')
-fitld.infile = file
+fitld.datain = file
 fitld.outdata = image
 #fitld.msgkill = 2
 fitld.go()

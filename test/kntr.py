@@ -21,7 +21,7 @@ if image.exists():
     image.zap()
 
 fitld = AIPSTask('fitld')
-fitld.infile = file
+fitld.datain = file
 fitld.outdata = image
 fitld.msgkill = 2
 fitld.go()

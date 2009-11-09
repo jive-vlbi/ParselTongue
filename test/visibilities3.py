@@ -21,7 +21,7 @@ if uvdata.exists():
     uvdata.zap()
 
 fitld = AIPSTask('fitld')
-fitld.infile = file
+fitld.datain = file
 fitld.outdata = uvdata
 fitld.douvcomp = 0
 fitld.msgkill = 2

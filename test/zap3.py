@@ -26,7 +26,7 @@ if uvdata.exists():
 assert(not uvdata.exists())
 
 fitld = AIPSTask('fitld')
-fitld.infile = file
+fitld.datain = file
 fitld.outdata = uvdata
 fitld.msgkill = 2
 fitld()

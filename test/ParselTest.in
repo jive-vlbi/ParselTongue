@@ -6,7 +6,7 @@ fi
 
 # Automake sets VERSION to something that confuses us.
 # Anyway, we need 31DEC04 for the jmfit.py test.
-VERSION='31DEC04'
+VERSION='31DEC09'
 
 DADEVS_QUIET=YES
 export DADEVS_QUIET

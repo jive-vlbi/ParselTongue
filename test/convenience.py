@@ -20,7 +20,7 @@ if image.exists():
     image.zap()
 
 fitld = AIPSTask('fitld')
-fitld.infile = file
+fitld.datain = file
 fitld.outdata = image
 fitld.go()
 
@@ -41,7 +41,7 @@ try:
         uvdata.zap()
 
     fitld = AIPSTask('fitld')
-    fitld.infile = file
+    fitld.datain = file
     fitld.outdata = uvdata
     fitld.go()
 
