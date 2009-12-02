@@ -22,17 +22,20 @@ import AIPSDir, History, Image, UV, InfoList, Table, TableList
 # Global AIPS defaults.
 import AIPS
 
+# Generic Python stuff.
+import os
+
 # Select numarray or NumPy, fail gracefully if neither is available.
 try:
     numerix = os.environ['NUMERIX']
-except:
+except KeyError:
     numerix = 'numarray'
     pass
 
 try:
     import numarray
     numarraystatus = True
-except:
+except ImportError:
     numarraystatus = False
     numarray = None
     pass
@@ -40,7 +43,7 @@ except:
 try:
     import numpy.numarray
     numpystatus = True
-except:
+except ImportError:
     numpystatus = False
     pass
 
