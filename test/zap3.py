@@ -49,10 +49,8 @@ try:
     uvplt.abort(job[0], job[1], sig=signal.SIGKILL)
     try:
         uvdata.zap()
-    except:
-        pass
-    else:
         assert("Zapping unexpectedly succeeded")
+    except:
         pass
 
 finally:
