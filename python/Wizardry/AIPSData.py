@@ -347,6 +347,8 @@ class _AIPSTable:
         set."""
 
         assert(not self._err.isErr)
+        # Reopen the file to make sure the keywords are updated.
+        self._table.Open(3, self._err)
         self._table.Close(self._err)
         if self._err.isErr:
             raise RuntimeError
