@@ -723,13 +723,20 @@ class _AIPSDataHeader(object):
              'cdelt': 'cdelt',
              'crpix': 'crpix',
              'crota': 'crota',
+             'bmaj': 'beamMaj',
+             'bmin': 'beamMin',
+             'bpa': 'beamPA',
+             'altrval': 'altRef',
+             'altrpix': 'altCrpix',
+             'obsra': 'obsra',
+             'obsdec': 'obsdec',
+             'restfreq': 'restFreq',
+             'xshift': 'xshift',
+             'yshift': 'yshift',
              # Images
              'niter': 'niter',
              'datamin': 'minval',
              'datamax': 'maxval',
-             'bmaj': 'beamMaj',
-             'bmin': 'beamMin',
-             'bpa': 'beamPA',
              # UV Data sets
              'sortord': 'isort',
              'nrparm': 'nrparm',
@@ -739,11 +746,17 @@ class _AIPSDataHeader(object):
               'ptype', 'ctype')
 
     def __getitem__(self, key):
+        if key == 'velref':
+            return self._dict['VelReference'] + self._dict['VelDef'] * 256
         if not key in self._keys:
             raise KeyError, key
         return self._dict[self._keys[key]]
 
     def __setitem__(self, key, value):
+        if key == 'velref':
+            self._dict['VelDef'] = value / 256
+            self._dict['VelReference'] = value % 256
+            return
         if not key in self._keys:
             raise KeyError, key
         self._dict[self._keys[key]] = value
