@@ -10,19 +10,15 @@ if test $# -gt 0; then
   esac
 fi
 
-# Check whether AIPS is available.
-if test -z "$AIPS_ROOT"; then
-    echo "$0: cannot proceed, AIPS_ROOT not defined"
-    exit 1
+# If AIPS is available, make its data disks and printers available.
+if test -n "$AIPS_ROOT"; then
+  if test -z "$DADEVS_QUIET"; then
+      DADEVS_QUIET=YES
+      export DADEVS_QUIET
+  fi
+  . $AIPS_VERSION/SYSTEM/UNIX/DADEVS.SH
+  . $AIPS_VERSION/SYSTEM/UNIX/PRDEVS.SH
 fi
-
-# Make AIPS data disks and printers available.
-if test -z "$DADEVS_QUIET"; then
-    DADEVS_QUIET=YES
-    export DADEVS_QUIET
-fi
-. $AIPS_VERSION/SYSTEM/UNIX/DADEVS.SH
-. $AIPS_VERSION/SYSTEM/UNIX/PRDEVS.SH
 
 # Make sure Python can find the ParselTongue modules.
 if test -z "$PYTHONPATH"; then
