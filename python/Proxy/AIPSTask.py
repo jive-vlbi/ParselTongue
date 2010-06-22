@@ -31,6 +31,9 @@ from Proxy.Popsdat import Popsdat
 # Bits from the generic Task implementation.
 from Proxy.Task import Task
 
+# AIPS Lite
+import AIPSLite
+
 # Generic Python stuff.
 import glob, os, pickle, signal, struct
 
@@ -151,6 +154,10 @@ class _AIPSTaskParams:
             self.version = os.environ[version]
         else:
             self.version = os.environ['AIPS_ROOT'] + '/' + version
+            pass
+
+        if AIPSLite.initialized:
+            AIPSLite.get_task(name)
             pass
 
         self.__parse(name)
