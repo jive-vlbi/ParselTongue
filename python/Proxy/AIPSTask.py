@@ -157,7 +157,7 @@ class _AIPSTaskParams:
             pass
 
         if AIPSLite.initialized:
-            AIPSLite.get_task(name)
+            AIPSLite.get_task(name, version=version)
             pass
 
         self.__parse(name)
