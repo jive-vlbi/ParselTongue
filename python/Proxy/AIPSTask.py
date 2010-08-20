@@ -272,7 +272,6 @@ class AIPSTask(Task):
             env['TVDEV'] = 'TVDEV01'
             env['TVDEV' + ehex(ntvdev, 2, 0)] = tv
             if tv.find(':') == -1:
-                print "lock"
                 env['TVLOK'] = 'TVLOK01'
                 env['TVLOK' + ehex(ntvdev, 2, 0)] = tv.replace('DEV', 'LOK')
                 pass
