@@ -603,13 +603,35 @@ class _AIPSVisibility(object):
 
 
 class _AIPSVisibilityIter(_AIPSVisibility):
-    def __init__(self, data, err):
+    def __init__(self, data, err, ranges = []):
+        if data.Desc.Dict['firstVis'] > 0:
+            data.Open(3, err)
+
         _AIPSVisibility.__init__(self, data, err, -1)
         self._len = self._desc['nvis']
+        if len(ranges) == 0:
+            ranges = [(0, self._len)]
+            pass
+        self._ranges = ranges
+        self._range = self._ranges.pop(0)
         return
 
     def next(self):
         self._index += 1
+        if self._index + self._first > self._range[1]:
+            try:
+                self._range = self._ranges.pop(0)
+            except:
+                pass
+
+        while self._first + self._count < self._range[0]:
+            self._fill()
+            pass
+        
+        if self._index + self._first < self._range[0]:
+            self._index = self._range[0] - self._first
+            pass
+            
         if self._index + self._first >= self._len:
             if self._flush:
                 Obit.UVWrite(self._data.me, self._err.me)
@@ -622,6 +644,31 @@ class _AIPSVisibilityIter(_AIPSVisibility):
         return self
 
     pass                                # class _AIPSVisibilityIter
+
+
+class _AIPSVisibilitySel(object):
+    def __init__(self, data, source):
+        self._data = data
+
+        self._ranges = []
+        for row in data.table('SU', 0):
+            if source == row.source.strip():
+                source_id = row.id__no
+                break
+            pass
+        for row in data.table('NX', 0):
+            if source_id == row.source_id:
+                self._ranges.append((row.start_vis - 1, row.end_vis - 1))
+                pass
+            pass
+
+        return
+
+    def __iter__(self):
+        return _AIPSVisibilityIter(self._data._data, self._data._err,
+                                   self._ranges)
+
+    pass
 
 
 class _AIPSDataKeywords:
@@ -1098,6 +1145,8 @@ class AIPSUVData(_AIPSData):
             self._data.Open(3, self._err)
             self._open = True
             pass
+        if type(name) == str:
+            return _AIPSVisibilitySel(self, name)
         return _AIPSVisibility(self._data, self._err, name)
 
     def __iter__(self):
