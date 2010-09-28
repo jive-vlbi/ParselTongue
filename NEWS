@@ -1,3 +1,32 @@
+*** Changes in ParselTongue 2.0
+
+* New functionality
+
+It is now possible to access visibilities directly:
+
+>>> print uvdata[666].baseline
+[1, 6]
+
+AIPSLite, origionally developed by Stephen Bourke, has been integrated
+in ParselTongue.  AIPSLite allows you to run ParselTongue on machines
+that don't have AIPS installed.  This is especially useful for running
+AIPS on HPC clusters.  The following fragment:
+
+>>> import AIPSLite
+>>> AIPSLite.setup()
+
+will perform a very minimal installation of the current stable version
+of AIPS in your home directory.  Afterwards, whenever you try to run
+an AIPS task you haven't run before, it will download the task's
+executable on the fly.
+
+ParselTongue now supports using a local TV.
+
+* Bug fixes
+
+Several keyword-related issues have been fixed.
+
+
 *** Changes in ParselTongue 1.1.2
 
 * Changed functionality
