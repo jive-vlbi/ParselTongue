@@ -17,13 +17,12 @@
 """
 
 This module provides dictionaries of default values and string lengths
-for AIPS adverbs generated from the POPSDAT.HLP help file.  These
-dictionaries are pickled to avoid parsing POPSDAT.HLP again and again.
+for AIPS adverbs generated from the POPSDAT.HLP help file.
 
 """
 
 # Generic Python stuff.
-import os, pickle
+import os
 
 class Popsdat:
     def __parse(self):
@@ -198,8 +197,5 @@ class Popsdat:
         if not os.path.exists(self.path):
             self.version = os.environ['AIPS_VERSION']
             self.path = self.version + '/HELP/POPSDAT.HLP'
-
-        path = os.environ['HOME'] + '/.ParselTongue/' \
-               + os.path.basename(self.version) + '/' + 'popsdat.pickle'
 
         self.__parse()

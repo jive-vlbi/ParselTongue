@@ -35,7 +35,7 @@ from Proxy.Task import Task
 import AIPSLite
 
 # Generic Python stuff.
-import glob, os, pickle, signal, struct
+import glob, os, signal, struct
 
 class _AIPSTaskParams:
     def __parse(self, name):
