@@ -45,14 +45,26 @@ try:
     uvplt.indata = uvdata
     uvplt.dotv = 1
     job = uvplt.spawn()
-    time.sleep(10)
+    time.sleep(20)
+    succeed = True
     uvplt.abort(job[0], job[1], sig=signal.SIGKILL)
     try:
         uvdata.zap()
-        assert("Zapping unexpectedly succeeded")
     except:
+        succeed = False
+        pass
+
+    if succeed:
+        assert("Zapping unexpectedly succeeded")
+        pass
+    if not uvdata.exists():
+        assert("Data unexpectedly disappeared")
         pass
 
 finally:
-    uvdata.zap(force=True)
+    try:
+        uvdata.zap(force=True)
+    except:
+        pass
+
     tv.kill()
