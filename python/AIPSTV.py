@@ -154,11 +154,5 @@ class AIPSTV(object):
 
     pass                                # Class AIPSTV
 
-try:
-    port = socket.getservbyname('sssin', 'tcp')
-    AIPSTV._domain = socket.AF_INET
-    AIPSTV._address = ('localhost', port)
-except:
-    AIPSTV._domain = socket.AF_UNIX
-    AIPSTV._address = '/tmp/PTDEV'
-    pass
+AIPSTV._domain = socket.AF_UNIX
+AIPSTV._address = '/tmp/PTDEV'
