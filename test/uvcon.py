@@ -16,7 +16,7 @@ os.system('cp VLBA1.UVCON /tmp')
 
 assert(not uvdata.exists())
 
-uvcon = AIPSTask('uvcon', version='31DEC06')
+uvcon = AIPSTask('uvcon')
 uvcon.outdata = uvdata
 uvcon.infile = '/tmp/VLBA1.UVCON'
 uvcon.smodel = [None, 1.0, 0.0, 0.0, 0]
