@@ -52,6 +52,9 @@ if numarraystatus and numpystatus:
     # environment variable decide which one we use.
     if numerix == 'numpy':
         numarray = numpy.numarray
+        numarraystatus = False
+    else:
+        numpystatus = False
         pass
     pass
 elif numpystatus:
@@ -569,12 +572,14 @@ class _AIPSVisibility(object):
 	if rnd_indx == -1:
 		raise KeyError, 'Random Parameter not present'
         self._buffer[self._index][rnd_indx] = value
+        return
     freqsel = property(_get_freqsel, _set_freqsel)
 
     def _get_inttim(self):
         return self._buffer[self._index][self._desc['ilocit']]
     def _set_inttim(self, value):
         self._buffer[self._index][self._desc['ilocit']] = value
+        return
     inttim = property(_get_inttim, _set_inttim)
 
     def _get_corrid(self):
@@ -587,6 +592,7 @@ class _AIPSVisibility(object):
 	if rnd_indx == -1:
 		raise KeyError, 'Random Parameter not present'
         self._buffer[self._index][rnd_indx] = value
+        return
     corrid = property(_get_corrid, _set_corrid)
 
     def _get_visibility(self):
@@ -596,7 +602,12 @@ class _AIPSVisibility(object):
         visibility.shape = shape
         return visibility
     def _set_visibility(self, value):
-        self._buffer[self._index][self._desc['nrparm']:] = value.getflat()
+        if numpystatus:
+            value = value.ravel()
+        else:
+            value = value.getflat()
+        self._buffer[self._index][self._desc['nrparm']:] = value
+        return
     visibility = property(_get_visibility, _set_visibility)
 
     pass                                # class _AIPSVisibility
