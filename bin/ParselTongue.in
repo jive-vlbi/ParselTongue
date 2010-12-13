@@ -24,7 +24,7 @@ fi
 if test -z "$PYTHONPATH"; then
     PYTHONPATH=@datadir@/python
 else
-    PYTHONPATH=$PYTHONPATH:@datadir@/python
+    PYTHONPATH=@datadir@/python:$PYTHONPATH
 fi
 
 # Make sure Python can find the Obit modules.
@@ -34,7 +34,7 @@ else
     OBIT_PYTHONPATH=$OBIT_PYTHONPATH:@OBIT_PYTHONPATH@
 fi
 if test -n "${OBIT_PYTHONPATH+set}"; then
-    PYTHONPATH=$PYTHONPATH:$OBIT_PYTHONPATH
+    PYTHONPATH=$OBIT_PYTHONPATH:$PYTHONPATH
 fi
 
 # Run Parseltongue.py for interactive sessions
