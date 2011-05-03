@@ -71,7 +71,7 @@ class Popsdat:
                                               + dimx * [[None] + dimy * value]
                 else:
                     msg = "Cannot handle float arrays of dimension %d" \
-                          % dimension
+                          % dimensions
                     raise AssertionError, msg
             elif type == 4:             # Verb
                 self.verb_dict[name] = int(split_line[2])
