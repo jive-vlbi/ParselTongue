@@ -49,7 +49,6 @@ class ParallelQueue :
 
     def __init__(self):
         self._tasklist = []
-        self._current = 0  # index of last task to be despatched
 
     def queue(self,task):
         try:
@@ -76,11 +75,10 @@ class ParallelQueue :
         """
         Run the remainder of the task queue.
         """
-        while self._current < len(self._tasklist) :
-            (proxy,tid) = self._tasklist[self._current].task.spawn()
-            self._tasklist[self._current].proxy = proxy
-            self._tasklist[self._current].tid = tid
-            self._current += 1
+        for task in self._tasklist:
+            (proxy,tid) = task.task.spawn()
+            task.proxy = proxy
+            task.tid = tid
         while len(self._tasklist) > 0 :
             self.queuewait()
         return
