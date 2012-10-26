@@ -103,6 +103,9 @@ import AIPS, AIPSTV
 # Generic Task implementation.
 from Task import Task, List
 
+# Default proxy.
+import LocalProxy
+
 # Generic Python stuff.
 import copy, fcntl, glob, os, pickle, pydoc, select, signal, sys
 
@@ -154,7 +157,7 @@ class AIPSTask(Task):
     tv = AIPSTV.AIPSTV()
 
     # This should be set to a file object...
-    log = open("/dev/null",'a')
+    log = open("/dev/null", 'a')
 
     def __init__(self, name, **kwds):
         Task.__init__(self)
@@ -335,6 +338,15 @@ class AIPSTask(Task):
                 input_dict[adverb] = float(AIPS.disks[disk].disk)
                 pass
             continue
+        if not proxy:
+            proxy = LocalProxy
+            proxy.__nonzero__ = lambda: True
+            for adverb in self._disk_adverbs:
+                if adverb in input_dict:
+                    proxy = None
+                    break
+                continue
+            pass
         if not proxy:
             raise RuntimeError, \
                   "Unable to determine where to execute task"
