@@ -174,7 +174,7 @@ class AIPSTableRow(_AIPSTableRow):
         self._row['NumFields'] = len(header['FieldName'])
         desc = zip(header['FieldName'], header['type'], header['repeat'])
         for field, type, repeat in desc:
-            if type == 2 or type == 3:
+            if type == 2 or type == 3 or type == 15:
                 # Integer.
                 self._row[field] = repeat * [0]
             elif type == 9 or type == 10:
@@ -1104,6 +1104,8 @@ class AIPSImage(_AIPSData):
         data = Obit.ImageCastData(self._data.me)
         if name == 'AIPS CC':
             Obit.TableCC(data, [version], 3, name, no_parms, self._err.me)
+        elif name == 'AIPS FG':
+            Obit.TablePS(data, [version], 3, name, self._err.me)
         elif name == 'AIPS PS':
             Obit.TablePS(data, [version], 3, name, self._err.me)
         elif name == 'AIPS SN':
