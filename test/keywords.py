@@ -35,11 +35,11 @@ try:
     assert (arrnam.strip() == 'EVN')
     assert (antable.keywords['FREQID'] == -1)
     assert (antable.keywords['FREQ'] == 1642490000.0)
-    assert (antable.keywords['IATUTC'] == 0)
+    assert (antable.keywords['IATUTC'] != 33.0)
     antable.keywords['ARRNAM'] = 'VLBA'
     antable.keywords['FREQID'] = 1
     antable.keywords['FREQ'] = 4974990000.0
-    antable.keywords['IATUTC'] = 32.0
+    antable.keywords['IATUTC'] = 33.0
     antable.keywords['E'] = math.e
     antable.keywords['OPERATOR'] = 'NRAO'
     antable.close()
@@ -49,7 +49,7 @@ try:
     assert (arrnam.strip() == 'VLBA')
     assert (antable.keywords['FREQID'] == 1)
     assert (antable.keywords['FREQ'] == 4974990000.0)
-    assert (antable.keywords['IATUTC'] == 32.0)
+    assert (antable.keywords['IATUTC'] == 33.0)
     assert(abs(antable.keywords['E'] - math.e) < 1e-7)
     operator = antable.keywords['OPERATOR']
     assert (operator.strip() == 'NRAO')
