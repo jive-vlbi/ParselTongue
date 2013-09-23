@@ -16,6 +16,8 @@ mandl.go()
 try:
     imean = AIPSTask('imean')
     imean.indata = image
+    imean.blc[1:] = [ 128, 128 ]
+    imean.trc[1:] = [ 256, 256 ]
     imean.go()
     print 'Average: %f, RMS noise: %f' % (imean.pixavg, imean.pixstd)
     assert(imean.pixavg)
