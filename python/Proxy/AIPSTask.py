@@ -291,7 +291,8 @@ class AIPSTask(Task):
             td_file.write(struct.pack('i', msgkill + 32000 - 1))
             td_file.write(struct.pack('i', isbatch))
             td_file.write(struct.pack('i', 0))
-            td_file.write(struct.pack('2i', 0, 0))
+            td_file.write(struct.pack('i', 1))
+            td_file.write(struct.pack('i', 0))
             td_file.write(struct.pack('f', 1.0))
             td_file.write(struct.pack('4s', '    '))
             for adverb in params.input_list:
