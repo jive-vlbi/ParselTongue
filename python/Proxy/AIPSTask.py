@@ -319,7 +319,7 @@ class AIPSTask(Task):
 
             path = params.version + '/' + os.environ['ARCH'] + '/LOAD/' \
                    + name.upper() + ".EXE"
-            tid = Task.spawn(self, path, [name.upper() + str(popsno)], env)
+            tid = Task.spawn(self, path, [name.upper() + ehex(popsno)], env)
 
         except Exception, exception:
             _free_popsno(popsno)
@@ -454,7 +454,7 @@ class AIPSMessageLog:
 # hex) and yyy is the process ID of the AIPS instance.
 
 def _allocate_popsno():
-    for popsno in range(1,16):
+    for popsno in range(1,36):
         # In order to prevent a race, first create a lock file for
         # POPSNO.
         try:
