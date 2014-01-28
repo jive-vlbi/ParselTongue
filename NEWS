@@ -1,3 +1,26 @@
+*** Changes in ParselTongue 2.1
+
+* New functionality
+
+It is now possible to use up to 35 AIPS tasks in parallel if your AIPS
+installation supports this.
+
+ParselTongue speeds up creating files by effectively always setting
+the AIPS QCREATE adverb to 1.
+
+ParselTongue now supports handling FG (flag) tables.
+
+Test suite has been updated to use the 31DEC13 AIPS release.
+
+* Bug fixes
+
+Fixed some issues when both numarray and numpy packages are present.
+
+Fixed many issues in the ParallelTask module.
+
+Numerous other small bug fixes.
+
+
 *** Changes in ParselTongue 2.0
 
 * New functionality
