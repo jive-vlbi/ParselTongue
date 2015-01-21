@@ -432,7 +432,8 @@ class AIPSTask(Task):
                         message = sys.stdin.read(1024)
                         flags &= ~os.O_NONBLOCK
                         fcntl.fcntl(sys.stdin.fileno(), fcntl.F_SETFL, flags)
-                        self.feed(proxy, tid, message)
+                        if message:
+                            self.feed(proxy, tid, message)
                         rotator = []
                         pass
                     count += 1
