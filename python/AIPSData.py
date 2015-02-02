@@ -424,6 +424,10 @@ class _AIPSTable(object):
     keywords = property(_generate_keywords,
                         doc='Keywords for this table.')
 
+    def _generate_name(self):
+        return self._name
+    name = property(_generate_name, doc='Table extension name.')
+
     def _generate_version(self):
         return _AIPSTableMethod(self, 'version')()
     version = property(_generate_version, doc='Table version.')

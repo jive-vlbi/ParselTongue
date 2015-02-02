@@ -482,6 +482,9 @@ class AIPSTask(Task):
             Task.__setattr__(self, prefix + 'class', value.klass)
             Task.__setattr__(self, prefix + 'disk', value.disk)
             Task.__setattr__(self, prefix + 'seq', value.seq)
+        elif name == 'intable':
+            Task.__setattr__(self, 'inext', value.name)
+            Task.__setattr__(self, 'invers', value.version)
         else:
             # We treat 'infile', 'outfile' and 'outprint' special.
             # Instead of checking the length of the complete string,
