@@ -5,7 +5,7 @@ class Parseltongue < Formula
   url "http://www.jive.nl/parseltongue/releases/parseltongue-2.1.tar.gz"
   sha1 "a36ce09ed3acdecdadfd78b0225829ebe8bc7a97"
 
-  depends_on "Obit"
+  depends_on "obit"
 
   def install
     system "./configure", "--with-obit=#{HOMEBREW_PREFIX}/opt/obit",
