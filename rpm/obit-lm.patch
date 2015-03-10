@@ -1,0 +1,11 @@
+--- obit-22JUN10i.orig/tasks/Makefile.in
++++ obit-22JUN10i/tasks/Makefile.in
+@@ -65,7 +65,7 @@ ALL_LDFLAGS = $(LDFLAGS) @CFITSIO_LDFLAG
+ 
+ LIBS = ../lib/libObit.a @CFITSIO_LIBS@ @FFTW_LIBS@ @FFTW3_LIBS@ @GLIB_LIBS@ \
+ 	@GSL_LIBS@ @PLPLOT_LIBS@ @PGPLOT_LIBS@ $(CLIENT_LIBS) $(SERVER_LIBS) \
+-	@LIBS@ @FLIBS@ @GTHREAD_LIBS@
++	@LIBS@ @FLIBS@ @GTHREAD_LIBS@ -lm
+ 
+ 
+ # get list of all c source files (*.c) files
