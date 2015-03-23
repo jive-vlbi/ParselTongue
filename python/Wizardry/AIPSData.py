@@ -37,11 +37,10 @@ try:
     numarraystatus = True
 except ImportError:
     numarraystatus = False
-    numarray = None
     pass
 
 try:
-    import numpy.numarray
+    import numpy as np
     numpystatus = True
 except ImportError:
     numpystatus = False
@@ -51,15 +50,19 @@ if numarraystatus and numpystatus:
     # Both numarray and NumPy are available.  Let the NUMERIX
     # environment variable decide which one we use.
     if numerix == 'numpy':
-        numarray = numpy.numarray
         numarraystatus = False
     else:
         numpystatus = False
         pass
     pass
-elif numpystatus:
-    # Use NumPy if that's all we have
-    numarray = numpy.numarray
+
+def _array(sequence, shape):
+    if numpystatus:
+        arr = np.frombuffer(sequence, dtype=np.float32)
+        arr.shape = shape
+        return arr
+    else:
+        return numarray.array(sequence, type=numarray.Float32, shape=shape)
     pass
 
 def _scalarize(value):
@@ -451,7 +454,7 @@ class _AIPSVisibility(object):
 
     def __init__(self, data, err, index):
         # Give an early warning we're not going to succeed.
-        if not numarray:
+        if not numarraystatus and not numpystatus:
             msg = 'Numerical Python (numarray or NumPy) not available'
             raise NotImplementedError, msg
 
@@ -464,8 +467,7 @@ class _AIPSVisibility(object):
         self._flush = False
         if index > -1:
             shape = len(self._data.VisBuf) / 4
-            self._buffer = numarray.array(sequence=self._data.VisBuf,
-                                          type=numarray.Float32, shape=shape)
+            self._buffer = _array(self._data.VisBuf, shape)
             self._first = self._data.Desc.Dict['firstVis'] - 1
             self._count = self._data.Desc.Dict['numVisBuff']
             count = InfoList.PGet(self._data.List, "nVisPIO")[4][0]
@@ -503,8 +505,7 @@ class _AIPSVisibility(object):
         if self._err.isErr:
             raise RuntimeError
         shape = len(self._data.VisBuf) / 4
-        self._buffer = numarray.array(sequence=self._data.VisBuf,
-                                      type=numarray.Float32, shape=shape)
+        self._buffer = _array(self._data.VisBuf, shape)
         self._first = self._data.Desc.Dict['firstVis'] - 1
         self._count = self._data.Desc.Dict['numVisBuff']
         count = InfoList.PGet(self._data.List, "nVisPIO")[4][0]
@@ -1072,8 +1073,7 @@ class AIPSImage(_AIPSData):
             shape.insert(0, len)
             continue
         shape = tuple(shape)
-        pixels = numarray.array(sequence=self._data.PixBuf,
-                                type=numarray.Float32, shape=shape)
+        pixels = _array(self._data.PixBuf, shape)
         return pixels
     pixels = property(_pixels)
 
