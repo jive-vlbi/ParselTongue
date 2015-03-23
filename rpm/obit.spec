@@ -18,7 +18,8 @@ Obit for ParselTongue is a stripped-down version of Obit that provides
 the functionality needed by ParselTongue.
 
 %prep
-%autosetup -n Obit -p1
+%setup -q -n Obit
+%patch0 -p1
 
 %build
 %configure
