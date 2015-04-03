@@ -2,7 +2,7 @@
 
 AC_PREREQ(2.57)
 
-AC_INIT(ParselTongue, 2.1, kettenis@jive.nl)
+AC_INIT(ParselTongue, 2.2, kettenis@jive.nl)
 AM_INIT_AUTOMAKE(1.6)
 AC_CONFIG_SRCDIR(python/ParselTongue.py)
 
