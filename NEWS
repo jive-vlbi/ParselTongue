@@ -1,3 +1,18 @@
+*** Changes in ParselTongue 2.2
+
+* New functionality
+
+New intable pseudo-adverb allows setting the inext and invers adverbs
+directly from an AIPSTable object:
+
+>>> cl = uvdata.table('CL', 3)
+>>> prtab.intable = cl
+
+This is very similar to how the indata pseudo-adverb works.
+
+It is now possible to use ParselTongue with NumPy 1.9 and later versions.
+
+
 *** Changes in ParselTongue 2.1
 
 * New functionality
