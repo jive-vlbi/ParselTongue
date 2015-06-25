@@ -2,8 +2,8 @@ require "formula"
 
 class Parseltongue < Formula
   homepage "http://www.jive.nl/jivewiki/doku.php?id=parseltongue:parseltongue"
-  url "http://www.jive.nl/parseltongue/releases/parseltongue-2.1.tar.gz"
-  sha1 "a36ce09ed3acdecdadfd78b0225829ebe8bc7a97"
+  url "http://www.jive.nl/parseltongue/releases/parseltongue-2.2.tar.gz"
+  sha1 "38bc93c0057e1864af9752a641d13e501cc87209"
 
   depends_on "obit"
 
