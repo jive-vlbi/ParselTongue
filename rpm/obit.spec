@@ -1,11 +1,10 @@
 Name:           obit
-Version:        22JUN10i
+Version:        22JUN10j
 Release:        1%{?dist}
 Summary:        Obit for ParselTongue
 License:        GPLv2+
 URL:            http://www.cv.nrao.edu/~bcotton/Obit.html
 Source0:        http://www.jive.nl/parseltongue/releases/Obit-%{version}.tar.gz
-Patch0:         obit-lm.patch
 BuildRequires:  python-devel
 BuildRequires:  glib2-devel
 BuildRequires:  gsl-devel
@@ -19,7 +18,6 @@ the functionality needed by ParselTongue.
 
 %prep
 %setup -q -n Obit
-%patch0 -p1
 
 %build
 %configure
@@ -40,5 +38,7 @@ cp -p python/*.so %{buildroot}%{_libdir}/%{name}/python
 
 
 %changelog
+* Thu Jun 25 2015 Mark Kettenis <kettenis@jive.nl> 22JUN10j-1
+- Update to Obit 22JUN10j
 * Mon Mar  9 2015 Mark Kettenis <kettenis@jive.nl> 22JUN10i-1
 - Initial release
