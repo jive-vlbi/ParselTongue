@@ -639,7 +639,7 @@ class _AIPSVisibilityIter(_AIPSVisibility):
             self._index = self._range[0] - self._first
             pass
             
-        if self._index + self._first >= self._len:
+        if self._index + self._first >= self._range[1]:
             if self._flush:
                 Obit.UVWrite(self._data.me, self._err.me)
                 if self._err.isErr:
@@ -669,6 +669,35 @@ class _AIPSVisibilitySel(object):
                 pass
             pass
 
+        return
+
+    def __iter__(self):
+        return _AIPSVisibilityIter(self._data._data, self._data._err,
+                                   self._ranges)
+
+    pass
+
+
+class _AIPSVisibilitySlice(object):
+    def __init__(self, data, slice):
+        self._data = data
+
+        start = 0
+        stop = len(data)
+        if slice.start:
+            start = slice.start
+            pass
+        if slice.stop:
+            if slice.stop < 0:
+                stop = len(data) + slice.stop
+            else:
+                stop = slice.stop
+                pass
+            pass
+        if slice.step and not slice.step == 1:
+            msg = 'Stride %d is not supported' % slice.step
+            raise NotimplementedError, msg
+        self._ranges = [(start, stop)]
         return
 
     def __iter__(self):
@@ -1155,6 +1184,8 @@ class AIPSUVData(_AIPSData):
             pass
         if type(name) == str:
             return _AIPSVisibilitySel(self, name)
+        elif type(name) == slice:
+            return _AIPSVisibilitySlice(self, name)
         return _AIPSVisibility(self._data, self._err, name)
 
     def __iter__(self):
