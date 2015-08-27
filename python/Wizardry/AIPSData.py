@@ -685,7 +685,11 @@ class _AIPSVisibilitySlice(object):
         start = 0
         stop = len(data)
         if slice.start:
-            start = slice.start
+            if slice.start < 0:
+                start = len(data) + slice.start
+            else:
+                start = slice.start
+                pass
             pass
         if slice.stop:
             if slice.stop < 0:
