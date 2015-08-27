@@ -473,33 +473,28 @@ class _AIPSVisibility(object):
             count = InfoList.PGet(self._data.List, "nVisPIO")[4][0]
             self._buffer.shape = (count, -1)
 
-            if self._first < 0:
-                self._fill()
-                pass
-
-            if index < self._first:
-                self._data.Open(3, self._err)
-                self._open = True
-                self._first = 0
-                self._count = 0
-                self._fill()
-                pass
-
-            while index >= self._first + self._count:
-                self._fill()
+            if self._first < 0 or \
+                    index < self._first or index >= self._first + self._count:
+                self._fill(index)
                 pass
 
             self._index = index - self._first
             pass
         return
 
-    def _fill(self):
+    def _fill(self, index=None):
         if self._flush:
             assert(self._first == self._data.Desc.Dict['firstVis'] - 1)
             Obit.UVRewrite(self._data.me, self._err.me)
             if self._err.isErr:
                 raise RuntimeError
             self._flush = False
+            pass
+        if index:
+            d = self._data.IODesc.Dict
+            count = InfoList.PGet(self._data.List, "nVisPIO")[4][0]
+            d['firstVis'] = max(0, index - count + 1)
+            self._data.IODesc.Dict = d
             pass
         Obit.UVRead(self._data.me, self._err.me)
         if self._err.isErr:
@@ -639,7 +634,7 @@ class _AIPSVisibilityIter(_AIPSVisibility):
         while self._first + self._count < self._range[0]:
             self._fill()
             pass
-        
+
         if self._index + self._first < self._range[0]:
             self._index = self._range[0] - self._first
             pass
