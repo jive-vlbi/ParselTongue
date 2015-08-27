@@ -1105,7 +1105,7 @@ class AIPSImage(_AIPSData):
         if name == 'AIPS CC':
             Obit.TableCC(data, [version], 3, name, no_parms, self._err.me)
         elif name == 'AIPS FG':
-            Obit.TablePS(data, [version], 3, name, self._err.me)
+            Obit.TableFG(data, [version], 3, name, self._err.me)
         elif name == 'AIPS PS':
             Obit.TablePS(data, [version], 3, name, self._err.me)
         elif name == 'AIPS SN':
