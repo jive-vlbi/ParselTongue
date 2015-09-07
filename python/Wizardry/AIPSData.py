@@ -462,6 +462,17 @@ class _AIPSVisibility(object):
         self._data = data
         self._index = -1
         self._desc = self._data.Desc.Dict
+        self._ant1 = None
+        self._ant2 = None
+        self._subarray = None
+        if self._desc['ilocb'] == -1:
+            try:
+                self._ant1 = self._desc['ptype'].index('ANTENNA1')
+                self._ant2 = self._desc['ptype'].index('ANTENNA2')
+                self._subarray = self._desc['ptype'].index('SUBARRAY')
+            except:
+                pass
+            pass
         self._first = 0
         self._count = 0
         self._flush = False
@@ -530,17 +541,30 @@ class _AIPSVisibility(object):
     time = property(_get_time, _set_time)
 
     def _get_baseline(self):
+        if self._ant1 and self._ant2:
+            ant1 = int(self._buffer[self._index][self._ant1])
+            ant2 = int(self._buffer[self._index][self._ant2])
+            return [ant1, ant2]
         baseline = int(self._buffer[self._index][self._desc['ilocb']])
         return [baseline / 256, baseline % 256]
     def _set_baseline(self, value):
+        if self._ant1 and self._ant2:
+            self._buffer[self._index][self._ant1] = value[0]
+            self._buffer[self._index][self._ant2] = value[1]
+            return
         baseline = value[0] * 256 + value[1] + (self.subarray - 1) * 0.01
         self._buffer[self._index][self._desc['ilocb']] = baseline
     baseline = property(_get_baseline, _set_baseline)
 
     def _get_subarray(self):
+        if self._subarray:
+            return int(self._buffer[self._index][self._subarray])
         ilocb = self._buffer[self._index][self._desc['ilocb']]
         return int((ilocb - int(ilocb)) * 100 + 0.5) + 1
     def _set_subarray(self, value):
+        if self._subarray:
+            self._buffer[self._index][self._subarray] = value
+            return
         baseline = int(self._buffer[self._index][self._desc['ilocb']])
         ilocb = baseline + (value - 1) * 0.01
         self._buffer[self._index][self._desc['ilocb']] = ilocb
