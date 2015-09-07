@@ -7,7 +7,7 @@ TESTS = msglog.py \
 	convenience.py flag.py history.py history2.py indxr.py keywords.py \
 	keywords2.py keywords3.py pixels.py userno.py \
 	visibilities.py visibilities2a.py visibilities2b.py \
-	visibilities3.py visibilities4.py \
+	visibilities3.py visibilities4.py visibilities5.py \
 	uvcon.py zap.py zap2.py zap3.py zap4.py \
 	$(top_srcdir)/python/MinimalMatch.py \
 	$(top_srcdir)/python/Task.py \
