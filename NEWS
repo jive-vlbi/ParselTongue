@@ -10,6 +10,16 @@ subset of them:
 
 Strides other than one are not supported.
 
+ParselTongue now supports the new UV format introduced on March 24,
+2015 to support arrays with more than 256 antennas.  If you are using
+AIPS 31DEC15 or later, you should probably upgrade ParselTongue.
+
+* Bug fixes
+
+A bug that prevented attaching FG tables has been fixed.
+
+Raw visibility access has been optimized and is now (a bit) faster.
+
 
 *** Changes in ParselTongue 2.2
 
