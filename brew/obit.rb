@@ -3,7 +3,7 @@ require "formula"
 class Obit < Formula
   homepage "http://www.jive.nl/jivewiki/doku.php?id=parseltongue:parseltongue"
   url "http://www.jive.nl/parseltongue/releases/Obit-22JUN10j.tar.gz"
-  sha1 "a1f0124317b94cd86c3707d6f17bd446958b97f0"
+  sha256 "584d7a452bbebebae262487b29912079531e3a40e3af62559f12bd47a9b10cc8"
 
   depends_on "glib"
   depends_on "gsl"
