@@ -1,5 +1,5 @@
 Name:           obit
-Version:        22JUN10j
+Version:        22JUN10k
 Release:        1%{?dist}
 Summary:        Obit for ParselTongue
 License:        GPLv2+
@@ -38,6 +38,8 @@ cp -p python/*.so %{buildroot}%{_libdir}/%{name}/python
 
 
 %changelog
+* Wed Nov 11 2015 Mark Kettenis <kettenis@jive.eu> 22JUN10k-1
+- Update to Obit 22JUN10k
 * Thu Jun 25 2015 Mark Kettenis <kettenis@jive.nl> 22JUN10j-1
 - Update to Obit 22JUN10j
 * Mon Mar  9 2015 Mark Kettenis <kettenis@jive.nl> 22JUN10i-1
