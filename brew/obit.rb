@@ -2,8 +2,8 @@ require "formula"
 
 class Obit < Formula
   homepage "http://www.jive.nl/jivewiki/doku.php?id=parseltongue:parseltongue"
-  url "http://www.jive.nl/parseltongue/releases/Obit-22JUN10k.tar.gz"
-  sha256 "d185d41d7533c45eb48323cb1532cc9b993f40339fcfd7e229a76f72a5a130b2"
+  url "http://www.jive.nl/parseltongue/releases/Obit-22JUN10l.tar.gz"
+  sha256 "cbfc84fae121e0ff96320985e2bce7e149c2bb859aee948b175b8f00cb95f5f4"
 
   depends_on "glib"
   depends_on "gsl"
