@@ -41,16 +41,20 @@ from FITSData import *
 try:
     import atexit, readline, ptcompleter
     if __name__ == "__main__" :
-		try:
-			path = os.environ['HOME'] + '/.ParselTongue/history'
-			readline.read_history_file(path)
-		except IOError:
-			pass
-		readline.parse_and_bind("tab: complete")
-		if not os.path.exists(os.path.dirname(path)):
-			os.makedirs(os.path.dirname(path))
-			pass
-		atexit.register(readline.write_history_file, path)
+	try:
+            if 'PT_HISTORY' in os.environ:
+                path = os.environ['PT_HISTORY']
+            else:
+                path = os.environ['HOME'] + '/.ParselTongue/history'
+                pass
+            readline.read_history_file(path)
+        except IOError:
+            pass
+        readline.parse_and_bind("tab: complete")
+        if not os.path.exists(os.path.dirname(path)):
+            os.makedirs(os.path.dirname(path))
+            pass
+        atexit.register(readline.write_history_file, path)
 except:
     pass
 
