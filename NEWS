@@ -1,3 +1,16 @@
+*** Changes in ParselTongue 2.4
+
+* New functionality
+
+The name of the ParselTongue history file can now be configured through the
+PT_HISTORY environment variable.
+
+* Big fixes
+
+Message filtering when running more than 10 AIPS tasks in parallel
+should work correctly now.
+
+
 *** Changes in ParselTongue 2.3
 
 * New functionality
