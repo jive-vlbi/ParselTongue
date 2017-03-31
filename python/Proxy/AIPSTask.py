@@ -348,7 +348,8 @@ class AIPSTask(Task):
         messages = Task.messages(self, tid)
 
         # Strip out all formal messages.
-        start = '%-5s%d' % (self._params[tid].name.upper(), self._popsno[tid])
+        name = self._params[tid].name.upper()
+        start = '%-5s%c' % (name, ehex(self._popsno[tid]))
         messages = [msg for msg in messages if not msg.startswith(start)]
 
         messages = [(1, msg) for msg in messages]
@@ -364,7 +365,8 @@ class AIPSTask(Task):
                    self.__read_message(ms_file, self._msgno[tid])
             # Filter
             if popsno == self._popsno[tid]:
-                messages.append((priority, '%-5s%d: %s' % (task, popsno, msg)))
+                msg = '%-5s%c: %s' % (task, ehex(popsno), msg)
+                messages.append((priority, msg))
                 pass
             self._msgno[tid] += 1
             continue
