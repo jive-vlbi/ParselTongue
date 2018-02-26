@@ -1,5 +1,7 @@
 ## Process this file with automake to create Makefile.in.
 
+AUTOMAKE_OPTIONS = serial-tests
+
 check_SCRIPTS = ParselTest
 
 TESTS = msglog.py \
@@ -9,10 +11,10 @@ TESTS = msglog.py \
 	visibilities.py visibilities2a.py visibilities2b.py \
 	visibilities3.py visibilities4.py visibilities5.py \
 	uvcon.py zap.py zap2.py zap3.py zap4.py \
-	$(top_srcdir)/python/MinimalMatch.py \
-	$(top_srcdir)/python/Task.py \
-	$(top_srcdir)/python/AIPSTask.py \
-	$(top_srcdir)/python/AIPSData.py
+	../python/MinimalMatch.py \
+	../python/Task.py \
+	../python/AIPSTask.py \
+	../python/AIPSData.py
 TESTS_ENVIRONMENT = ./ParselTest
 
 EXTRA_DIST = $(TESTS) template.py ParselTest.in VLBA1.UVCON
