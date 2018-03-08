@@ -67,8 +67,8 @@ proxies = [ LocalProxy ]
 # AIPS disk mapping. 
 disks = [ None ]                        # Disk numbers are one-based.
 
-# AIPS seems to support a maximum of 35 disks.
-for disk in xrange(1, 36):
+# AIPS seems to support a maximum of 71 disks.
+for disk in xrange(1, 72):
     area = 'DA' + ehex(disk, 2, '0')
     if not area in os.environ:
         break
