@@ -365,7 +365,7 @@ class _AIPSTable:
 
     def __getitem__(self, key):
         if key < 0:
-            key = len(self) - key
+            key = len(self) + key
         return _AIPSTableRow(self._table, self._columns, key, self._err)
 
     def __iter__(self):
@@ -376,7 +376,7 @@ class _AIPSTable:
 
     def __setitem__(self, key, row):
         if key < 0:
-            key = len(self) - key
+            key = len(self) + key
         assert(not self._err.isErr)
         self._table.WriteRow(key + 1, row._row, self._err)
         if self._err.isErr:
