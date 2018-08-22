@@ -360,6 +360,13 @@ class _AIPSTable:
             raise RuntimeError
         return
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.close()
+        return
+
     # The following functions make an extension table behave as a list
     # of rows.
 
