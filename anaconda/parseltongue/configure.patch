@@ -1,0 +1,11 @@
+--- configure.orig	2015-09-07 18:08:22.000000000 +0200
++++ configure	2017-01-10 17:12:23.375376067 +0100
+@@ -2352,7 +2352,7 @@ OBIT_PYTHONPATH=
+ 
+ # Check whether --with-obit was given.
+ if test "${with_obit+set}" = set; then
+-  withval=$with_obit; if test -f "$withval/python/Obit.py"; then
++  withval=$with_obit; if test -f "$withval/python/ObitInit.py"; then
+     OBIT_PYTHONPATH="$withval/python"; export ac_obit_pythonpath
+   fi
+ fi

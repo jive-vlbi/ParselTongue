@@ -1,0 +1,32 @@
+package:
+  name: obit
+  version: 22JUN10l
+
+source:
+  url: http://www.jive.nl/parseltongue/releases/Obit-22JUN10l.tar.gz
+  sha256: cbfc84fae121e0ff96320985e2bce7e149c2bb859aee948b175b8f00cb95f5f4
+
+requirements:
+  build:
+    - cfitsio
+    - glib
+    - gsl
+    - numpy
+    - python
+    - setuptools
+
+  run:
+    - cfitsio
+    - glib
+    - gsl
+    - numpy
+    - python
+
+build:
+  number: 1
+
+about:
+  home: http://www.cv.nrao.edu/~bcotton/Obit.html
+  license: GPLv2+
+  license_file: LICENSE
+  summary: stripped down version of Obit for use with ParselTongue

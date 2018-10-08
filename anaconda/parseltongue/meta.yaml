@@ -1,0 +1,29 @@
+package:
+  name: parseltongue
+  version: '2.3'
+
+source:
+  url: http://www.jive.nl/parseltongue/releases/parseltongue-2.3.tar.gz
+  sha256: acc335d85dad8a5996ab4eb1088f5aa28a0e67278a20c002fde43956ded0d6db
+  patches:
+    - configure.patch
+
+requirements:
+  build:
+    - obit
+    - python
+    - setuptools
+
+  run:
+    - numpy
+    - obit
+    - python
+
+build:
+  number: 1
+
+about:
+  home: http://www.jive.eu/jivewiki/doku.php?id=parseltongue:parseltongue
+  license: GPLv2+
+  license_file: COPYING
+  summary: a Python scripting interface for classic AIPS
