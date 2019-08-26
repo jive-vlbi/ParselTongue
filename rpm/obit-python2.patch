@@ -1,0 +1,13 @@
+--- python/Makefile.in.orig	2015-06-24 14:15:52.000000000 +0200
++++ python/Makefile.in	2018-07-03 16:11:31.557828024 +0200
+@@ -78,8 +78,8 @@ all: $(TARGETS)
+ 
+ # Build shared library for python interface
+ $(TARGETS): %.so:setupdata.py $(MYLIBS)
+-	python makesetup.py
+-	python setup.py build install --install-lib=.
++	python2 makesetup.py
++	python2 setup.py build install --install-lib=.
+ 
+ # Build python/Obit interface
+ interface: Obit_wrap.c
