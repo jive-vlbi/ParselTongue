@@ -180,13 +180,13 @@ class AIPSTableRow(_AIPSTableRow):
             if type == 2 or type == 3 or type == 15:
                 # Integer.
                 self._row[field] = repeat * [0]
-            elif type == 9 or type == 10:
+            elif type == 10 or type == 11:
                 # Floating-point number.
                 self._row[field] = repeat * [0.0]
-            elif type == 13:
+            elif type == 14:
                 # String.
                 self._row[field] = ''
-            elif type == 14:
+            elif type == 15:
                 # Boolean.
                 self._row[field] = repeat * [False]
             else:
@@ -244,9 +244,9 @@ class _AIPSTableKeywords:
         except:
             # New keys are either strings or floats.
             if type(value) == str:
-                _type = 13
+                _type = 14
             else:
-                _type = 9
+                _type = 10
                 pass
             pass
         if _type in (2, 3, 4):
@@ -255,25 +255,25 @@ class _AIPSTableKeywords:
                                    [1, 1, 1, 1, 1], _vectorize(value))
             InfoList.PAlwaysPutInt(self._table.IODesc.List, key,
                                    [1, 1, 1, 1, 1], _vectorize(value))
-        elif _type == 9:
+        elif _type == 10:
             value = float(value)
             InfoList.PAlwaysPutFloat(self._table.Desc.List, key,
                                      [1, 1, 1, 1, 1], _vectorize(value))
             InfoList.PAlwaysPutFloat(self._table.IODesc.List, key,
                                      [1, 1, 1, 1, 1], _vectorize(value))
-        elif _type == 10:
+        elif _type == 11:
             value = float(value)
             InfoList.PAlwaysPutDouble(self._table.Desc.List, key,
                                       [1, 1, 1, 1, 1], _vectorize(value))
             InfoList.PAlwaysPutDouble(self._table.IODesc.List, key,
                                       [1, 1, 1, 1, 1], _vectorize(value))
-        elif _type == 13:
+        elif _type == 14:
             value = str(value).ljust(8)
             InfoList.PAlwaysPutString(self._table.Desc.List, key,
                                       [8, 1, 1, 1, 1], _vectorize(value))
             InfoList.PAlwaysPutString(self._table.IODesc.List, key,
                                       [8, 1, 1, 1, 1], _vectorize(value))
-        elif _type == 14:
+        elif _type == 15:
             value = bool(value)
             InfoList.PAlwaysPutBoolean(self._table.Desc.List, key,
                                       [1, 1, 1, 1, 1], _vectorize(value))
@@ -761,28 +761,28 @@ class _AIPSDataKeywords:
         except:
             # New keys are either strings or floats.
             if type(value) == str:
-                _type = 13
+                _type = 14
             else:
-                _type = 9
+                _type = 10
                 pass
             pass
         if _type in (2, 3, 4):
             value = int(value)
             InfoList.PAlwaysPutInt(self._data.Desc.List, key,
                                    [1, 1, 1, 1, 1], _vectorize(value))
-        elif _type == 9:
+        elif _type == 10:
             value = float(value)
             InfoList.PAlwaysPutFloat(self._data.Desc.List, key,
                                      [1, 1, 1, 1, 1], _vectorize(value))
-        elif _type == 10:
+        elif _type == 11:
             value = float(value)
             InfoList.PAlwaysPutDouble(self._data.Desc.List, key,
                                       [1, 1, 1, 1, 1], _vectorize(value))
-        elif _type == 13:
+        elif _type == 14:
             value = str(value).ljust(8)
             InfoList.PAlwaysPutString(self._data.Desc.List, key,
                                       [8, 1, 1, 1, 1], _vectorize(value))
-        elif _type == 14:
+        elif _type == 15:
             value = bool(value)
             InfoList.PAlwaysPutBoolean(self._table.Desc.List, key,
                                       [1, 1, 1, 1, 1], _vectorize(value))
