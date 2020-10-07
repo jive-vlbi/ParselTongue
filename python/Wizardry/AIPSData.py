@@ -379,7 +379,7 @@ class _AIPSTable:
         return _AIPSTableIter(self._table, self._columns, self._err)
 
     def __len__(self):
-        return self._table.Desc.Dict['nrow']
+        return int(self._table.Desc.Dict['nrow'])
 
     def __setitem__(self, key, row):
         if key < 0:
@@ -1210,7 +1210,7 @@ class AIPSUVData(_AIPSData):
         return
 
     def __len__(self):
-        return self._data.Desc.Dict['nvis']
+        return int(self._data.Desc.Dict['nvis'])
 
     def __getitem__(self, name):
         if not self._open:
