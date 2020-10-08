@@ -16,7 +16,7 @@ AC_CONFIG_FILES(bin/Makefile)
 ## Python.  ##
 ## -------- ##
 
-AM_PATH_PYTHON(2.2)
+AM_PATH_PYTHON(2.6)
 AC_CONFIG_FILES([python/Makefile python/Proxy/Makefile
                  python/Wizardry/Makefile test/Makefile])
 
@@ -37,9 +37,9 @@ cat <<_ACEOF >conftest.py
 try:
     import OSystem, OErr
 except:
-    print "missing"
+    print("missing")
 else:
-    print "found"
+    print("found")
 _ACEOF
 PYTHONPATH=$PYTHONPATH:$OBIT_PYTHONPATH; export PYTHONPATH
 ac_cv_obit=`$PYTHON conftest.py 2>/dev/null`
