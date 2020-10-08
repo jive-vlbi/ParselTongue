@@ -22,7 +22,7 @@ tasks and provide verb-like access to AIPS data on a machine.
 """
 
 import sys
-import xmlrpclib
+import xmlrpc.client
 # Stolen shamelessly from Thomas Bellman, on the Python-list, June 2006.
 # WARNING: Dirty hack below.
 # Replace the dumps() function in xmlrpclib with one that by default
@@ -33,10 +33,10 @@ class _xmldumps(object):
 	def __call__(self, *args, **kwargs):
 		kwargs.setdefault('allow_none', 1)
 		return self.__dumps[0](*args, **kwargs)
-xmlrpclib.dumps = _xmldumps(xmlrpclib.dumps)
+xmlrpc.client.dumps = _xmldumps(xmlrpc.client.dumps)
 
-from SimpleXMLRPCServer import SimpleXMLRPCServer
-from SocketServer import ThreadingMixIn
+from xmlrpc.server import SimpleXMLRPCServer
+from socketserver import ThreadingMixIn
 
 # Global AIPS defaults.
 import AIPS
@@ -68,7 +68,7 @@ class ServerFuncs:
             method = getattr(inst, name[1])
             return method(*args)
         msg = "object has no attribute '%s'" % name
-        raise AttributeError, msg
+        raise AttributeError(msg)
 
     pass                                # class ServerFuncs
 

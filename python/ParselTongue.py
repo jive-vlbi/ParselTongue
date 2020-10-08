@@ -78,19 +78,19 @@ if __name__ == "__main__" :
 	AIPSTask.isbatch = 0
 
 	# Separate the blurb below from what the Python interpreter spits out.
-	print ""
+	print("")
 
-	print "Welcome to ParselTongue", ptversion.version
+	print("Welcome to ParselTongue", ptversion.version)
 	while True:
 		try:
-			input = raw_input("Please enter your AIPS user ID number: ")
+			input = input("Please enter your AIPS user ID number: ")
 			AIPS.userno = int(input)
 		except KeyboardInterrupt:
-			print ""
-			print "AIPS user ID number is not set"
+			print("")
+			print("AIPS user ID number is not set")
 			break
 		except:
-			print "That is not a valid AIPS user ID number"
+			print("That is not a valid AIPS user ID number")
 			continue
 		else:
 			break

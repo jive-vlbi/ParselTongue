@@ -72,7 +72,7 @@ class Popsdat:
                 else:
                     msg = "Cannot handle float arrays of dimension %d" \
                           % dimensions
-                    raise AssertionError, msg
+                    raise AssertionError(msg)
             elif type == 4:             # Verb
                 self.verb_dict[name] = int(split_line[2])
             elif type == 6:             # End of adverbs.
@@ -94,7 +94,7 @@ class Popsdat:
                 else:
                     msg = "Cannot handle character arrays of dimension %d" \
                           % dimension
-                    raise AssertionError, msg
+                    raise AssertionError(msg)
             else:
                 continue
 

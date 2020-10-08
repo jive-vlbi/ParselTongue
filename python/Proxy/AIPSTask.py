@@ -105,7 +105,7 @@ class _AIPSTaskParams:
                     if key.startswith(adverb):
                         if match_key:
                             msg = "adverb '%s' is ambiguous" % adverb
-                            raise AttributeError, msg
+                            raise AttributeError(msg)
                         else:
                             match_key = key
             if not match_key:
@@ -201,12 +201,12 @@ class AIPSTask(Task):
         elif type(value) == str:
             strlen = ((params.strlen_dict[adverb] + 3) // 4) * 4
             fmt = "%ds" % strlen
-            file.write(struct.pack(fmt, value.ljust(strlen)))
+            file.write(struct.pack(fmt, value.ljust(strlen).encode('utf-8')))
         elif type(value) == list:
             for subvalue in value[1:]:
                 self.__write_adverb(params, file, adverb, subvalue)
         else:
-            raise AssertionError, type(value)
+            raise AssertionError(type(value))
 
     def __read_adverb(self, params, file, adverb, value=None):
         """Read (sub)value for adverb ADVERB from TD file FILE."""
@@ -232,7 +232,7 @@ class AIPSTask(Task):
                 continue
             value = newvalue
         else:
-            raise AssertionError, type(value)
+            raise AssertionError(type(value))
         return value
 
     def spawn(self, name, version, userno, msgkill, isbatch, tv, input_dict):
@@ -260,7 +260,7 @@ class AIPSTask(Task):
                     if dirname:
                         if not os.path.isdir(dirname):
                             msg = "Direcory '%s' does not exist" % dirname
-                            raise RuntimeError, msg
+                            raise RuntimeError(msg)
                         env[area] = dirname
                         basename = os.path.basename(input_dict[adverb])
                         input_dict[adverb] = area + ':' + basename
@@ -280,7 +280,7 @@ class AIPSTask(Task):
             td_file = open(td_name, mode='r+b')
 
             td_file.seek(index * 20)
-            td_file.write(struct.pack('8s', name.upper().ljust(8)))
+            td_file.write(struct.pack('8s', name.upper().ljust(8).encode('utf-8')))
             td_file.write(struct.pack('l', -999))
             td_file.write(struct.pack('2l', 0, 0))
 
@@ -294,7 +294,7 @@ class AIPSTask(Task):
             td_file.write(struct.pack('i', 1))
             td_file.write(struct.pack('i', 0))
             td_file.write(struct.pack('f', 1.0))
-            td_file.write(struct.pack('4s', '    '))
+            td_file.write(struct.pack('4s', b'    '))
             for adverb in params.input_list:
                 self.__write_adverb(params, td_file, adverb,
                                     input_dict[adverb])
@@ -308,12 +308,12 @@ class AIPSTask(Task):
             ms_name = os.environ['DA01'] + '/MS' + AIPS.revision \
                       + user + '000.' + user + ';'
             if not os.path.exists(ms_name):
-                ms_file = open(ms_name, mode='w')
+                ms_file = open(ms_name, mode='wb')
                 ms_file.truncate(1024)
                 ms_file.close()
-                os.chmod(ms_name, 0664)
+                os.chmod(ms_name, 0o664)
                 pass
-            ms_file = open(ms_name, mode='r')
+            ms_file = open(ms_name, mode='rb')
             (msgno,) = struct.unpack('i', ms_file.read(4))
             ms_file.close()
 
@@ -321,7 +321,7 @@ class AIPSTask(Task):
                    + name.upper() + ".EXE"
             tid = Task.spawn(self, path, [name.upper() + ehex(popsno)], env)
 
-        except Exception, exception:
+        except Exception as exception:
             _free_popsno(popsno)
             raise exception
             
@@ -333,9 +333,9 @@ class AIPSTask(Task):
         return tid
 
     def __read_message(self, file, msgno):
-        file.seek((msgno / 10) * 1024 + 8 + (msgno % 10) * 100)
+        file.seek((msgno // 10) * 1024 + 8 + (msgno % 10) * 100)
         (tmp, task, message) = struct.unpack('i8x5s3x80s', file.read(100))
-        (popsno, priority) = (tmp / 16, tmp % 16)
+        (popsno, priority) = (tmp // 16, tmp % 16)
         task = task.rstrip()
         message = message.rstrip()
         return (task, popsno, priority, message)
@@ -357,7 +357,7 @@ class AIPSTask(Task):
         user = ehex(self._userno[tid], 3, 0)
         ms_name = os.environ['DA01'] + '/MS' + AIPS.revision \
                   + user + '000.' + user + ';'
-        ms_file = open(ms_name, mode='r')
+        ms_file = open(ms_name, mode='rb')
 
         (msgno,) = struct.unpack('i', ms_file.read(4))
         while self._msgno[tid] < msgno:
@@ -392,7 +392,7 @@ class AIPSTask(Task):
             (result,) = struct.unpack('i', td_file.read(4))
             if result != 0:
                 msg = "Task '%s' returns '%d'" % (params.name, result)
-                raise RuntimeError, msg
+                raise RuntimeError(msg)
 
             td_file.seek(1024 + index * 4096 + 40)
             output_dict = {}
@@ -438,7 +438,7 @@ class AIPSMessageLog:
         user = ehex(userno, 3, 0)
         ms_name = os.environ['DA01'] + '/MS' + AIPS.revision \
                   + user + '000.' + user + ';'
-        return open(ms_name, mode='r+')
+        return open(ms_name, mode='r+b')
 
     def zap(self, userno):
         """Zap message log."""
@@ -461,7 +461,7 @@ def _allocate_popsno():
         # POPSNO.
         try:
             path = '/tmp/AIPS' + ehex(popsno, 1, 0) + '.' + str(os.getpid())
-            fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0666)
+            fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o666)
             os.close(fd)
         except:
             continue
@@ -499,7 +499,7 @@ def _allocate_popsno():
         # Clean up our own mess.
         os.unlink(path)
 
-    raise RuntimeError, "No free AIPS POPS number available on this system"
+    raise RuntimeError("No free AIPS POPS number available on this system")
 
 def _free_popsno(popsno):
     path = '/tmp/AIPS' + ehex(popsno, 1, 0) + '.' + str(os.getpid())

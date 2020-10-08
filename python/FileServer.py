@@ -22,11 +22,11 @@ remote machine, without troubling with pesky user authentication &cet.
 
 import os
 import sys
-import SocketServer
+import socketserver
 
-class FileServer(SocketServer.ForkingMixIn, SocketServer.TCPServer) : pass
+class FileServer(socketserver.ForkingMixIn, socketserver.TCPServer) : pass
 
-class FileWriter(SocketServer.BaseRequestHandler) :
+class FileWriter(socketserver.BaseRequestHandler) :
     dir = "/tmp"
     def handle(self) :
         copy = open(os.tempnam(self.dir),"w")
@@ -45,4 +45,4 @@ if __name__ == "__main__" :
             server = FileServer(('',8001),FileWriter)
         server.serve_forever()
     except(KeyboardInterrupt) :
-        print "FileServer exiting. Later!"
+        print("FileServer exiting. Later!")

@@ -107,7 +107,7 @@ class _AIPSTableRow:
             assert(not self._err.isErr)
             self._row = self._table.ReadRow(self._rownum + 1, self._err)
             if not self._row:
-                raise IndexError, "list index out of range"
+                raise IndexError("list index out of range")
             if self._err.isErr:
                 raise RuntimeError
             pass
@@ -132,7 +132,7 @@ class _AIPSTableRow:
             return self._fields[name]
         msg =  "%s instance has no attribute '%s'" % \
               (self.__class__.__name__, name)
-        raise AttributeError, msg
+        raise AttributeError(msg)
 
     def __getattr__(self, name):
         key = self._findattr(name)
@@ -191,7 +191,7 @@ class AIPSTableRow(_AIPSTableRow):
                 self._row[field] = repeat * [False]
             else:
                 msg =  "Unimplemented type %d for field %s" % (type, field)
-                raise AssertionError, msg
+                raise AssertionError(msg)
             continue
         return
 
@@ -199,7 +199,7 @@ class AIPSTableRow(_AIPSTableRow):
         # A row instantiated by the AIPSTableRow class cannot be updated.
         msg =  "%s instance has no attribute 'update'" % \
               self.__class__.__name__
-        raise AttributeError, msg
+        raise AttributeError(msg)
 
     pass                                # AIPSTableRow
 
@@ -211,7 +211,7 @@ class _AIPSTableIter(_AIPSTableRow):
     def __init__(self, table, fields, err):
         _AIPSTableRow.__init__(self, table, fields, -1, err)
 
-    def next(self):
+    def __next__(self):
         """Return the next row."""
 
         self._rownum += 1
@@ -222,6 +222,8 @@ class _AIPSTableIter(_AIPSTableRow):
             raise StopIteration
         assert(not self._err.isErr)
         return self
+
+    next = __next__                     # for Python 2
 
     pass                                # class _AIPSTableIter
 
@@ -280,7 +282,7 @@ class _AIPSTableKeywords:
             InfoList.PAlwaysPutBoolean(self._table.IODesc.List, key,
                                       [1, 1, 1, 1, 1], _vectorize(value))
         else:
-            raise AssertionError, "not implemented"
+            raise AssertionError("not implemented")
         Table.PDirty(self._table)
         return
 
@@ -322,7 +324,7 @@ class _AIPSTable:
                 msg += ' version %d' % version
                 pass
             msg += ' does not exist'
-            raise IOError, msg
+            raise IOError(msg)
 
         self._table = data.NewTable(3, name, version, self._err)
         self._table.Open(3, self._err)
@@ -435,14 +437,14 @@ class _AIPSHistory:
         assert(not self._err.isErr)
         record = self._table.ReadRec(key + 1, self._err)
         if not record:
-            raise IndexError, "list index out of range"
+            raise IndexError("list index out of range")
         if self._err.isErr:
             raise RuntimeError
         return record
 
     def __setitem__(self, key, record):
         msg = 'You are not allowed to rewrite history!'
-        raise NotImplementedError, msg
+        raise NotImplementedError(msg)
 
     def append(self, record):
         """Append a record to this history table."""
@@ -463,7 +465,7 @@ class _AIPSVisibility(object):
         # Give an early warning we're not going to succeed.
         if not numarraystatus and not numpystatus:
             msg = 'Numerical Python (numarray or NumPy) not available'
-            raise NotImplementedError, msg
+            raise NotImplementedError(msg)
 
         self._err = err
         self._data = data
@@ -484,7 +486,7 @@ class _AIPSVisibility(object):
         self._count = 0
         self._flush = False
         if index > -1:
-            shape = len(self._data.VisBuf) / 4
+            shape = len(self._data.VisBuf) // 4
             self._buffer = _array(self._data.VisBuf, shape)
             self._first = self._data.Desc.Dict['firstVis'] - 1
             self._count = self._data.Desc.Dict['numVisBuff']
@@ -517,7 +519,7 @@ class _AIPSVisibility(object):
         Obit.UVRead(self._data.me, self._err.me)
         if self._err.isErr:
             raise RuntimeError
-        shape = len(self._data.VisBuf) / 4
+        shape = len(self._data.VisBuf) // 4
         self._buffer = _array(self._data.VisBuf, shape)
         self._first = self._data.Desc.Dict['firstVis'] - 1
         self._count = self._data.Desc.Dict['numVisBuff']
@@ -553,7 +555,7 @@ class _AIPSVisibility(object):
             ant2 = int(self._buffer[self._index][self._ant2])
             return [ant1, ant2]
         baseline = int(self._buffer[self._index][self._desc['ilocb']])
-        return [baseline / 256, baseline % 256]
+        return [baseline // 256, baseline % 256]
     def _set_baseline(self, value):
         if self._ant1 and self._ant2:
             self._buffer[self._index][self._ant1] = value[0]
@@ -578,26 +580,26 @@ class _AIPSVisibility(object):
     subarray = property(_get_subarray, _set_subarray)
 
     def _get_source(self):
-	rnd_indx = self._desc['ilocsu']
-	if rnd_indx == -1:
-		raise KeyError, 'Random Parameter not present'
+        rnd_indx = self._desc['ilocsu']
+        if rnd_indx == -1:
+                raise KeyError('Random Parameter not present')
         return self._buffer[self._index][rnd_indx]
     def _set_source(self, value):
-	rnd_indx = self._desc['ilocsu']
-	if rnd_indx == -1:
-		raise KeyError, 'Random Parameter not present'
+        rnd_indx = self._desc['ilocsu']
+        if rnd_indx == -1:
+                raise KeyError('Random Parameter not present')
         self._buffer[self._index][rnd_indx] = value
     source = property(_get_source, _set_source)
 
     def _get_freqsel(self):
-	rnd_indx = self._desc['ilocfq']
-	if rnd_indx == -1:
-		raise KeyError, 'Random Parameter not present'
+        rnd_indx = self._desc['ilocfq']
+        if rnd_indx == -1:
+                raise KeyError('Random Parameter not present')
         return self._buffer[self._index][rnd_indx]
     def _set_freqsel(self, value):
-	rnd_indx = self._desc['ilocfq']
-	if rnd_indx == -1:
-		raise KeyError, 'Random Parameter not present'
+        rnd_indx = self._desc['ilocfq']
+        if rnd_indx == -1:
+                raise KeyError('Random Parameter not present')
         self._buffer[self._index][rnd_indx] = value
         return
     freqsel = property(_get_freqsel, _set_freqsel)
@@ -610,14 +612,14 @@ class _AIPSVisibility(object):
     inttim = property(_get_inttim, _set_inttim)
 
     def _get_corrid(self):
-	rnd_indx = self._desc['ilocid']
-	if rnd_indx == -1:
-		raise KeyError, 'Random Parameter not present'
+        rnd_indx = self._desc['ilocid']
+        if rnd_indx == -1:
+                raise KeyError('Random Parameter not present')
         return self._buffer[self._index][rnd_indx]
     def _set_corrid(self, value):
-	rnd_indx = self._desc['ilocid']
-	if rnd_indx == -1:
-		raise KeyError, 'Random Parameter not present'
+        rnd_indx = self._desc['ilocid']
+        if rnd_indx == -1:
+                raise KeyError('Random Parameter not present')
         self._buffer[self._index][rnd_indx] = value
         return
     corrid = property(_get_corrid, _set_corrid)
@@ -654,7 +656,7 @@ class _AIPSVisibilityIter(_AIPSVisibility):
         self._range = self._ranges.pop(0)
         return
 
-    def next(self):
+    def __next__(self):
         self._index += 1
         if self._index + self._first > self._range[1]:
             try:
@@ -680,6 +682,8 @@ class _AIPSVisibilityIter(_AIPSVisibility):
         if self._index >= self._count:
             self._fill()
         return self
+
+    next = __next__			# for Python 2
 
     pass                                # class _AIPSVisibilityIter
 
@@ -731,7 +735,7 @@ class _AIPSVisibilitySlice(object):
             pass
         if slice.step and not slice.step == 1:
             msg = 'Stride %d is not supported' % slice.step
-            raise NotimplementedError, msg
+            raise NotimplementedError(msg)
         self._ranges = [(start, stop)]
         return
 
@@ -787,7 +791,7 @@ class _AIPSDataKeywords:
             InfoList.PAlwaysPutBoolean(self._table.Desc.List, key,
                                       [1, 1, 1, 1, 1], _vectorize(value))
         else:
-            raise AssertionError, "not implemented"
+            raise AssertionError("not implemented")
         self._obit.PDirty(self._data)
         return
 
@@ -867,16 +871,16 @@ class _AIPSDataHeader(object):
         if key == 'velref':
             return self._dict['VelReference'] + self._dict['VelDef'] * 256
         if not key in self._keys:
-            raise KeyError, key
+            raise KeyError(key)
         return self._dict[self._keys[key]]
 
     def __setitem__(self, key, value):
         if key == 'velref':
-            self._dict['VelDef'] = value / 256
+            self._dict['VelDef'] = value // 256
             self._dict['VelReference'] = value % 256
             return
         if not key in self._keys:
-            raise KeyError, key
+            raise KeyError(key)
         self._dict[self._keys[key]] = value
         return
 
@@ -888,7 +892,7 @@ class _AIPSDataHeader(object):
         except KeyError:
             msg = "%s instance has no attribute '%s'" \
                   % (self.__class__.__name__, name)
-            raise AttributeError, msg
+            raise AttributeError(msg)
         return value
 
     def __setattr__(self, name, value):
@@ -900,7 +904,7 @@ class _AIPSDataHeader(object):
         except KeyError:
             msg = "%s instance has no attribute '%s'" \
                   % (self.__class__.__name__, name)
-            raise AttributeError, msg
+            raise AttributeError(msg)
         return
 
     def _generate_dict(self):
@@ -936,7 +940,7 @@ class _AIPSData(object):
         if len(args) not in [1, 4, 5]:
             msg = "__init__() takes 2, 5 or 6 arguments (%d given)" \
                   % (len(args) + 1)
-            raise TypeError, msg
+            raise TypeError(msg)
 
         if len(args) == 1:
             self._init(args[0].name, args[0].klass,
@@ -987,7 +991,7 @@ class _AIPSData(object):
         header = self._data.Desc.Dict
         jlocs = header['jlocs']
         cval = header['crval'][jlocs]
-        for i in xrange(header['inaxes'][jlocs]):
+        for i in range(header['inaxes'][jlocs]):
             stokes.append(stokes_dict[int(cval)])
             cval += header['cdelt'][jlocs]
             continue
@@ -1071,10 +1075,10 @@ class _AIPSData(object):
         try:
             self._data.ZapTable(name, version, self._err)
             self._data.UpdateTables(self._err)
-        except OErr.OErr, err:
-            print err
+        except OErr.OErr as err:
+            print(err)
             msg = "Cannot zap %s table version %d", (name, version)
-            raise RuntimeError, msg
+            raise RuntimeError(msg)
         return
 
     def zap(self, force=False):
@@ -1124,7 +1128,7 @@ class AIPSImage(_AIPSData):
     def _pixels(self):
         Obit.ImageRead(self._data.me, self._err.me)
         if self._err.isErr:
-            raise RuntimeError, "Reading image pixels"
+            raise RuntimeError("Reading image pixels")
         shape = []
         for len in self.header['naxis']:
             if self._squeezed and len == 1:
@@ -1172,7 +1176,7 @@ class AIPSImage(_AIPSData):
                          kwds['no_pol'], kwds['no_if'], self._err.me)
         else:
             msg = 'Attaching %s tables is not implemented yet' % name
-            raise NotImplementedError, msg
+            raise NotImplementedError(msg)
         if self._err.isErr:
             raise RuntimeError
         return _AIPSTable(self._data, name, version)
@@ -1182,7 +1186,7 @@ class AIPSImage(_AIPSData):
     def update(self):
         Obit.ImageWrite(self._data.me, self._err.me)
         if self._err.isErr:
-            raise RuntimeError, "Writing image pixels"
+            raise RuntimeError("Writing image pixels")
         pass
         _AIPSData.update(self)
 
@@ -1322,7 +1326,7 @@ class AIPSUVData(_AIPSData):
             Obit.TableSU(data, [version], 3, name, no_if, self._err.me)
         else:
             msg = 'Attaching %s tables is not implemented yet' % name
-            raise NotImplementedError, msg
+            raise NotImplementedError(msg)
         if self._err.isErr:
             raise RuntimeError
         return _AIPSTable(self._data, name, version)
