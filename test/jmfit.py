@@ -19,7 +19,7 @@ try:
     jmfit.ngauss = 4
     jmfit.domax[1:] = [1, 0, 0, 0]
     jmfit.go()
-    print 'Peak values:', jmfit.fmax[1:]
+    print('Peak values:', jmfit.fmax[1:])
     for fmax in jmfit.fmax[1:]:
         assert(fmax)
 finally:

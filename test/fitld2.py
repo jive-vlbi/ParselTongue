@@ -3,7 +3,7 @@ from AIPSTask import AIPSTask
 from AIPSData import AIPSImage
 
 import os
-import urllib
+from parseltest import urlretrieve
 
 AIPS.userno = 1999
 
@@ -11,7 +11,7 @@ AIPS.userno = 1999
 url = 'http://archive.jive.nl/exp/N05L1_050301/pipe/n05l1_4C39.25_ICLN.FITS'
 file = '/tmp/' + os.path.basename(url)
 if not os.path.isfile(file):
-    urllib.urlretrieve(url, file)
+    urlretrieve(url, file)
 assert(os.path.isfile(file))
 
 name = os.path.basename(url).split('_')[1].upper()
@@ -31,7 +31,7 @@ fitld.go()
 assert(image.exists())
 
 try:
-    print 'Stokes:', image.stokes
+    print('Stokes:', image.stokes)
     assert(len(image.stokes) == 1)
 
     assert(image.header.date_obs == '2005-03-01')

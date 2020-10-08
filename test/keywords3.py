@@ -4,7 +4,7 @@ from AIPSData import AIPSImage
 from Wizardry.AIPSData import AIPSImage as WizAIPSImage
 
 import os
-import urllib
+from parseltest import urlretrieve
 
 AIPS.userno = 1999
 
@@ -12,7 +12,7 @@ AIPS.userno = 1999
 url = 'http://archive.jive.nl/exp/N05L1_050301/pipe/n05l1_4C39.25_ICLN.FITS'
 file = '/tmp/' + os.path.basename(url)
 if not os.path.isfile(file):
-    urllib.urlretrieve(url, file)
+    urlretrieve(url, file)
 assert(os.path.isfile(file))
 
 name = os.path.basename(url).split('_')[1].upper()
@@ -33,14 +33,14 @@ assert(image.exists())
 try:
     image = WizAIPSImage(image)
 
-    print image.keywords
+    print(image.keywords)
     
     parangle = image.keywords['PARANGLE']
     image.keywords['PARANGLE'] *= 2
     image.keywords.update()
 
     image = AIPSImage(image)
-    print image.keywords
+    print(image.keywords)
     assert(image.keywords['PARANGLE'] == 2 * parangle)
 
 finally:
