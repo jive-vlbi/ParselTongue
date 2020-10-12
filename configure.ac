@@ -28,7 +28,9 @@ OBIT_PYTHONPATH=
 AC_ARG_WITH(obit,
             AC_HELP_STRING([--with-obit=DIR],
                            [search for Obit in DIR]),
-            [if test -f "$withval/python/ObitInit.py"; then
+            [if test -f "$withval/python3/ObitInit.py"; then
+    OBIT_PYTHONPATH="$withval/python3"; export ac_obit_pythonpath
+  elif test -f "$withval/python/ObitInit.py"; then
     OBIT_PYTHONPATH="$withval/python"; export ac_obit_pythonpath
   fi[]])
 AC_CACHE_CHECK([for Obit], [ac_cv_obit],
