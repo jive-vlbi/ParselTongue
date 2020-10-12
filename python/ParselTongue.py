@@ -41,7 +41,7 @@ from FITSData import *
 try:
     import atexit, readline, ptcompleter
     if __name__ == "__main__" :
-	try:
+        try:
             if 'PT_HISTORY' in os.environ:
                 path = os.environ['PT_HISTORY']
             else:
@@ -74,23 +74,23 @@ def explain(obj):
     return
 
 if __name__ == "__main__" :
-	# This is not a batch job.
-	AIPSTask.isbatch = 0
+        # This is not a batch job.
+        AIPSTask.isbatch = 0
 
-	# Separate the blurb below from what the Python interpreter spits out.
-	print("")
+        # Separate the blurb below from what the Python interpreter spits out.
+        print("")
 
-	print("Welcome to ParselTongue", ptversion.version)
-	while True:
-		try:
-			input = input("Please enter your AIPS user ID number: ")
-			AIPS.userno = int(input)
-		except KeyboardInterrupt:
-			print("")
-			print("AIPS user ID number is not set")
-			break
-		except:
-			print("That is not a valid AIPS user ID number")
-			continue
-		else:
-			break
+        print("Welcome to ParselTongue", ptversion.version)
+        while True:
+                try:
+                        input = input("Please enter your AIPS user ID number: ")
+                        AIPS.userno = int(input)
+                except KeyboardInterrupt:
+                        print("")
+                        print("AIPS user ID number is not set")
+                        break
+                except:
+                        print("That is not a valid AIPS user ID number")
+                        continue
+                else:
+                        break
