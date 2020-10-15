@@ -336,8 +336,8 @@ class AIPSTask(Task):
         file.seek((msgno // 10) * 1024 + 8 + (msgno % 10) * 100)
         (tmp, task, message) = struct.unpack('i8x5s3x80s', file.read(100))
         (popsno, priority) = (tmp // 16, tmp % 16)
-        task = task.rstrip()
-        message = message.rstrip()
+        task = task.decode('utf-8').rstrip()
+        message = message.decode('utf-8').rstrip()
         return (task, popsno, priority, message)
 
     def messages(self, tid):
