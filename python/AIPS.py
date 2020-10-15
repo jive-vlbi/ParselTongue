@@ -33,7 +33,10 @@ debuglog = None
 
 # Available proxies.
 import LocalProxy
-from xmlrpc.client import ServerProxy
+try:
+    from xmlrpc.client import ServerProxy
+except:
+    from xmlrpclib import ServerProxy
 
 
 class AIPSDisk:
