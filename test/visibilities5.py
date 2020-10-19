@@ -35,7 +35,7 @@ try:
 finally:
     uvdata.zap()
 
-fitld = AIPSTask('fitld', version='31DEC15')
+fitld = AIPSTask('fitld', version='31DEC19')
 fitld.datain = file
 fitld.outdata = uvdata
 fitld.msgkill = 2
