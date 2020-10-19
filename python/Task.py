@@ -97,7 +97,7 @@ And slice assignment:
 You're not allowed to change the length of the list through slice
 assignment though:
 
->>> my_task.aparms[3:6] = [3, 4, 5, 6]
+>>> my_task.aparms[3:6] = [3, 4, 5, 6]    #doctest: +IGNORE_EXCEPTION_DETAIL
 Traceback (most recent call last):
   ...
 TypeError: slice '3:6' changes the array size of attribute 'aparms'
