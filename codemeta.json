@@ -1,0 +1,33 @@
+{
+    "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+    "@type": "SoftwareSourceCode",
+    "name": "ParselTongue: AIPS Python Interface",
+    "description": "ParselTongue is a Python interface to classic AIPS, Obit and possibly other task-based data reduction packages. It serves as the software infrastructure for some of the ALBUS implementation. It allows you to run AIPS tasks, and access AIPS headers and extension tables from Python. There is also support for running Obit tasks and accessing data in FITS files. Full access to the visibilities in AIPS UV data is also available.",
+    "identifier": "ascl:1208.020",
+    "author": [
+        {
+            "@type": "Person",
+            "givenName": "Mark",
+            "familyName": "Kettenis",
+            "@id": "https://orcid.org/0000-0002-6156-5617"
+        },
+        {
+            "@type": "Person",
+            "givenName": "Mike",
+            "familyName": "Sipior"
+        }
+    ],
+    "citation": "https://ui.adsabs.harvard.edu/abs/2012ascl.soft08020K",
+    "relatedLink": [
+        "http://www.jive.nl/jivewiki/doku.php?id=parseltongue:parseltongue"
+    ],
+    "codeRepository": "https://github.com/jive-vlbi/ParselTongue.git",
+    "referencePublication": [
+        {
+            "@type": "ScholarlyArticle",
+            "url": "http://adsabs.harvard.edu/abs/2006ASPC..351..497K"
+        }
+    ],
+    "version": "2.3",
+    "license": "https://spdx.org/licenses/GPL-2.0-or-later.html"
+}
