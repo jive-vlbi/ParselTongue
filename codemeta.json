@@ -15,6 +15,7 @@
             "@type": "Person",
             "givenName": "Mike",
             "familyName": "Sipior"
+            "@id": "https://orcid.org/0000-0002-8106-2072"
         }
     ],
     "citation": "https://ui.adsabs.harvard.edu/abs/2012ascl.soft08020K",
