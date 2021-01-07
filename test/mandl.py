@@ -15,7 +15,7 @@ mandl.go()
 
 try:
     header = image.header
-    print 'Dimension: %dx%d' % (header.naxis[0], header.naxis[1])
-    print image.tables
+    print('Dimension: %dx%d' % (header.naxis[0], header.naxis[1]))
+    print(image.tables)
 finally:
     image.zap()

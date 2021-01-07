@@ -96,6 +96,7 @@
 # >>> sad.dowidth[2]
 # [None, 1.0, 1.0, 1.0]
 
+from __future__ import print_function
 
 # Global AIPS defaults.
 import AIPS, AIPSTV
@@ -181,14 +182,14 @@ class AIPSTask(Task):
             try:
                 inst = getattr(proxy, self.__class__.__name__)
                 params = inst.params(name, self.version)
-            except Exception, exception:
+            except Exception as exception:
                 if AIPS.debuglog:
-                    print >>AIPS.debuglog, exception
+                    print(exception, file=AIPS.debuglog)
                 continue
             break
         if not params:
             msg = "%s task '%s' is not available" % (self._package, name)
-            raise RuntimeError, msg
+            raise RuntimeError(msg)
 
         # The XML-RPC proxy will return the details as a dictionary,
         # not a class.
@@ -266,10 +267,10 @@ class AIPSTask(Task):
 
         for adverb in adverbs:
             if self.__dict__[adverb] == '':
-                print "'%s': ''" % adverb
+                print("'%s': ''" % adverb)
             else:
                 value = PythonList(self.__dict__[adverb])
-                print "'%s': %s" % (adverb, value)
+                print("'%s': %s" % (adverb, value))
                 pass
             continue
 
@@ -312,7 +313,7 @@ class AIPSTask(Task):
         """Spawn the task."""
 
         if self.userno == -1:
-            raise RuntimeError, "AIPS user number is not set"
+            raise RuntimeError("AIPS user number is not set")
 
         input_dict = {}
         for adverb in self._input_list:
@@ -333,8 +334,7 @@ class AIPSTask(Task):
                     proxy.__nonzero__ = lambda: True
                     pass
                 if AIPS.disks[disk].url != url:
-                    raise RuntimeError, \
-                          "AIPS disks are not on the same machine"
+                    raise RuntimeError("AIPS disks are not on the same machine")
                 input_dict[adverb] = float(AIPS.disks[disk].disk)
                 pass
             continue
@@ -348,8 +348,7 @@ class AIPSTask(Task):
                 continue
             pass
         if not proxy:
-            raise RuntimeError, \
-                  "Unable to determine where to execute task"
+            raise RuntimeError("Unable to determine where to execute task")
 
         inst = getattr(proxy, self.__class__.__name__)
         tid = inst.spawn(self._name, self.version, self.userno, self.msgkill,
@@ -378,7 +377,7 @@ class AIPSTask(Task):
         for message in messages:
             self._message_list.append(message[1])
             if message[0] > abs(self.msgkill):
-                print message[1]
+                print(message[1])
                 pass
             continue
         return [message[1] for message in messages]
@@ -439,7 +438,7 @@ class AIPSTask(Task):
                     count += 1
                     continue
                 pass
-            except KeyboardInterrupt, exception:
+            except KeyboardInterrupt as exception:
                 self.abort(proxy, tid)
                 raise exception
 
@@ -451,7 +450,7 @@ class AIPSTask(Task):
                             continue
                         self.log.flush()
                         pass
-		    if AIPS.log:
+                    if AIPS.log:
                         for message in loglist:
                             AIPS.log.write('%s\n' % message)
                             continue
@@ -497,7 +496,7 @@ class AIPSTask(Task):
                 if len(os.path.basename(value)) > self._strlen_dict[attr] - 2:
                     msg = "string '%s' is too long for attribute '%s'" \
                           % (value, attr)
-                    raise ValueError, msg
+                    raise ValueError(msg)
                 self.__dict__[attr] = value
             else:
                 Task.__setattr__(self, name, value)

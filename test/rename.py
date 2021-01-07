@@ -33,6 +33,6 @@ try:
     except:
         pass
     else:
-        raise AssertionError, "Rename unexpectedly succeeded"
+        raise AssertionError("Rename unexpectedly succeeded")
 finally:
     image.zap()

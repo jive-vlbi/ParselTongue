@@ -285,7 +285,7 @@ class ObitTask(Task):
             file.write(data + "\n" )    # Write data to file.
         else:
             #print "DEBUG ObitTask adverb", adverb, dim, dtype
-            raise AssertionError, type(value)
+            raise AssertionError(type(value))
 
     def __read_adverb(self, params, file, adverb):
         """read value from output file."""
@@ -365,7 +365,7 @@ class ObitTask(Task):
                 os.unlink(tmpDebug)     # Remove any old version file.
             os.link(tmpInput, tmpDebug) # Add new link.
             # Tell about it.
-            print "Saving copy of Obit task input in" + tmpDebug
+            print(("Saving copy of Obit task input in" + tmpDebug))
 
         path = os.environ['OBIT'] +'/bin/' + os.environ['ARCH'] + '/' + name
         arglist = [name, "-input", tmpInput, "-output", tmpOutput,
@@ -426,7 +426,7 @@ def _allocate_popsno():
         # POPSNO.
         try:
             path = '/tmp/Obit' + ehex(popsno, 1, 0) + '.' + str(os.getpid())
-            fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0666)
+            fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o666)
             os.close(fd)
         except:
             continue
@@ -464,7 +464,7 @@ def _allocate_popsno():
         # Clean up our own mess.
         os.unlink(path)
 
-    raise RuntimeError, "No free Obit POPS number available on this system"
+    raise RuntimeError("No free Obit POPS number available on this system")
 
 def _free_popsno(popsno):
     path = '/tmp/Obit' + ehex(popsno, 1, 0) + '.' + str(os.getpid())

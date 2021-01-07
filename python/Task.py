@@ -36,10 +36,10 @@ attributes:
 
 It still has the property that attribute names can be abbreviated:
 
->>> print my_task.ind
+>>> print(my_task.ind)
 0
 >>> my_task.ind = 1
->>> print my_task.ind
+>>> print(my_task.ind)
 1
 
 But an exception will be thrown if you try to assign a value that is
@@ -73,31 +73,31 @@ Assigning an integer value to a floating point attribute is perfectly
 fine of course:
 
 >>> my_task.pixavg = 2
->>> print my_task.pixavg
+>>> print(my_task.pixavg)
 2.0
 
 The same should happen for lists:
 
 >>> my_task.aparms = 10*[1]
->>> print my_task.aparms
+>>> print(my_task.aparms)
 [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
 
 For subscripting:
 
 >>> my_task.aparms[0] = 0
->>> print my_task.aparms
+>>> print(my_task.aparms)
 [0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
 
 And slice assignment:
 
 >>> my_task.aparms[1:3] = [1, 2]
->>> print my_task.aparms
+>>> print(my_task.aparms)
 [0.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
 
 You're not allowed to change the length of the list through slice
 assignment though:
 
->>> my_task.aparms[3:6] = [3, 4, 5, 6]
+>>> my_task.aparms[3:6] = [3, 4, 5, 6]    #doctest: +IGNORE_EXCEPTION_DETAIL
 Traceback (most recent call last):
   ...
 TypeError: slice '3:6' changes the array size of attribute 'aparms'
@@ -136,7 +136,7 @@ class List(list):
     def __setitem__(self, key, item):
         if item != None and self[key] == None:
             msg = "setting element '%d' is prohibited" % key
-            raise ValueError, msg
+            raise ValueError(msg)
         item = self._task._validateattr(self._attr, item, self[key])
         list.__setitem__(self, key, item)
         return
@@ -147,8 +147,8 @@ class List(list):
                (len(seq) < high - low and high < len(self)):
             msg = "slice '%d:%d' changes the array size of" \
                   " attribute '%s'" % (low, high, self._attr)
-            raise TypeError, msg
-        for key in xrange(low, high):
+            raise TypeError(msg)
+        for key in range(low, high):
             if key - low < len(seq):
                 self[key] = seq[key - low]
             else:
@@ -193,9 +193,9 @@ class Task(MinimalMatch):
             if len(value) > len(default):
                 msg = "array '%s' is too big for attribute '%s'" \
                       % (value, attr)
-                raise TypeError, msg
+                raise TypeError(msg)
             validated_value = List(self, attr, default)
-            for key in xrange(len(value)):
+            for key in range(len(value)):
                 validated_value[key] = value[key]
             return validated_value
 
@@ -208,7 +208,7 @@ class Task(MinimalMatch):
         if type(value) != type(default):
             msg = "value '%s' has invalid type for attribute '%s'" \
                   % (value, attr)
-            raise TypeError, msg
+            raise TypeError(msg)
 
         # Check range.
         if attr in self._min_dict:
@@ -216,14 +216,14 @@ class Task(MinimalMatch):
             if not min <= value:
                 msg = "value '%s' is out of range for attribute '%s'" \
                       % (value, attr)
-                raise ValueError, msg
+                raise ValueError(msg)
             pass
         if attr in self._max_dict:
             max = self._max_dict[attr]
             if not value <= max:
                 msg = "value '%s' is out of range for attribute '%s'" \
                       % (value, attr)
-                raise ValueError, msg
+                raise ValueError(msg)
             pass
 
         # Check string length.
@@ -231,7 +231,7 @@ class Task(MinimalMatch):
             if len(value) > self._strlen_dict[attr]:
                 msg = "string '%s' is too long for attribute '%s'" \
                       % (value, attr)
-                raise ValueError, msg
+                raise ValueError(msg)
             pass
 
         return value

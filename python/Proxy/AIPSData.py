@@ -209,12 +209,12 @@ class AIPSCat:
 
         try:
             num_slots = AIPSDir.PNumber(disk, userno, self.err)
-        except OErr.OErr, err:
+        except OErr.OErr as err:
             OErr.PClear(err)
             return []
 
         catalog = []
-        for cno in xrange(1, num_slots):
+        for cno in range(1, num_slots):
             entry = AIPSDir.PInfo(disk, userno, cno, self.err)
             if entry:
                 dict = {}

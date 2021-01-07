@@ -4,7 +4,7 @@ from AIPSData import AIPSUVData
 from Wizardry.AIPSData import AIPSUVData as WizAIPSUVData
 
 import os
-import urllib
+from parseltest import urlretrieve
 
 AIPS.userno = 1999
 
@@ -12,7 +12,7 @@ AIPS.userno = 1999
 url = 'http://archive.jive.nl/exp/N03L1_030225/fits/n03l1_1_1.IDI1'
 file = '/tmp/' + os.path.basename(url)
 if not os.path.isfile(file):
-    urllib.urlretrieve(url, file)
+    urlretrieve(url, file)
 assert(os.path.isfile(file))
 
 name = os.path.basename(url).split('_')[0].upper()
@@ -35,7 +35,7 @@ try:
 finally:
     uvdata.zap()
 
-fitld = AIPSTask('fitld', version='31DEC15')
+fitld = AIPSTask('fitld', version='31DEC19')
 fitld.datain = file
 fitld.outdata = uvdata
 fitld.msgkill = 2

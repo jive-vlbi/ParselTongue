@@ -91,7 +91,7 @@ class ObitTask(AIPSTask):
         """Spawn the task."""
 
         if self.userno == 0:
-            raise RuntimeError, "AIPS user number is not set"
+            raise RuntimeError("AIPS user number is not set")
 
         input_dict = {}
         for adverb in self._input_list:
@@ -114,19 +114,16 @@ class ObitTask(AIPSTask):
                         url = AIPS.disks[disk].url
                         proxy = AIPS.disks[disk].proxy()
                         if AIPS.disks[disk].url != url:
-                            raise RuntimeError, \
-                                  "AIPS disks are not on the same machine"
+                            raise RuntimeError("AIPS disks are not on the same machine")
                         input_dict[adverb] = int(AIPS.disks[disk].disk)
                     elif self.__dict__['DataType'] == 'FITS':
                         url = FITS.disks[disk].url
                         proxy = FITS.disks[disk].proxy()
                         if FITS.disks[disk].url != url:
-                            raise RuntimeError, \
-                                  "FITS disks are not on the same machine"
+                            raise RuntimeError("FITS disks are not on the same machine")
                         input_dict[adverb] = int(FITS.disks[disk].disk)
         if not proxy:
-            raise RuntimeError, \
-                  "Unable to determine where to execute task"
+            raise RuntimeError("Unable to determine where to execute task")
 
         inst = getattr(proxy, self.__class__.__name__)
         tid = inst.spawn(self._name, self.version, self.userno,

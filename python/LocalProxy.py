@@ -21,6 +21,8 @@ without doing any RPC.
 
 """
 
+from __future__ import print_function
+
 # Global AIPS defaults.
 import AIPS
 
@@ -38,15 +40,15 @@ ObitTask = Proxy.ObitTask.ObitTask()
 # fail to load the module.
 try:
     import Proxy.AIPSData
-except Exception, exception:
+except Exception as exception:
     if AIPS.debuglog:
-        print >>AIPS.debuglog, exception
+        print(exception, file=AIPS.debuglog)
         pass
     else:
         # Print an empty line to make sure the message stands out.
-        print
-        print "Warning: can't import AIPSData;",
-        print "access to local AIPS data won't work: " + str(exception)
+        print()
+        print("Warning: can't import AIPSData; ")
+        print("access to local AIPS data won't work: " + str(exception))
     pass
 else:
     AIPSImage = Proxy.AIPSData.AIPSImage()

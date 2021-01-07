@@ -55,7 +55,7 @@ class ParallelQueue :
             if not isinstance(task,AIPSTask):
                 raise TypeError
         except TypeError:
-            print 'Argument is not an AIPSTask'
+            print('Argument is not an AIPSTask')
             return
         else:
             self._tasklist.append(ParallelTask(task))

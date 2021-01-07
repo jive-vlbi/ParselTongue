@@ -3,7 +3,7 @@ from AIPSTask import AIPSTask
 from AIPSData import AIPSImage, AIPSUVData
 
 import os
-import urllib
+from parseltest import urlretrieve
 
 AIPS.userno = 1999
 
@@ -11,7 +11,7 @@ AIPS.userno = 1999
 url = 'http://archive.jive.nl/exp/N05L1_050301/pipe/n05l1_4C39.25_ICLN.FITS'
 file = '/tmp/' + os.path.basename(url)
 if not os.path.isfile(file):
-    urllib.urlretrieve(url, file)
+    urlretrieve(url, file)
 assert(os.path.isfile(file))
 
 name = os.path.basename(url).split('_')[1].upper()
@@ -25,14 +25,14 @@ fitld.outdata = image
 fitld.go()
 
 try:
-    print 'Stokes:', image.stokes
+    print('Stokes:', image.stokes)
     assert(len(image.stokes) == 1)
 
     # Download a second smallish FITS file from the EVN archive.
     url = 'http://archive.jive.nl/exp/N03L1_030225/fits/n03l1_1_1.IDI1'
     file = '/tmp/' + os.path.basename(url)
     if not os.path.isfile(file):
-        urllib.urlretrieve(url, file)
+        urlretrieve(url, file)
     assert(os.path.isfile(file))
 
     name = os.path.basename(url).split('_')[0].upper()
@@ -46,7 +46,7 @@ try:
     fitld.go()
 
     try:
-        print 'Stokes:', uvdata.stokes
+        print('Stokes:', uvdata.stokes)
         assert(len(uvdata.stokes) == 4)
     finally:
         uvdata.zap()

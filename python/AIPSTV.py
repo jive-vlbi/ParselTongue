@@ -47,7 +47,7 @@ class AIPSTV(object):
         (status,) = struct.unpack('!h2x', s)
         if status:
             msg = "AIPS TV returned %d", status
-            raise IOError, msg
+            raise IOError(msg)
         return
 
     def _open(self):
@@ -87,7 +87,7 @@ class AIPSTV(object):
 
         # Check if we already started the AIPS TV.
         if self._lock_pid and self._server_pid:
-            raise RuntimeError, "the AIPS TV has already been started"
+            raise RuntimeError("the AIPS TV has already been started")
 
         # Create an environment for the AIPS TV processes.
         env = os.environ.copy()

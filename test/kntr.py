@@ -4,7 +4,7 @@ from AIPSData import AIPSImage
 from AIPSTV import AIPSTV
 
 import os
-import urllib
+from parseltest import urlretrieve
 
 AIPS.userno = 1999
 
@@ -12,7 +12,7 @@ AIPS.userno = 1999
 url = 'http://archive.jive.nl/exp/N05L1_050301/pipe/n05l1_4C39.25_ICLN.FITS'
 file = '/tmp/' + os.path.basename(url)
 if not os.path.isfile(file):
-    urllib.urlretrieve(url, file)
+    urlretrieve(url, file)
 assert(os.path.isfile(file))
 
 name = os.path.basename(url).split('_')[1].upper()

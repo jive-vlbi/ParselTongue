@@ -35,7 +35,7 @@ False
 >>> uvdata.exists()
 False
 
->>> print uvdata
+>>> print(uvdata)
 AIPSUVData('NONAME', 'UVDATA', 1, 1)
 
 Checking whether two instance refer to the same data is fairly simple:
@@ -141,7 +141,7 @@ class _AIPSData(object):
         if len(args) not in [1, 4, 5]:
             msg = "__init__() takes 2, 5 or 6 arguments (%d given)" \
                   % (len(args) + 1)
-            raise TypeError, msg
+            raise TypeError(msg)
 
         if len(args) == 1:
             name = args[0].name
@@ -386,12 +386,14 @@ class _AIPSTableIter:
         self._index = 0
         return
 
-    def next(self):
+    def __next__(self):
         if self._index >= self._len:
             raise StopIteration
         result = self._table[self._index]
         self._index += 1
         return result
+
+    next = __next__			# for Python 2
 
     pass                                # class _AIPSTableIter
     
@@ -478,7 +480,7 @@ class AIPSCat(object):
     def __init__(self, disk=0):
         disks = [disk]
         if disk == 0:
-            disks = range(1, len(AIPS.disks))
+            disks = list(range(1, len(AIPS.disks)))
             pass
             
         self._cat = {}
@@ -496,7 +498,7 @@ class AIPSCat(object):
         return repr(self._cat)
 
     def __iter__(self):
-        return self._cat.iterkeys()
+        return iter(self._cat.keys())
 
     def __str__(self):
         s = ''
@@ -525,9 +527,9 @@ class AIPSCat(object):
 
         # Make sure we don't zap if the user made a typo.
         if len(kwds) > 0:
-            keys = ["'%s'" % key for key in kwds.keys()]
+            keys = ["'%s'" % key for key in list(kwds.keys())]
             msg = "zap() got an unexpected keyword argument %s" % keys[0]
-            raise TypeError, msg
+            raise TypeError(msg)
 
         for disk in self._cat:
             for entry in self._cat[disk]:

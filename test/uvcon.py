@@ -24,6 +24,6 @@ uvcon.aparm = [None, 1.4, 0, 30, -12, 12, 0, 120, 1, 1]
 uvcon.bparm = [None, -1, 0, 0, 0, 0]
 uvcon()
 
-print uvdata.tables
+print(uvdata.tables)
 
 uvdata.zap()

@@ -4,7 +4,7 @@ from AIPSData import AIPSCat, AIPSImage
 
 AIPS.userno = 1999
 
-print AIPSCat(1)
+print(AIPSCat(1))
 
 image = AIPSImage('MANDELBROT', 'MANDL', 1, 1)
 if image.exists():
@@ -20,7 +20,7 @@ try:
     mandl.outclass = 'TEMP'
     mandl.go()
 
-    print AIPSCat(1)
+    print(AIPSCat(1))
 
     try:
         AIPSCat(1).zap(klaas='TEMP')
@@ -31,7 +31,7 @@ try:
 
     AIPSCat(1).zap(klass='TEMP')
 
-    print AIPSCat(1)
+    print(AIPSCat(1))
 
 finally:
     AIPSCat(1).zap()
