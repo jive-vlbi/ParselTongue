@@ -1,10 +1,10 @@
 package:
   name: obit
-  version: 22JUN10l
+  version: 27JUL20a
 
 source:
-  url: http://www.jive.nl/parseltongue/releases/Obit-22JUN10l.tar.gz
-  sha256: cbfc84fae121e0ff96320985e2bce7e149c2bb859aee948b175b8f00cb95f5f4
+  url: http://www.jive.nl/parseltongue/releases/Obit-27JUL20a.tar.gz
+  sha256: 8e5c2e2ba814387569d5b545c5f83cf10e38ac98e0b46b451b2229ff94aa7e1d
 
 requirements:
   build:
@@ -23,7 +23,7 @@ requirements:
     - python
 
 build:
-  number: 1
+  number: 0
 
 about:
   home: http://www.cv.nrao.edu/~bcotton/Obit.html
