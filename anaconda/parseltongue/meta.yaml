@@ -1,12 +1,10 @@
 package:
   name: parseltongue
-  version: '2.3'
+  version: '3.0'
 
 source:
-  url: http://www.jive.nl/parseltongue/releases/parseltongue-2.3.tar.gz
-  sha256: acc335d85dad8a5996ab4eb1088f5aa28a0e67278a20c002fde43956ded0d6db
-  patches:
-    - configure.patch
+  url: http://www.jive.nl/parseltongue/releases/parseltongue-3.0.tar.gz
+  sha256: 3b2c159c105556550776558d97201b7b48c66b9e79863f75d1b382f6e548acc2
 
 requirements:
   build:
@@ -20,7 +18,7 @@ requirements:
     - python
 
 build:
-  number: 1
+  number: 0
 
 about:
   home: http://www.jive.eu/jivewiki/doku.php?id=parseltongue:parseltongue

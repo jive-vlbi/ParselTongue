@@ -2,8 +2,8 @@ require "formula"
 
 class Python3Parseltongue < Formula
   homepage "http://www.jive.nl/jivewiki/doku.php?id=parseltongue:parseltongue"
-  url "http://www.jive.nl/parseltongue/releases/parseltongue-2.97.tar.gz"
-  sha256 "f1e325b6b0fce739a9370ec94a04c2151086f567472086c26c0fe9dd59785b6b"
+  url "http://www.jive.nl/parseltongue/releases/parseltongue-3.0.tar.gz"
+  sha256 "3b2c159c105556550776558d97201b7b48c66b9e79863f75d1b382f6e548acc2"
 
   depends_on "python@3.9"
   depends_on "python3-obit"
