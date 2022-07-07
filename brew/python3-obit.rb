@@ -39,5 +39,7 @@ class Python3Obit < Formula
     system "make"
     (prefix+"python3").install Dir["python/*.py"]
     (prefix+"python3").install Dir["python/*.so"]
+    (prefix+"python3").install Dir["python/*.egg/*.py"]
+    (prefix+"python3").install Dir["python/*.egg/*.so"]
   end
 end
