@@ -35,11 +35,14 @@ class Python3Obit < Formula
   def install
     ENV.deparallelize
 
-    system "./configure", "--prefix=#{prefix}"
+    system "./configure", "--prefix=#{prefix}", "CPPFLAGS=-Wno-implicit-function-declaration"
     system "make"
     (prefix+"python3").install Dir["python/*.py"]
     (prefix+"python3").install Dir["python/*.so"]
     (prefix+"python3").install Dir["python/*.egg/*.py"]
     (prefix+"python3").install Dir["python/*.egg/*.so"]
+    system "unzip python/*.egg || true"
+    (prefix+"python3").install Dir["_Obit.py"]
+    (prefix+"python3").install Dir["_Obit.*.so"]
   end
 end
