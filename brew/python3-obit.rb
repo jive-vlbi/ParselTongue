@@ -32,6 +32,11 @@ class Python3Obit < Formula
     sha256 "6951151c3767a6e5a12a3ee5338d1f4ba6b42541f1d9883c8b419e0bd519a948"
   end
 
+  patch :p3 do
+    url "http://www.jive.nl/parseltongue/releases/obit-ansify.patch"
+    sha256 "6dda9806056a929b6d33287f91b5bfe2e50413eae42a8be091dc902641972707"
+  end
+
   def install
     ENV.deparallelize
 
