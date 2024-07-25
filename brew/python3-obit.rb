@@ -35,6 +35,10 @@ class Python3Obit < Formula
   def install
     ENV.deparallelize
 
+    # The glib dependency can bring in python@3.12 or newer; make sure
+    # we use python@3.9 for the build!
+    ENV.prepend_create_path "PATH", Formula["python@3.9"].opt_libexec/"bin"
+
     system "./configure", "--prefix=#{prefix}", "CPPFLAGS=-Wno-implicit-function-declaration"
     system "make"
     (prefix+"python3").install Dir["python/*.py"]
