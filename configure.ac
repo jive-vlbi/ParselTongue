@@ -1,8 +1,8 @@
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.57)
+AC_PREREQ([2.72])
 
-AC_INIT(ParselTongue, 3.0, kettenis@jive.eu)
+AC_INIT([ParselTongue],[3.0],[kettenis@jive.eu])
 AM_INIT_AUTOMAKE(1.6)
 AC_CONFIG_SRCDIR(python/ParselTongue.py)
 
@@ -26,8 +26,7 @@ AC_CONFIG_FILES([python/Makefile python/Proxy/Makefile
 
 OBIT_PYTHONPATH=
 AC_ARG_WITH(obit,
-            AC_HELP_STRING([--with-obit=DIR],
-                           [search for Obit in DIR]),
+            AS_HELP_STRING([--with-obit=DIR],[search for Obit in DIR]),
             [if test -f "$withval/python3/ObitInit.py"; then
     OBIT_PYTHONPATH="$withval/python3"; export ac_obit_pythonpath
   elif test -f "$withval/python/ObitInit.py"; then
