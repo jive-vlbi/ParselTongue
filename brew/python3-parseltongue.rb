@@ -10,7 +10,7 @@ class Python3Parseltongue < Formula
 
   def install
     system "./configure", "--with-obit=#{HOMEBREW_PREFIX}/opt/python3-obit",
-                          "--prefix=#{prefix}", "PYTHON=python3"
+                          "--prefix=#{prefix}", "PYTHON=python3.9"
     system "make", "install"
   end
 end
